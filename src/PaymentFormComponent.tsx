@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from "react";
 import { createPaymentBuffer } from "./utils/paymentUtils";
 import { usePayment } from "./hooks/usePayment";
+import { formatDateToYYMMDD } from "./utils/formatDate";
 
 const PAYMENT_TYPES = [
   { value: "credit", label: "신용승인" },
@@ -15,7 +16,9 @@ const PAYMENT_TYPES = [
 
 type PaymentType = "credit" | "credit_fallback" | "credit_cancel";
 
-const PaymentFormComponent: React.FC = () => {
+const PaymentFormComponent = () => {
+  const [paymentType, setPaymentType] = useState<PaymentType>("credit");
+  const newdate = formatDateToYYMMDD(new Date());
   const [form, setForm] = useState({
     money: "",
     tax: "",
@@ -24,13 +27,9 @@ const PaymentFormComponent: React.FC = () => {
     catid: "",
     myunse: "",
     agreenum: "",
-    agreedate: "",
+    agreedate: newdate,
     cashno: "",
   });
-
-  console.log(form);
-
-  const [paymentType, setPaymentType] = useState<PaymentType>("credit");
 
   const paymentMutation = usePayment();
 
@@ -83,74 +82,101 @@ const PaymentFormComponent: React.FC = () => {
         <legend>요청 파라미터</legend>
         <div
           style={{
+            // display: "flex",
             display: "grid",
             gridTemplateColumns: "1fr 1fr 1fr",
             gap: "10px",
           }}
         >
-          <input
-            type="text"
-            name="agreenum"
-            placeholder="승인번호"
-            value={form.agreenum}
-            onChange={handleChange}
-          />
-          <input
-            type="text"
-            name="agreedate"
-            placeholder="승인일자"
-            value={form.agreedate}
-            onChange={handleChange}
-          />
-          <input
-            type="text"
-            name="catid"
-            placeholder="CAT ID"
-            value={form.catid}
-            onChange={handleChange}
-          />
-          <input
-            type="number"
-            name="halbu"
-            placeholder="할부 (개월)"
-            value={form.halbu}
-            onChange={handleChange}
-          />
-          <input
-            type="text"
-            name="cashno"
-            placeholder="현금식별번호(바코드)"
-            value={form.cashno}
-            onChange={handleChange}
-          />
-          <input
-            type="number"
-            name="money"
-            placeholder="총금액"
-            value={form.money}
-            onChange={handleChange}
-          />
-          <input
-            type="number"
-            name="tax"
-            placeholder="부가세"
-            value={form.tax}
-            onChange={handleChange}
-          />
-          <input
-            type="number"
-            name="bongsa"
-            placeholder="봉사료"
-            value={form.bongsa}
-            onChange={handleChange}
-          />
-          <input
-            type="number"
-            name="myunse"
-            placeholder="면세금액"
-            value={form.myunse}
-            onChange={handleChange}
-          />
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <label style={{ width: "80px" }}>승인번호</label>
+            <input
+              type="text"
+              name="agreenum"
+              value={form.agreenum}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <label style={{ width: "80px" }}>승인일자</label>
+            <input
+              type="text"
+              name="agreedate"
+              value={form.agreedate}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <label style={{ width: "80px" }}>CAT ID</label>
+            <input
+              type="text"
+              name="catid"
+              value={form.catid}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <label style={{ width: "80px" }}>할부 (개월)</label>
+            <input
+              type="number"
+              name="halbu"
+              value={form.halbu}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <label style={{ width: "80px" }}>현금식별번호(바코드)</label>
+            <input
+              type="text"
+              name="cashno"
+              value={form.cashno}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <label style={{ width: "80px" }}>총금액</label>
+            <input
+              type="number"
+              name="money"
+              value={form.money}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <label style={{ width: "80px" }}>부가세</label>
+            <input
+              type="number"
+              name="tax"
+              value={form.tax}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <label style={{ width: "80px" }}>봉사료</label>
+            <input
+              type="number"
+              name="bongsa"
+              value={form.bongsa}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <label style={{ width: "80px" }}>면세금액</label>
+            <input
+              type="number"
+              name="myunse"
+              value={form.myunse}
+              onChange={handleChange}
+            />
+          </div>
         </div>
       </fieldset>
 

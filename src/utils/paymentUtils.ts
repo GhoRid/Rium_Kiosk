@@ -87,12 +87,12 @@ export function createPaymentBuffer(
         FS +
         "" +
         FS +
-        (form.catid || "") +
+        (form.catid || "0") +
         FS +
         FS +
         FS +
         FS +
-        (form.myunse || "") +
+        (form.myunse || "0") +
         FS +
         FS +
         FS +
@@ -120,16 +120,16 @@ export function createPaymentBuffer(
         FS +
         halbu +
         FS +
-        (form.agreenum || "") +
+        (form.agreenum || "0") +
         FS +
-        (form.agreedate || "") +
+        (form.agreedate || "0") +
         FS +
-        (form.catid || "") +
-        FS +
-        FS +
+        (form.catid || "0") +
         FS +
         FS +
-        (form.myunse || "") +
+        FS +
+        FS +
+        (form.myunse || "0") +
         FS +
         FS +
         FS +
