@@ -122,7 +122,7 @@ export function createPaymentBuffer(
         FS +
         (form.agreenum || "0") +
         FS +
-        (form.agreedate || "0") +
+        form.agreedate +
         FS +
         (form.catid || "0") +
         FS +

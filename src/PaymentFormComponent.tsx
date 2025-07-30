@@ -43,6 +43,8 @@ const PaymentFormComponent = () => {
 
   const handleSubmit = () => {
     const sendbuf = createPaymentBuffer(paymentType, form);
+
+    console.log("결제 요청 데이터:", sendbuf);
     paymentMutation.mutate(sendbuf); // React Query mutation 실행
   };
 
