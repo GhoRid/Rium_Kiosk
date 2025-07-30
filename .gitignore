@@ -1,0 +1,50 @@
+# Node dependencies
+/node_modules
+
+# Electron build outputs
+/dist
+/out
+/build
+/release
+
+# Electron-packager / Electron-builder artifacts
+*.dmg
+*.exe
+*.deb
+*.AppImage
+*.snap
+*.rpm
+*.zip
+*.blockmap
+
+# Electron app resources
+*.asar
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# VSCode/IDE configs
+.vscode/
+.idea/
+
+# Coverage reports
+/coverage
+
+# Cache files
+.pnp
+.pnp.js
+
+# Misc
+*.swp
