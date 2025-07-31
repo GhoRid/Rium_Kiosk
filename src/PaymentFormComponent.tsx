@@ -211,7 +211,7 @@ const PaymentFormComponent = () => {
         </div>
       )}
 
-      {/* ✅ 사진처럼 SendData 미리보기 */}
+      {/* SendData 미리보기 */}
       <div style={{ marginTop: "30px" }}>
         <label style={{ fontWeight: "bold" }}>SendData :</label>
         <input

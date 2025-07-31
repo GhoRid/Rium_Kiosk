@@ -1,11 +1,15 @@
+import { HashRouter, Route, Routes } from "react-router";
 import "./App.css";
 import PaymentFormComponent from "./PaymentFormComponent";
+import HomePage from "./pages/HomePage";
 
 function App() {
   return (
-    <div className="App">
-      <PaymentFormComponent />
-    </div>
+    <HashRouter>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+      </Routes>
+    </HashRouter>
   );
 }
 
