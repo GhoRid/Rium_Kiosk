@@ -7,7 +7,7 @@ export const usePayment = () => {
     mutationFn: (sendbuf: string) => sendPayment(sendbuf),
     onSuccess: (data) => {
       console.log("결제 응답:", data);
-      alert("결제가 성공적으로 처리되었습니다.");
+      // alert("결제가 성공적으로 처리되었습니다.");
     },
     onError: (error) => {
       console.error("결제 요청 실패:", error);

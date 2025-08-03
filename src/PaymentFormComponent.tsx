@@ -2,6 +2,7 @@ import React, { useState, useMemo } from "react";
 import { createPaymentBuffer } from "./utils/paymentUtils";
 import { usePayment } from "./hooks/usePayment";
 import { formatDateToYYMMDD } from "./utils/formatDate";
+import { formatResponse } from "./utils/formatResponse";
 
 const PAYMENT_TYPES = [
   { value: "credit", label: "신용승인" },
@@ -18,7 +19,7 @@ type PaymentType = "credit" | "credit_fallback" | "credit_cancel";
 
 const PaymentFormComponent = () => {
   const [paymentType, setPaymentType] = useState<PaymentType>("credit");
-  const newdate = formatDateToYYMMDD(new Date());
+  const [newdate, setNewdate] = useState(formatDateToYYMMDD(new Date()));
   const [form, setForm] = useState({
     money: "",
     tax: "",
@@ -42,10 +43,11 @@ const PaymentFormComponent = () => {
   };
 
   const handleSubmit = () => {
+    setNewdate(formatDateToYYMMDD(new Date()));
     const sendbuf = createPaymentBuffer(paymentType, form);
 
     console.log("결제 요청 데이터:", sendbuf);
-    paymentMutation.mutate(sendbuf); // React Query mutation 실행
+    paymentMutation.mutate(sendbuf); 
   };
 
   // ✅ createPaymentBuffer 결과를 실시간으로 계산해서 표시
@@ -207,7 +209,7 @@ const PaymentFormComponent = () => {
       {paymentMutation.isSuccess && (
         <div style={{ marginTop: "20px" }}>
           <h3>단말기 응답</h3>
-          <pre>{paymentMutation.data}</pre>
+          <pre>{formatResponse(paymentMutation.data)}</pre>
         </div>
       )}
 

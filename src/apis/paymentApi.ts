@@ -8,12 +8,8 @@ export const sendPayment = async (sendData: string) => {
   // 1. VCAT 패킷 생성
   sendMsg = makeSendData(sendData);
 
-  console.log("sendData : ", sendData, "sendMsg : ", sendMsg);
-
   // 2. URI 인코딩
   const sendbuf = encodeURI(sendMsg);
-
-  console.log("sendbuf : ", sendbuf);
 
   // 3. 전송 (포트 분기 처리)
   // const url =
