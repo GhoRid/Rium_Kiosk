@@ -10,10 +10,11 @@ const __dirname = path.dirname(__filename);
 let mainWindow;
 
 function createWindow() {
-  // 메인 윈도우 생성 및 기본 설정
+  // const { width, height } = screen.getPrimaryDisplay().workAreaSize;
+
   mainWindow = new BrowserWindow({
-    width: 900,
-    height: 680,
+    fullscreen: true,
+    // kiosk: true,
     webPreferences: {
       nodeIntegration: true,
       enableRemoteModule: true,
