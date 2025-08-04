@@ -1,20 +1,6 @@
 import { instance } from ".";
-import { createPaymentBuffer } from "../utils/paymentUtils";
-import { makeSendData } from "../utils/vcatUtils";
 
-export const sendPayment = async (sendData: string) => {
-  let sendMsg: string;
-
-  // 1. VCAT 패킷 생성
-  sendMsg = makeSendData(sendData);
-
-  // 2. URI 인코딩
-  const sendbuf = encodeURI(sendMsg);
-
-  // 3. 전송 (포트 분기 처리)
-  // const url =
-  //   type === "stop" ? "http://127.0.0.1:9189" : "http://127.0.0.1:9188";
-
+export const sendPayment = async (sendbuf: string) => {
   try {
     const { data } = await instance.post("/", sendbuf);
     return data;

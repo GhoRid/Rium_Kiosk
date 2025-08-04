@@ -17,10 +17,10 @@ type PaymentType = "credit" | "credit_fallback" | "credit_cancel";
 /**
  * 결제 전송 문자열 생성 함수
  */
-export function createPaymentBuffer(
+export const createPaymentBuffer = (
   paymentType: PaymentType,
   form: PaymentForm
-): string {
+): string => {
   // ✅ 기본값 처리
   const tax = form.tax && form.tax.trim() !== "" ? form.tax : "0";
   const bongsa = form.bongsa && form.bongsa.trim() !== "" ? form.bongsa : "0";
@@ -142,4 +142,4 @@ export function createPaymentBuffer(
     default:
       throw new Error("지원하지 않는 결제 타입입니다.");
   }
-}
+};

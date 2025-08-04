@@ -3,6 +3,7 @@ import { createPaymentBuffer } from "./utils/paymentUtils";
 import { usePayment } from "./hooks/usePayment";
 import { formatDateToYYMMDD } from "./utils/formatDate";
 import { formatResponse } from "./utils/formatResponse";
+import { makeSendData } from "./utils/vcatUtils";
 
 const PAYMENT_TYPES = [
   { value: "credit", label: "신용승인" },
@@ -44,10 +45,11 @@ const PaymentFormComponent = () => {
 
   const handleSubmit = () => {
     setNewdate(formatDateToYYMMDD(new Date()));
-    const sendbuf = createPaymentBuffer(paymentType, form);
+    const paymentData = createPaymentBuffer(paymentType, form);
+    const vcatPacket = makeSendData(paymentData);
+    const sendbuf = encodeURI(vcatPacket);
 
-    console.log("결제 요청 데이터:", sendbuf);
-    paymentMutation.mutate(sendbuf); 
+    paymentMutation.mutate(sendbuf);
   };
 
   // ✅ createPaymentBuffer 결과를 실시간으로 계산해서 표시
