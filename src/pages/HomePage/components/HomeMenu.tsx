@@ -76,7 +76,7 @@ const FeatureBox = styled.div`
 const BaseButton = styled.button`
   border: none;
   border-radius: 30px;
-  color: #fff;
+  color: ${colors.app_white};
   cursor: pointer;
 
   display: flex;
@@ -96,7 +96,6 @@ const BaseButton = styled.button`
 `;
 
 const MenuButton = styled(BaseButton)`
-  flex: 1;
   width: 260px;
   height: 240px;
   background: linear-gradient(
@@ -126,7 +125,6 @@ const ActionBox = styled.div`
 `;
 
 const ActionButton = styled(BaseButton)`
-  flex: 1;
   width: 400px;
   height: 350px;
   background: linear-gradient(180deg, #1c2e4a 0%, #112037 100%),
@@ -134,13 +132,12 @@ const ActionButton = styled(BaseButton)`
   box-shadow: 0 20px 30px rgba(0, 0, 0, 0.2);
 `;
 
-const ReprintBox = styled(BaseButton)`
-  flex: 1;
+const ReprintBox = styled.button`
   width: 290px;
   height: 90px;
   border: none;
   border-radius: 30px;
-  color: #fff;
+  color: ${colors.app_white};
   cursor: pointer;
 
   display: flex;

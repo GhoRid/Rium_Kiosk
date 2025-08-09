@@ -1,4 +1,3 @@
-// src/pages/HomePage.tsx
 import styled from "styled-components";
 import { ReactComponent as Logo } from "../../assets/svgs/Logo1.svg";
 import HeaderDate from "./components/HeaderDate";
@@ -9,9 +8,9 @@ import SeatInfo from "./components/SeatInfo";
 const HomePage = () => {
   return (
     <>
+      <HeaderDate />
       <Container>
         {/* 상단 날짜/시간 */}
-        <HeaderDate />
 
         {/* 지점명/전화번호 */}
         <BranchInfo>
@@ -21,7 +20,7 @@ const HomePage = () => {
 
         {/* 로고 + 지점명 */}
         <LogoWrapper>
-          <Logo width={80} height={80} fill="#fff" />
+          <Logo width={80} height={80} fill={colors.app_white} />
           <BrandName>리움</BrandName>
         </LogoWrapper>
 
@@ -34,7 +33,7 @@ const HomePage = () => {
         {/* 하단 공지 */}
       </Container>
       <Footer>
-        <Logo width={40} height={40} fill="#fff" />
+        <Logo width={40} height={40} fill={colors.app_white} />
         <FooterText>GRAND OPEN!</FooterText>
       </Footer>
     </>
@@ -45,7 +44,7 @@ export default HomePage;
 
 const Container = styled.div`
   background-color: ${colors.app_background};
-  color: white;
+  color: ${colors.app_white};
   display: flex;
   flex-direction: column;
   height: 100vh;

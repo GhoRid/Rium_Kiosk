@@ -11,12 +11,10 @@ const HeaderDate = () => {
     const updateDateTime = () => {
       const now = new Date();
 
-      // MM/DD 직접 생성 → / 강제
       const month = String(now.getMonth() + 1).padStart(2, "0");
       const day = String(now.getDate()).padStart(2, "0");
       const date = `${month}/${day}`;
 
-      // 시간은 기존 방식 유지
       const time = now.toLocaleTimeString("ko-KR", {
         hour: "2-digit",
         minute: "2-digit",

@@ -21,8 +21,9 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   line-height: 1.5;
-  background-color: #fff;
+  background-color: #16181c;
   color: #000;
+  box-sizing: border-box;
 }
 
 /* 기본 요소 초기화 */
@@ -61,4 +62,8 @@ select {
 code {
   font-family: "Pretendard", source-code-pro, Menlo, Monaco, Consolas,
     "Courier New", monospace;
+}
+
+div {
+  box-sizing: border-box;
 }
