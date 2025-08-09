@@ -13,7 +13,10 @@ function createWindow() {
   // const { width, height } = screen.getPrimaryDisplay().workAreaSize;
 
   mainWindow = new BrowserWindow({
-    fullscreen: true,
+    // fullscreen: true,
+    width: 1080, // 화면 너비
+    height: 1920, // 화면 높이
+
     // kiosk: true,
     webPreferences: {
       nodeIntegration: true,
