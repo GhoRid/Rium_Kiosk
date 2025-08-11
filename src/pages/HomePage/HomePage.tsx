@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { ReactComponent as Logo } from "../../assets/svgs/Logo1.svg";
 import HomeMenu from "./components/HomeMenu";
 import { colors } from "../../colors";
 import SeatInfo from "./components/SeatInfo";
@@ -20,14 +19,9 @@ const HomePage = () => {
 
         {/* 메뉴 버튼 */}
         <HomeMenu />
-
-        {/* 하단 공지 */}
       </Container>
+      {/* 하단 배너 */}
       <FooterCarousel />
-      {/* <Footer> */}
-      {/* <Logo width={40} height={40} fill={colors.app_white} />
-        <FooterText>GRAND OPEN!</FooterText> */}
-      {/* </Footer> */}
     </>
   );
 };
@@ -41,15 +35,4 @@ const Container = styled.div`
   flex-direction: column;
   padding: 0 130px;
   margin-top: 200px;
-`;
-
-const Footer = styled.div`
-  margin-top: auto;
-
-  padding: 16px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-weight: bold;
-  font-size: 18px;
 `;

@@ -90,9 +90,6 @@ const BaseButton = styled.button`
   &:hover {
     filter: brightness(1.05);
   }
-  &:active {
-    transform: translateY(1px);
-  }
 `;
 
 const MenuButton = styled(BaseButton)`
