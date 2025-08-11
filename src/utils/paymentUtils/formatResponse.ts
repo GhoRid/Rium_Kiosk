@@ -80,4 +80,3 @@ export const parsePaymentRecvData = (raw: string) => {
 
   return result;
 };
-

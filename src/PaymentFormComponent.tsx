@@ -1,9 +1,9 @@
 import React, { useState, useMemo } from "react";
-import { createPaymentBuffer } from "./utils/paymentUtils";
+import { createPaymentBuffer } from "./utils/paymentUtils/paymentUtils";
 import { usePayment } from "./hooks/usePayment";
 import { formatDateToYYMMDD } from "./utils/formatDate";
-import { formatResponse, parseFullResponsePacket } from "./utils/formatResponse";
-import { makeSendData } from "./utils/vcatUtils";
+import { makeSendData } from "./utils/paymentUtils/vcatUtils";
+import { parseFullResponsePacket } from "./utils/paymentUtils/formatResponse";
 
 const PAYMENT_TYPES = [
   { value: "credit", label: "신용승인" },
@@ -52,22 +52,20 @@ const PaymentFormComponent = () => {
     paymentMutation.mutate(sendbuf);
   };
 
-
   // ✅ createPaymentBuffer 결과를 실시간으로 계산해서 표시
   const sendDataPreview = useMemo(() => {
     return createPaymentBuffer(paymentType, form);
   }, [paymentType, form]);
 
+  const parsedPacket = paymentMutation.isSuccess
+    ? parseFullResponsePacket(paymentMutation.data)
+    : null;
 
-  const parsedPacket = paymentMutation.isSuccess 
-  ? parseFullResponsePacket(paymentMutation.data) 
-  : null;
-
-const totalSize = parsedPacket?.totalSize || "";
-const vcat = parsedPacket?.vcat || "";
-const recvCode = parsedPacket?.recvCode || "";
-const recvDataSize = parsedPacket?.recvDataSize || "";
-const parsedRecvData = parsedPacket?.recvData || null;
+  const totalSize = parsedPacket?.totalSize || "";
+  const vcat = parsedPacket?.vcat || "";
+  const recvCode = parsedPacket?.recvCode || "";
+  const recvDataSize = parsedPacket?.recvDataSize || "";
+  const parsedRecvData = parsedPacket?.recvData || null;
 
   return (
     <div style={{ padding: "20px", maxWidth: "800px", margin: "0 auto" }}>
@@ -230,25 +228,26 @@ const parsedRecvData = parsedPacket?.recvData || null;
           <br />
 
           {/* RecvData 상세 파싱 결과 */}
-{paymentMutation.isSuccess && parsedRecvData && (
-  <div style={{ marginTop: "20px" }}>
-    <h3>응답 상세</h3>
-    <div style={{ 
-      background: "#f8f8f8", 
-      padding: "10px", 
-      borderRadius: "4px", 
-      fontFamily: "monospace", 
-      whiteSpace: "pre-wrap" 
-    }}>
-      {Object.entries(parsedRecvData).map(([key, value]) => (
-        <div key={key}>
-          <strong>{key}:</strong> {value || "-"}
-        </div>
-      ))}
-    </div>
-  </div>
-)}
-
+          {paymentMutation.isSuccess && parsedRecvData && (
+            <div style={{ marginTop: "20px" }}>
+              <h3>응답 상세</h3>
+              <div
+                style={{
+                  background: "#f8f8f8",
+                  padding: "10px",
+                  borderRadius: "4px",
+                  fontFamily: "monospace",
+                  whiteSpace: "pre-wrap",
+                }}
+              >
+                {Object.entries(parsedRecvData).map(([key, value]) => (
+                  <div key={key}>
+                    <strong>{key}:</strong> {value || "-"}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
 
