@@ -5,6 +5,7 @@ import NumberKeypad from "./components/NumberKeypad";
 import InputFileds from "./components/InputFileds";
 import { useState, useCallback } from "react";
 import AuthLinks from "./components/AuthLinks";
+import { formatPhoneNumber } from "../../utils/formatPhoneNumber";
 
 const LoginPage = () => {
   const [activeField, setActiveField] = useState<"phone" | "password">("phone");
@@ -36,22 +37,6 @@ const LoginPage = () => {
     },
     [activeField]
   );
-
-  const formatPhoneNumber = (phone: string) => {
-    let digits = phone.replace(/\D/g, "");
-
-    if (digits.length > 11) {
-      digits = digits.slice(0, 11);
-    }
-
-    if (digits.length < 4) {
-      return digits;
-    } else if (digits.length < 8) {
-      return `${digits.slice(0, 3)}-${digits.slice(3)}`;
-    } else {
-      return `${digits.slice(0, 3)}-${digits.slice(3, 7)}-${digits.slice(7)}`;
-    }
-  };
 
   return (
     <Container>

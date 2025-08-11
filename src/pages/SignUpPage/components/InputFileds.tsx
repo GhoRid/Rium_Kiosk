@@ -1,21 +1,18 @@
-// components/FormRow.tsx
 import { ReactNode, useState } from "react";
 import styled from "styled-components";
 import { colors } from "../../../colors";
 
-export type FormRowProps = {
+export type InputFiledsProps = {
   label: string;
   value: string;
   onChange: (v: string) => void;
   placeholder?: string;
   type?: "text" | "password";
-  inputMode?: React.HTMLAttributes<HTMLInputElement>["inputMode"];
+  inputMode?: React.InputHTMLAttributes<HTMLInputElement>["inputMode"]; // ✅ 수정
   maxLength?: number;
-  formatter?: (raw: string) => string;
   normalizer?: (raw: string) => string;
   action?: { label: string; onClick: () => void; disabled?: boolean };
   rightSlot?: ReactNode;
-  showDivider?: boolean;
 };
 
 const InputFileds = ({
@@ -25,14 +22,11 @@ const InputFileds = ({
   type = "text",
   inputMode,
   maxLength,
-  formatter,
   normalizer,
   action,
   rightSlot,
-}: FormRowProps) => {
+}: InputFiledsProps) => {
   const [focused, setFocused] = useState(false);
-
-  const display = formatter ? formatter(value) : value;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const raw = e.target.value;
@@ -42,9 +36,9 @@ const InputFileds = ({
 
   return (
     <Wrapper>
-      <Field haseRightSlot={!!rightSlot}>
+      <Field hasRightSlot={!!rightSlot} hasValue={!!value}>
         <PlainInput
-          value={display}
+          value={value}
           onChange={handleChange}
           placeholder={label}
           type={type}
@@ -69,13 +63,16 @@ const Wrapper = styled.div`
   gap: 20px;
 `;
 
-const Field = styled.div<{ haseRightSlot: boolean }>`
+const Field = styled.div<{ hasRightSlot: boolean; hasValue: boolean }>`
   user-select: none;
   display: flex;
   align-items: center;
   gap: 35px;
-  border-bottom: 1px solid ${colors.app_white};
-  width: ${(props) => (props.haseRightSlot ? "540px" : "100%")};
+  border-bottom: ${({ hasValue }) =>
+    hasValue
+      ? `2px solid ${colors.app_white}`
+      : `1px solid ${colors.app_white}`};
+  width: ${({ hasRightSlot }) => (hasRightSlot ? "540px" : "100%")};
   height: 100px;
 `;
 

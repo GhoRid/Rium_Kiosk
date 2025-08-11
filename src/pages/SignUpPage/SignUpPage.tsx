@@ -3,16 +3,22 @@ import styled from "styled-components";
 import InputFileds from "./components/InputFileds";
 import RadioGroup from "./components/RadioGroup";
 import { colors } from "../../colors";
-import { ReactComponent as DirectionDown } from "../../assets/svgs/directionDown.svg";
+import { formatPhoneNumber } from "../../utils/formatPhoneNumber";
+import ConsentList from "./components/ConsentList";
+import { formatDateHyphen } from "../../utils/formatDate";
+import JoinPathAccordion from "./components/JoinPathAccordion";
 
 const digitsOnly = (s: string) => s.replace(/\D/g, "");
-const fmtPhone = (v: string) => {
-  const d = digitsOnly(v).slice(0, 11);
-  if (d.length < 4) return d;
-  if (d.length < 8) return `${d.slice(0, 3)}-${d.slice(3)}`;
-  return `${d.slice(0, 3)}-${d.slice(3, 7)}-${d.slice(7)}`;
-};
 const fmtBirth = (v: string) => digitsOnly(v).slice(0, 8);
+
+type TermItem = {
+  id: string;
+  label: string;
+  required?: boolean;
+  checked?: boolean;
+  disabled?: boolean;
+  onView?: () => void;
+};
 
 const SignUpPage = () => {
   const [name, setName] = useState("");
@@ -21,7 +27,26 @@ const SignUpPage = () => {
   const [pin, setPin] = useState(""); // 4자리
   const [birth, setBirth] = useState(""); // YYYYMMDD
   const [gender, setGender] = useState("M");
-  const [route, setRoute] = useState(""); // 가입 경로
+  const [route, setRoute] = useState("가입 경로");
+
+  const [terms, setTerms] = useState<TermItem[]>([
+    {
+      id: "tos",
+      label: "서비스 이용약관 동의",
+      required: true,
+      checked: false,
+      disabled: true, // 스샷처럼 흐리게
+      onView: () => alert("이용약관 보기"),
+    },
+    {
+      id: "privacy",
+      label: "개인정보 활용 동의",
+      required: true,
+      checked: false,
+      disabled: true,
+      onView: () => alert("개인정보 처리방침 보기"),
+    },
+  ]);
 
   return (
     <Container>
@@ -31,11 +56,10 @@ const SignUpPage = () => {
 
           <InputFileds
             label="휴대폰 번호"
-            value={phone}
+            value={formatPhoneNumber(phone)}
             onChange={setPhone}
             inputMode="numeric"
             normalizer={(s) => digitsOnly(s).slice(0, 11)}
-            formatter={fmtPhone}
             action={{
               label: "인증 요청",
               onClick: () => console.log("send code"),
@@ -70,7 +94,7 @@ const SignUpPage = () => {
 
           <InputFileds
             label="생년월일(YYYYMMDD)"
-            value={birth}
+            value={formatDateHyphen(birth)}
             onChange={setBirth}
             inputMode="numeric"
             normalizer={fmtBirth}
@@ -85,7 +109,38 @@ const SignUpPage = () => {
               />
             }
           />
+          <JoinPathAccordion
+            route={route}
+            setRoute={setRoute}
+            paths={[
+              "포털 사이트 검색",
+              "네이버 플레이스",
+              "인스타그램",
+              "지인 추천",
+            ]}
+            maxHeight={200}
+          />
         </Form>
+
+        {/* <ConsentList
+          items={[
+            {
+              id: "terms",
+              label: "서비스 이용약관 동의",
+              required: true,
+              onView: () => console.log("View Terms"),
+            },
+            {
+              id: "privacy",
+              label: "개인정보 수집 및 이용 동의",
+              required: true,
+              onView: () => console.log("View Privacy Policy"),
+            },
+          ]}
+          value={{ terms: false, privacy: false }}
+          onChange={(next) => console.log("Consent changed", next)}
+          showTopDivider
+        /> */}
       </Content>
     </Container>
   );
