@@ -5,13 +5,17 @@ import { ReactComponent as ChangeSeat } from "../../../assets/svgs/change_seat.s
 import { ReactComponent as Enter } from "../../../assets/svgs/enter.svg";
 import { ReactComponent as Exit } from "../../../assets/svgs/exit.svg";
 import { colors } from "../../../colors";
+import { useNavigate } from "react-router";
 
 const HomeMenu = () => {
+  const navigate = useNavigate();
+
   const FeatureList = [
     {
       name: "이용권 구매",
       icon: <PurchasePass />,
-      action: () => console.log("구매"),
+      // action: () => console.log("구매"),
+      action: () => navigate("/login"),
     },
     {
       name: "이용권\n확인/연장",

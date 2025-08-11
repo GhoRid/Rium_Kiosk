@@ -8,9 +8,9 @@ import FooterCarousel from "./components/FooterCarousel";
 
 const HomePage = () => {
   return (
-    <>
+    <Container>
       <DateInfo />
-      <Container>
+      <ContentContainer>
         {/* 지점명/전화번호/로고 */}
         <Header />
 
@@ -19,10 +19,10 @@ const HomePage = () => {
 
         {/* 메뉴 버튼 */}
         <HomeMenu />
-      </Container>
+      </ContentContainer>
       {/* 하단 배너 */}
       <FooterCarousel />
-    </>
+    </Container>
   );
 };
 
@@ -33,6 +33,10 @@ const Container = styled.div`
   color: ${colors.app_white};
   display: flex;
   flex-direction: column;
+  height: 1920px;
+`;
+
+const ContentContainer = styled.div`
   padding: 0 130px;
   margin-top: 200px;
 `;
