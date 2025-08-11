@@ -1,7 +1,8 @@
 import styled from "styled-components";
 import { useEffect, useState } from "react";
+import { colors } from "../../../colors";
 
-const HeaderDate = () => {
+const DateInfo = () => {
   const [dateTime, setDateTime] = useState({
     date: "",
     time: "",
@@ -31,22 +32,30 @@ const HeaderDate = () => {
   }, []);
 
   return (
-    <Header>
+    <Container>
       <DateText>{dateTime.date}</DateText>
       <TimeText>{dateTime.time}</TimeText>
-    </Header>
+    </Container>
   );
 };
 
-export default HeaderDate;
+export default DateInfo;
 
-const Header = styled.div`
+const Container = styled.div`
+  margin: 60px 70px 0 70px;
   display: flex;
   justify-content: flex-end;
-  gap: 8px;
-  font-size: 14px;
-  font-weight: bold;
+  gap: 20px;
 `;
 
-const DateText = styled.span``;
-const TimeText = styled.span``;
+const BaseText = styled.span`
+  font-size: 30px;
+  color: ${colors.app_white};
+`;
+
+const DateText = styled(BaseText)`
+  font-weight: 700;
+`;
+const TimeText = styled(BaseText)`
+  font-weight: 500;
+`;

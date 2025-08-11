@@ -23,8 +23,8 @@ export default SeatInfo;
 
 const SeatInfoWrapper = styled.div`
   display: flex;
-  margin-top: 20px;
   gap: 20px;
+  margin-bottom: 20px;
 `;
 
 const SeatInfoBox = styled.div`

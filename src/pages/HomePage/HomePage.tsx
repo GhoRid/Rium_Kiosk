@@ -1,28 +1,18 @@
 import styled from "styled-components";
 import { ReactComponent as Logo } from "../../assets/svgs/Logo1.svg";
-import HeaderDate from "./components/HeaderDate";
 import HomeMenu from "./components/HomeMenu";
 import { colors } from "../../colors";
 import SeatInfo from "./components/SeatInfo";
+import DateInfo from "./components/DateInfo";
+import Header from "./components/Header";
 
 const HomePage = () => {
   return (
     <>
-      <HeaderDate />
+      <DateInfo />
       <Container>
-        {/* 상단 날짜/시간 */}
-
-        {/* 지점명/전화번호 */}
-        <BranchInfo>
-          <BranchName>문흥점</BranchName>
-          <BranchPhone>010-5391-2895</BranchPhone>
-        </BranchInfo>
-
-        {/* 로고 + 지점명 */}
-        <LogoWrapper>
-          <Logo width={80} height={80} fill={colors.app_white} />
-          <BrandName>리움</BrandName>
-        </LogoWrapper>
+        {/* 지점명/전화번호/로고 */}
+        <Header />
 
         {/* 좌석 정보 */}
         <SeatInfo />
@@ -47,30 +37,9 @@ const Container = styled.div`
   color: ${colors.app_white};
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  /* min-height: 100vh; */
   padding: 0 130px;
-`;
-
-const BranchInfo = styled.div`
-  margin-top: 20px;
-  font-size: 14px;
-  display: flex;
-  gap: 8px;
-`;
-
-const BranchName = styled.span``;
-const BranchPhone = styled.span``;
-
-const LogoWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-top: 16px;
-`;
-
-const BrandName = styled.span`
-  font-size: 28px;
-  font-weight: bold;
+  margin-top: 200px;
 `;
 
 const Footer = styled.div`

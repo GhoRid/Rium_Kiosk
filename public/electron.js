@@ -13,11 +13,11 @@ function createWindow() {
   // const { width, height } = screen.getPrimaryDisplay().workAreaSize;
 
   mainWindow = new BrowserWindow({
-    // fullscreen: true,
-    width: 1080, // 화면 너비
-    height: 1920, // 화면 높이
-
-    // kiosk: true,
+    width: 1080,
+    height: 1920,
+    resizable: false, // ✅ 크기 조절 불가
+    fullscreenable: false, // ✅ 최대화 불가
+    maximizable: false, // ✅ 최대화 버튼 비활성화
     webPreferences: {
       nodeIntegration: true,
       enableRemoteModule: true,
@@ -36,7 +36,7 @@ function createWindow() {
   // 개발자 도구 열기 (개발 모드에서만)
   if (isDev) mainWindow.webContents.openDevTools({ mode: "detach" });
 
-  mainWindow.setResizable(true); // 창 크기 조절 가능
+  // mainWindow.setResizable(true); // 창 크기 조절 가능
   // 창 닫기 이벤트 핸들러
   mainWindow.on("closed", () => {
     mainWindow = null;
