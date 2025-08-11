@@ -13,17 +13,24 @@ const LoginPage = () => {
   const handleKeypad = useCallback(
     (val: string) => {
       if (val === "지움") {
-        if (activeField === "phone") setPhone((p) => p.slice(0, -1));
-        else setPassword((p) => p.slice(0, -1));
+        if (activeField === "phone") {
+          setPhone((p) => p.slice(0, -1));
+        } else {
+          setPassword((p) => p.slice(0, -1));
+        }
         return;
       }
+
       if (activeField === "phone") {
         setPhone((p) => {
           const next = p + val;
           return next.replace(/\D/g, "").slice(0, 11);
         });
       } else {
-        setPassword((p) => p + val);
+        setPassword((p) => {
+          const next = p + val;
+          return next.slice(0, 4);
+        });
       }
     },
     [activeField]
@@ -74,12 +81,7 @@ export default LoginPage;
 const Container = styled.div`
   background-color: ${colors.app_background};
   color: ${colors.app_white};
-  /* display: flex; */
-  /* flex-direction: column; */
-  /* align-items: center; */
   height: 1920px;
-  /* padding: 0 130px; */
-  /* margin-top: 200px; */
 `;
 
 const Content = styled.div`
