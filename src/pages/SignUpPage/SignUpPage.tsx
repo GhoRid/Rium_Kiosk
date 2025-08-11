@@ -8,6 +8,7 @@ import ConsentList from "./components/ConsentList";
 import { formatDateHyphen } from "../../utils/formatDate";
 import JoinPathAccordion from "./components/JoinPathAccordion";
 import GoToHomeButton from "../../components/GoToHomeButton";
+import BottomButtons from "./components/BottomButtons";
 
 const digitsOnly = (s: string) => s.replace(/\D/g, "");
 const fmtBirth = (v: string) => digitsOnly(v).slice(0, 8);
@@ -121,6 +122,8 @@ const SignUpPage = () => {
         </Form>
 
         <ConsentList items={terms} onChange={setTerms} showTopDivider />
+
+        <BottomButtons />
       </Content>
     </Container>
   );
