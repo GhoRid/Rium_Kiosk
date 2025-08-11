@@ -22,6 +22,7 @@ const Button = styled.button`
   position: absolute;
   top: 75px;
   left: 75px;
+  /* margin: 75px 0 0 75px */
   border: none;
   cursor: pointer;
   display: flex;
