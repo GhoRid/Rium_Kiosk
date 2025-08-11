@@ -29,10 +29,6 @@ const Button = styled.button`
   flex-direction: column;
   align-items: center;
   gap: 10px;
-
-  &:hover {
-    background-color: #f0f0f0;
-  }
 `;
 
 const Text = styled.span`
