@@ -29,7 +29,7 @@ const HomePage = () => {
 export default HomePage;
 
 const Container = styled.div`
-  background-color: ${colors.app_background};
+  background-color: ${colors.app_black};
   color: ${colors.app_white};
   display: flex;
   flex-direction: column;

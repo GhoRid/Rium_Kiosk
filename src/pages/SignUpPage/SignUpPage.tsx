@@ -7,6 +7,7 @@ import { formatPhoneNumber } from "../../utils/formatPhoneNumber";
 import ConsentList from "./components/ConsentList";
 import { formatDateHyphen } from "../../utils/formatDate";
 import JoinPathAccordion from "./components/JoinPathAccordion";
+import GoToHomeButton from "../../components/GoToHomeButton";
 
 const digitsOnly = (s: string) => s.replace(/\D/g, "");
 const fmtBirth = (v: string) => digitsOnly(v).slice(0, 8);
@@ -14,10 +15,9 @@ const fmtBirth = (v: string) => digitsOnly(v).slice(0, 8);
 type TermItem = {
   id: string;
   label: string;
-  required?: boolean;
-  checked?: boolean;
-  disabled?: boolean;
-  onView?: () => void;
+  required: boolean;
+  checked: boolean;
+  // disabled?: boolean;
 };
 
 const SignUpPage = () => {
@@ -35,21 +35,20 @@ const SignUpPage = () => {
       label: "서비스 이용약관 동의",
       required: true,
       checked: false,
-      disabled: true, // 스샷처럼 흐리게
-      onView: () => alert("이용약관 보기"),
+      // disabled: false,
     },
     {
       id: "privacy",
       label: "개인정보 활용 동의",
       required: true,
       checked: false,
-      disabled: true,
-      onView: () => alert("개인정보 처리방침 보기"),
+      // disabled: false,
     },
   ]);
 
   return (
     <Container>
+      <GoToHomeButton />
       <Content>
         <Form>
           <InputFileds label="이름" value={name} onChange={setName} />
@@ -118,29 +117,10 @@ const SignUpPage = () => {
               "인스타그램",
               "지인 추천",
             ]}
-            maxHeight={200}
           />
         </Form>
 
-        {/* <ConsentList
-          items={[
-            {
-              id: "terms",
-              label: "서비스 이용약관 동의",
-              required: true,
-              onView: () => console.log("View Terms"),
-            },
-            {
-              id: "privacy",
-              label: "개인정보 수집 및 이용 동의",
-              required: true,
-              onView: () => console.log("View Privacy Policy"),
-            },
-          ]}
-          value={{ terms: false, privacy: false }}
-          onChange={(next) => console.log("Consent changed", next)}
-          showTopDivider
-        /> */}
+        <ConsentList items={terms} onChange={setTerms} showTopDivider />
       </Content>
     </Container>
   );
@@ -149,12 +129,13 @@ const SignUpPage = () => {
 export default SignUpPage;
 
 const Container = styled.div`
-  background-color: ${colors.app_background};
+  background-color: ${colors.app_black};
   color: ${colors.app_white};
   height: 1920px;
 `;
 
 const Content = styled.div`
+  padding-top: 300px;
   margin: 0 160px;
   display: flex;
   flex-direction: column;

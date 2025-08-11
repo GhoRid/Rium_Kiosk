@@ -67,7 +67,7 @@ const LoginPage = () => {
 export default LoginPage;
 
 const Container = styled.div`
-  background-color: ${colors.app_background};
+  background-color: ${colors.app_black};
   color: ${colors.app_white};
   height: 1920px;
 `;

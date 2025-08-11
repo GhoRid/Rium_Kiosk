@@ -7,20 +7,18 @@ type JoinPathAccordionProps = {
   route?: string;
   setRoute: (v: string) => void;
   paths: string[];
-  maxHeight?: number;
 };
 
 const JoinPathAccordion = ({
   route = "가입 경로",
   setRoute,
   paths,
-  maxHeight = 360,
 }: JoinPathAccordionProps) => {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
 
   const handlePathClick = (text: string) => {
-    setRoute(text); // ✅ title 변경
-    setOpen(false); // 선택 후 닫기 원하면 추가
+    setRoute(text);
+    setOpen(false);
   };
 
   return (
@@ -36,14 +34,12 @@ const JoinPathAccordion = ({
       </Header>
 
       {open && (
-        <Body $maxHeight={maxHeight}>
-          <Inner>
-            {paths.map((text, i) => (
-              <PathRow key={i} onClick={() => handlePathClick(text)}>
-                {text}
-              </PathRow>
-            ))}
-          </Inner>
+        <Body>
+          {paths.map((text, i) => (
+            <PathRow key={i} onClick={() => handlePathClick(text)}>
+              <PathText>{text}</PathText>
+            </PathRow>
+          ))}
         </Body>
       )}
     </Card>
@@ -53,7 +49,7 @@ const JoinPathAccordion = ({
 export default JoinPathAccordion;
 
 const Card = styled.div`
-  overflow: hidden;
+  position: relative;
 `;
 
 const Header = styled.button<{ $selected: boolean }>`
@@ -77,38 +73,45 @@ const Title = styled.div`
 `;
 
 const Caret = styled.span<{ $open: boolean }>`
-  color: #f5f5f5;
+  color: ${colors.app_white};
   font-size: 22px;
   transform: ${({ $open }) => ($open ? "rotate(180deg)" : "rotate(0deg)")};
   transition: transform 160ms ease;
 `;
 
-const Body = styled.div<{ $maxHeight: number }>`
+const Body = styled.div`
+  position: absolute;
+  width: 100%;
+  top: 100px;
+  left: 0;
+  z-index: 1;
   background: ${colors.app_white};
-  height: ${({ $maxHeight }) => $maxHeight}px;
+  height: 350px;
   overflow-y: auto;
 
   &::-webkit-scrollbar {
     width: 6px;
   }
   &::-webkit-scrollbar-thumb {
-    background: ${colors.app_background};
+    background: ${colors.app_black};
     border-radius: 3px;
   }
 `;
 
-const Inner = styled.div`
-  padding: 18px 24px;
-`;
-
 const PathRow = styled.div`
-  font-size: 24px;
-  font-weight: 700;
-  color: #0f0f0f;
-  padding: 18px 4px;
-  cursor: pointer;
+  width: 100%;
+  height: 96px;
+  display: flex;
+  align-items: center;
+  padding: 0 35px;
 
+  cursor: pointer;
   &:hover {
     background: rgba(0, 0, 0, 0.05);
   }
+`;
+
+const PathText = styled.span`
+  font-size: 30px;
+  color: ${colors.app_black};
 `;

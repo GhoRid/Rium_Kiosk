@@ -5,26 +5,24 @@ import { colors } from "../../../colors";
 export type ConsentItem = {
   id: string;
   label: string; // 예) "서비스 이용약관 동의"
-  required?: boolean; // (필수) 빨간 표시
-  onView?: () => void; // 우측 "약관보기" 클릭 핸들러
+  required: boolean; // (필수) 빨간 표시
+  checked: boolean;
 };
 
 type ConsentListProps = {
   items: ConsentItem[];
-  value: Record<string, boolean>; // {id: checked}
-  onChange: (next: Record<string, boolean>) => void;
+  onChange: any;
+
   showTopDivider?: boolean;
 };
 
-const ConsentList = ({
-  items,
-  value,
-  onChange,
-  showTopDivider,
-}: ConsentListProps) => {
-  const toggle = (id: string) => {
-    const next = { ...value, [id]: !value[id] };
-    onChange(next);
+const ConsentList = ({ items, onChange, showTopDivider }: ConsentListProps) => {
+  const toggleCheckbox = (id: string) => {
+    onChange((prev: any) =>
+      prev.map((it: any) =>
+        it.id === id ? { ...it, checked: !it.checked } : it
+      )
+    );
   };
 
   return (
@@ -33,16 +31,8 @@ const ConsentList = ({
 
       {items.map((it) => (
         <Row key={it.id}>
-          <Left onClick={() => toggle(it.id)}>
-            <Checkbox
-              role="checkbox"
-              aria-checked={!!value[it.id]}
-              data-checked={!!value[it.id]}
-            >
-              <CheckMark viewBox="0 0 24 24" data-checked={!!value[it.id]}>
-                <polyline points="20 6 9 17 4 12" fill="none" strokeWidth="3" />
-              </CheckMark>
-            </Checkbox>
+          <Left onClick={() => toggleCheckbox(it.id)}>
+            <Checkbox role="checkbox">{it.checked && <CheckMark />}</Checkbox>
 
             <Label>
               {it.label}
@@ -50,8 +40,8 @@ const ConsentList = ({
             </Label>
           </Left>
 
-          <ViewBtn type="button" onClick={it.onView}>
-            약관보기
+          <ViewBtn type="button">
+            <ViewBtnText>약관보기</ViewBtnText>
           </ViewBtn>
         </Row>
       ))}
@@ -60,8 +50,6 @@ const ConsentList = ({
 };
 
 export default ConsentList;
-
-/* ===== styles ===== */
 
 const Wrap = styled.div`
   width: 100%;
@@ -93,35 +81,26 @@ const Left = styled.button`
   text-align: left;
 `;
 
-const Checkbox = styled.span`
-  width: 64px;
-  height: 64px;
-  border-radius: 8px;
-  border: 4px solid #d7dbe0;
+const Checkbox = styled.div`
+  width: 40px;
+  aspect-ratio: 1;
+  border: 2px solid #d7dbe0;
   position: relative;
-
-  &[data-checked="true"] {
-    background: rgba(255, 255, 255, 0.05);
-  }
 `;
 
-const CheckMark = styled.svg`
+const CheckMark = styled.div`
   position: absolute;
-  inset: 0;
-  margin: auto;
-  width: 44px;
-  height: 44px;
-  stroke: ${colors.app_white};
-  opacity: 0;
-  transition: opacity 120ms ease;
-
-  &[data-checked="true"] {
-    opacity: 1;
-  }
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 24px;
+  aspect-ratio: 1;
+  background-color: ${colors.app_white};
 `;
 
 const Label = styled.span`
-  font-size: 40px;
+  font-size: 30px;
+  color: ${colors.app_white};
   line-height: 1.2;
 `;
 
@@ -133,10 +112,18 @@ const Required = styled.span`
 const ViewBtn = styled.button`
   background: transparent;
   border: none;
-  color: ${colors.app_white};
-  font-size: 40px;
   padding: 8px 0;
   cursor: pointer;
-  white-space: nowrap;
   opacity: 0.95;
+`;
+
+const ViewBtnText = styled.span`
+  font-size: 30px;
+  color: ${colors.app_white};
+  text-decoration: underline;
+  cursor: pointer;
+
+  &:hover {
+    color: #d7dbe0;
+  }
 `;

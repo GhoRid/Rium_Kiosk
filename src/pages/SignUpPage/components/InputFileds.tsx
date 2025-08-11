@@ -36,7 +36,7 @@ const InputFileds = ({
 
   return (
     <Wrapper>
-      <Field hasRightSlot={!!rightSlot} hasValue={!!value}>
+      <Field $hasRightSlot={!!rightSlot} $hasValue={!!value}>
         <PlainInput
           value={value}
           onChange={handleChange}
@@ -63,16 +63,16 @@ const Wrapper = styled.div`
   gap: 20px;
 `;
 
-const Field = styled.div<{ hasRightSlot: boolean; hasValue: boolean }>`
+const Field = styled.div<{ $hasRightSlot: boolean; $hasValue: boolean }>`
   user-select: none;
   display: flex;
   align-items: center;
   gap: 35px;
-  border-bottom: ${({ hasValue }) =>
-    hasValue
+  border-bottom: ${({ $hasValue }) =>
+    $hasValue
       ? `2px solid ${colors.app_white}`
       : `1px solid ${colors.app_white}`};
-  width: ${({ hasRightSlot }) => (hasRightSlot ? "540px" : "100%")};
+  width: ${({ $hasRightSlot }) => ($hasRightSlot ? "540px" : "100%")};
   height: 100px;
 `;
 
