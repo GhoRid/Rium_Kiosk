@@ -12,7 +12,7 @@ type Props = {
   setPassword: (v: string) => void;
 };
 
-const Filed = ({
+const InputFileds = ({
   activeField,
   setActiveField,
   phone,
@@ -20,7 +20,7 @@ const Filed = ({
   password,
   setPassword,
 }: Props) => {
-  const FiledList = [
+  const InputFiledsList = [
     {
       name: "phone",
       icon: <PhoneIcon />,
@@ -38,8 +38,8 @@ const Filed = ({
   ];
 
   return (
-    <>
-      {FiledList.map((field) => (
+    <Container>
+      {InputFiledsList.map((field) => (
         <Field
           key={field.name}
           onClick={() => setActiveField(field.name as "phone" | "password")}
@@ -55,11 +55,19 @@ const Filed = ({
           />
         </Field>
       ))}
-    </>
+    </Container>
   );
 };
 
-export default Filed;
+export default InputFileds;
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 35px;
+  width: 100%;
+  height: 100%;
+`;
 
 const Field = styled.div`
   user-select: none;

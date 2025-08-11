@@ -2,8 +2,9 @@ import styled from "styled-components";
 import { colors } from "../../colors";
 import GoToHomeButton from "../../components/GoToHomeButton";
 import NumberKeypad from "./components/NumberKeypad";
-import Filed from "./components/Filed";
+import InputFileds from "./components/InputFileds";
 import { useState, useCallback } from "react";
+import AuthLinks from "./components/AuthLinks";
 
 const LoginPage = () => {
   const [activeField, setActiveField] = useState<"phone" | "password">("phone");
@@ -57,7 +58,7 @@ const LoginPage = () => {
       <GoToHomeButton />
 
       <Content>
-        <Filed
+        <InputFileds
           activeField={activeField}
           setActiveField={setActiveField}
           phone={formatPhoneNumber(phone)}
@@ -69,6 +70,8 @@ const LoginPage = () => {
         <LoginButton disabled={!phone || !password}>
           <LoginText>로그인</LoginText>
         </LoginButton>
+
+        <AuthLinks />
 
         <NumberKeypad onPress={handleKeypad} />
       </Content>
@@ -85,11 +88,11 @@ const Container = styled.div`
 `;
 
 const Content = styled.div`
-  margin: 260px 160px 0 160px;
+  margin: 0 160px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 36px;
+  padding-top: 520px;
 `;
 
 const LoginButton = styled.button`
@@ -100,6 +103,9 @@ const LoginButton = styled.button`
   font-size: 40px;
   font-weight: bold;
   cursor: pointer;
+
+  margin-top: 55px;
+  margin-bottom: 60px;
 `;
 
 const LoginText = styled.span`
