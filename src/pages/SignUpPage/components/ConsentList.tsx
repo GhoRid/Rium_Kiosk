@@ -4,19 +4,17 @@ import { colors } from "../../../colors";
 
 export type ConsentItem = {
   id: string;
-  label: string; // 예) "서비스 이용약관 동의"
-  required: boolean; // (필수) 빨간 표시
+  label: string;
+  required: boolean;
   checked: boolean;
 };
 
 type ConsentListProps = {
   items: ConsentItem[];
   onChange: any;
-
-  showTopDivider?: boolean;
 };
 
-const ConsentList = ({ items, onChange, showTopDivider }: ConsentListProps) => {
+const ConsentList = ({ items, onChange }: ConsentListProps) => {
   const toggleCheckbox = (id: string) => {
     onChange((prev: any) =>
       prev.map((it: any) =>
@@ -27,8 +25,6 @@ const ConsentList = ({ items, onChange, showTopDivider }: ConsentListProps) => {
 
   return (
     <Wrap>
-      {showTopDivider && <TopDivider />}
-
       {items.map((it) => (
         <Row key={it.id}>
           <Left onClick={() => toggleCheckbox(it.id)}>
@@ -53,15 +49,8 @@ export default ConsentList;
 
 const Wrap = styled.div`
   width: 100%;
-  padding: 0 24px;
   color: ${colors.app_white};
-`;
-
-const TopDivider = styled.div`
-  width: 100%;
-  height: 2px;
-  background: #4a4f55;
-  margin: 0 0 24px;
+  margin-top: 60px;
 `;
 
 const Row = styled.div`
@@ -70,6 +59,7 @@ const Row = styled.div`
   justify-content: space-between;
   gap: 24px;
   padding: 24px 0;
+  height: 90px;
 `;
 
 const Left = styled.button`

@@ -121,7 +121,7 @@ const SignUpPage = () => {
           />
         </Form>
 
-        <ConsentList items={terms} onChange={setTerms} showTopDivider />
+        <ConsentList items={terms} onChange={setTerms} />
 
         <BottomButtons />
       </Content>
@@ -135,14 +135,18 @@ const Container = styled.div`
   background-color: ${colors.app_black};
   color: ${colors.app_white};
   height: 1920px;
+  position: relative;
 `;
 
 const Content = styled.div`
-  padding-top: 300px;
+  padding-top: 200px;
   margin: 0 160px;
+  position: absolute;
   display: flex;
   flex-direction: column;
   align-items: center;
+  top: 50%;
+  transform: translateY(-50%);
 `;
 
 const Form = styled.div`
