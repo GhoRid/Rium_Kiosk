@@ -1,7 +1,5 @@
 import styled from "styled-components";
 import { colors } from "../../../colors";
-import { ReactComponent as PhoneIcon } from "../../../assets/svgs/phone.svg";
-import { ReactComponent as LockIcon } from "../../../assets/svgs/password.svg";
 
 type Props = {
   activeField: "phone" | "password";
@@ -13,7 +11,7 @@ type Props = {
   setValue: (value: string) => void;
 };
 
-const InputFileds = ({
+const InputFiled = ({
   activeField,
   setActiveField,
   name,
@@ -42,7 +40,7 @@ const InputFileds = ({
   );
 };
 
-export default InputFileds;
+export default InputFiled;
 
 const Container = styled.div`
   display: flex;

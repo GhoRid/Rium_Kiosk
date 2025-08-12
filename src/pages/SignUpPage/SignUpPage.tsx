@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
 import InputFileds from "./components/InputFileds";
 import RadioGroup from "./components/RadioGroup";
@@ -8,7 +8,7 @@ import ConsentList from "./components/ConsentList";
 import { formatDateHyphen } from "../../utils/formatDate";
 import JoinPathAccordion from "./components/JoinPathAccordion";
 import GoToHomeButton from "../../components/GoToHomeButton";
-import BottomButtons from "./components/BottomButtons";
+import BottomButtons from "../../components/BottomButtons";
 
 const digitsOnly = (s: string) => s.replace(/\D/g, "");
 const fmtBirth = (v: string) => digitsOnly(v).slice(0, 8);
@@ -262,7 +262,7 @@ const SignUpPage = () => {
           error={err("terms")}
         />
 
-        <BottomButtons submit={handleSubmit} />
+        <BottomButtons submitName={"회원가입"} submit={handleSubmit} />
       </Content>
     </Container>
   );

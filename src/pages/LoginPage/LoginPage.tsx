@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { colors } from "../../colors";
 import GoToHomeButton from "../../components/GoToHomeButton";
 import NumberKeypad from "./components/NumberKeypad";
-import InputFileds from "./components/InputFileds";
+import InputFiled from "./components/InputFiled";
 import { useState, useCallback, useMemo } from "react";
 import AuthLinks from "./components/AuthLinks";
 import { formatPhoneNumber } from "../../utils/formatPhoneNumber";
@@ -34,7 +34,7 @@ const LoginPage = () => {
     [activeField]
   );
 
-  const InputFiledsList = useMemo(
+  const InputFiledList = useMemo(
     () => [
       {
         name: "phone" as FieldName,
@@ -61,8 +61,8 @@ const LoginPage = () => {
       <GoToHomeButton />
 
       <Content>
-        {InputFiledsList.map((field) => (
-          <InputFileds
+        {InputFiledList.map((field) => (
+          <InputFiled
             key={field.name}
             activeField={activeField}
             setActiveField={setActiveField}
