@@ -3,6 +3,7 @@ import HomePage from "./pages/HomePage/HomePage";
 import LoginPage from "./pages/LoginPage/LoginPage";
 import MainLayout from "./components/MainLayout";
 import SignUpPage from "./pages/SignUpPage/SignUpPage";
+import ResetPasswordPage from "./pages/ResetPasswordPage/ResetPasswordPage";
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignUpPage />} />
+          <Route path="/reset-password" element={<ResetPasswordPage />} />
         </Route>
       </Routes>
     </HashRouter>

@@ -6,55 +6,38 @@ import { ReactComponent as LockIcon } from "../../../assets/svgs/password.svg";
 type Props = {
   activeField: "phone" | "password";
   setActiveField: (f: "phone" | "password") => void;
-  phone: string;
-  setPhone: (v: string) => void;
-  password: string;
-  setPassword: (v: string) => void;
+  name: string;
+  icon: React.ReactNode;
+  placeholder: string;
+  value: string;
+  setValue: (value: string) => void;
 };
 
 const InputFileds = ({
   activeField,
   setActiveField,
-  phone,
-  setPhone,
-  password,
-  setPassword,
+  name,
+  icon,
+  placeholder,
+  value,
+  setValue,
 }: Props) => {
-  const InputFiledsList = [
-    {
-      name: "phone",
-      icon: <PhoneIcon />,
-      placeholder: "휴대폰 번호",
-      value: phone,
-      setValue: setPhone,
-    },
-    {
-      name: "password",
-      icon: <LockIcon />,
-      placeholder: "비밀번호",
-      value: password,
-      setValue: setPassword,
-    },
-  ];
-
   return (
     <Container>
-      {InputFiledsList.map((field) => (
-        <Field
-          key={field.name}
-          onClick={() => setActiveField(field.name as "phone" | "password")}
-          data-active={activeField === field.name}
-        >
-          {field.icon}
-          <PlainInput
-            value={field.value}
-            onChange={(e) => field.setValue(e.target.value)}
-            placeholder={field.placeholder}
-            type={field.name === "password" ? "password" : "text"}
-            inputMode="numeric"
-          />
-        </Field>
-      ))}
+      <Field
+        key={name}
+        onClick={() => setActiveField(name as "phone" | "password")}
+        data-active={activeField === name}
+      >
+        {icon}
+        <PlainInput
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+          placeholder={placeholder}
+          type={name === "password" ? "password" : "text"}
+          inputMode="numeric"
+        />
+      </Field>
     </Container>
   );
 };
