@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import styled from "styled-components";
 import InputFileds from "./components/InputFileds";
 import RadioGroup from "./components/RadioGroup";
@@ -13,20 +13,44 @@ import BottomButtons from "./components/BottomButtons";
 const digitsOnly = (s: string) => s.replace(/\D/g, "");
 const fmtBirth = (v: string) => digitsOnly(v).slice(0, 8);
 
+const isValidYmd = (yyyymmdd: string) => {
+  if (!/^\d{8}$/.test(yyyymmdd)) return false;
+  const y = +yyyymmdd.slice(0, 4);
+  const m = +yyyymmdd.slice(4, 6);
+  const d = +yyyymmdd.slice(6, 8);
+  const dt = new Date(y, m - 1, d);
+  return (
+    dt.getFullYear() === y &&
+    dt.getMonth() === m - 1 &&
+    dt.getDate() === d &&
+    y >= 1900 &&
+    y <= 2100
+  );
+};
+
 type TermItem = {
   id: string;
   label: string;
   required: boolean;
   checked: boolean;
-  // disabled?: boolean;
 };
+
+type Errors = Partial<{
+  name: string;
+  phone: string;
+  cert: string;
+  pin: string;
+  birth: string;
+  route: string;
+  terms: string;
+}>;
 
 const SignUpPage = () => {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [cert, setCert] = useState("");
-  const [pin, setPin] = useState(""); // 4자리
-  const [birth, setBirth] = useState(""); // YYYYMMDD
+  const [pin, setPin] = useState("");
+  const [birth, setBirth] = useState("");
   const [gender, setGender] = useState("M");
   const [route, setRoute] = useState("가입 경로");
 
@@ -36,66 +60,174 @@ const SignUpPage = () => {
       label: "서비스 이용약관 동의",
       required: true,
       checked: false,
-      // disabled: false,
     },
     {
       id: "privacy",
       label: "개인정보 활용 동의",
       required: true,
       checked: false,
-      // disabled: false,
     },
   ]);
+
+  const [submitted, setSubmitted] = useState(false);
+  const [errors, setErrors] = useState<Errors>({});
+
+  const validateName = (v: string) =>
+    v.trim() ? undefined : "이름을 입력해주세요.";
+  const validatePhone = (v: string) => {
+    const d = digitsOnly(v);
+    return d.length === 10 || d.length === 11
+      ? undefined
+      : "휴대폰 번호를 입력해주세요.";
+  };
+  const validateCert = (v: string) =>
+    digitsOnly(v).length === 6 ? undefined : "인증번호가 올바르지 않습니다.";
+  const validatePin = (v: string) =>
+    digitsOnly(v).length === 4 ? undefined : "비밀번호를 입력해주세요.";
+  const validateBirth = (v: string) =>
+    isValidYmd(v) ? undefined : "생년월일을 입력해주세요.";
+  const validateRoute = (v: string) =>
+    v !== "가입 경로" ? undefined : "가입 경로를 선택해주세요.";
+  const validateTerms = (arr: TermItem[]) =>
+    arr.every((t) => !t.required || t.checked)
+      ? undefined
+      : "필수 약관에 동의해주세요.";
+
+  const setFieldError = (key: keyof Errors, msg?: string) => {
+    setErrors((prev) => {
+      if (msg) return { ...prev, [key]: msg };
+      const { [key]: _, ...rest } = prev;
+      return rest;
+    });
+  };
+
+  const validateAll = (): Errors => {
+    const e: Errors = {};
+    const n = validateName(name);
+    if (n) e.name = n;
+    const p = validatePhone(phone);
+    if (p) e.phone = p;
+    const c = validateCert(cert);
+    if (c) e.cert = c;
+    const pi = validatePin(pin);
+    if (pi) e.pin = pi;
+    const b = validateBirth(birth);
+    if (b) e.birth = b;
+    const r = validateRoute(route);
+    if (r) e.route = r;
+    const t = validateTerms(terms);
+    if (t) e.terms = t;
+    return e;
+  };
+
+  const handleSubmit = () => {
+    setSubmitted(true);
+    const v = validateAll();
+    setErrors(v);
+    if (Object.keys(v).length === 0) {
+      console.log("PASS");
+    } else {
+      console.log("FAILED", v);
+    }
+  };
+
+  const onChangeName = (v: string) => {
+    setName(v);
+    if (submitted) setFieldError("name", validateName(v));
+  };
+  const onChangePhone = (v: string) => {
+    setPhone(v);
+    if (submitted) setFieldError("phone", validatePhone(v));
+  };
+  const onChangeCert = (v: string) => {
+    const nv = digitsOnly(v).slice(0, 6);
+    setCert(nv);
+    if (submitted) setFieldError("cert", validateCert(nv));
+  };
+  const onChangePin = (v: string) => {
+    const nv = digitsOnly(v).slice(0, 4);
+    setPin(nv);
+    if (submitted) setFieldError("pin", validatePin(nv));
+  };
+  const onChangeBirth = (v: string) => {
+    setBirth(v);
+    if (submitted) setFieldError("birth", validateBirth(v));
+  };
+
+  const onSelectRoute = (v: string) => {
+    setRoute(v);
+    if (submitted) setFieldError("route", validateRoute(v));
+  };
+
+  const onChangeTerms: React.Dispatch<React.SetStateAction<TermItem[]>> = (
+    updater
+  ) => {
+    setTerms((prev) => {
+      const next =
+        typeof updater === "function" ? (updater as any)(prev) : updater;
+      if (submitted) setFieldError("terms", validateTerms(next));
+      return next;
+    });
+  };
+
+  const err = <K extends keyof Errors>(k: K) =>
+    submitted ? errors[k] : undefined;
 
   return (
     <Container>
       <GoToHomeButton />
       <Content>
         <Form>
-          <InputFileds label="이름" value={name} onChange={setName} />
+          <InputFileds
+            label="이름"
+            value={name}
+            onChange={onChangeName}
+            error={err("name")}
+          />
 
           <InputFileds
             label="휴대폰 번호"
             value={formatPhoneNumber(phone)}
-            onChange={setPhone}
+            onChange={onChangePhone}
             inputMode="numeric"
             normalizer={(s) => digitsOnly(s).slice(0, 11)}
-            action={{
-              label: "인증 요청",
-              onClick: () => console.log("send code"),
-            }}
             rightSlot={
-              <RightButton>
+              <RightButton
+                type="button"
+                onClick={() => console.log("send code")}
+              >
                 <RightButtonText>인증 요청</RightButtonText>
               </RightButton>
             }
+            error={err("phone")}
           />
 
           <InputFileds
             label="인증번호"
             value={cert}
-            onChange={(v) => setCert(digitsOnly(v).slice(0, 6))}
+            onChange={onChangeCert}
             inputMode="numeric"
-            action={{ label: "인증하기", onClick: () => console.log("verify") }}
             rightSlot={
-              <RightButton>
+              <RightButton type="button" onClick={() => console.log("verify")}>
                 <RightButtonText>인증하기</RightButtonText>
               </RightButton>
             }
+            error={err("cert")}
           />
 
           <InputFileds
             label="비밀번호 (4자리)"
             value={pin}
-            onChange={(v) => setPin(digitsOnly(v).slice(0, 4))}
+            onChange={onChangePin}
             type="password"
             inputMode="numeric"
+            error={err("pin")}
           />
 
           <InputFileds
             label="생년월일(YYYYMMDD)"
             value={formatDateHyphen(birth)}
-            onChange={setBirth}
+            onChange={onChangeBirth}
             inputMode="numeric"
             normalizer={fmtBirth}
             rightSlot={
@@ -108,22 +240,29 @@ const SignUpPage = () => {
                 ]}
               />
             }
+            error={err("birth")}
           />
+
           <JoinPathAccordion
             route={route}
-            setRoute={setRoute}
+            setRoute={onSelectRoute}
             paths={[
               "포털 사이트 검색",
               "네이버 플레이스",
               "인스타그램",
               "지인 추천",
             ]}
+            error={err("route")}
           />
         </Form>
 
-        <ConsentList items={terms} onChange={setTerms} />
+        <ConsentList
+          items={terms}
+          onChange={onChangeTerms}
+          error={err("terms")}
+        />
 
-        <BottomButtons />
+        <BottomButtons submit={handleSubmit} />
       </Content>
     </Container>
   );

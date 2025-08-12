@@ -7,12 +7,14 @@ type JoinPathAccordionProps = {
   route?: string;
   setRoute: (v: string) => void;
   paths: string[];
+  error?: string;
 };
 
 const JoinPathAccordion = ({
   route = "가입 경로",
   setRoute,
   paths,
+  error,
 }: JoinPathAccordionProps) => {
   const [open, setOpen] = useState(false);
 
@@ -22,35 +24,44 @@ const JoinPathAccordion = ({
   };
 
   return (
-    <Card>
-      <Header
-        $selected={route !== "가입 경로"}
-        onClick={() => setOpen((v) => !v)}
-      >
-        <Title>{route}</Title>
-        <Caret $open={open}>
-          <DirectionDown />
-        </Caret>
-      </Header>
+    <Wrapper>
+      <Card>
+        <Header
+          $selected={route !== "가입 경로"}
+          onClick={() => setOpen((v) => !v)}
+        >
+          <Title>{route}</Title>
+          <Caret $open={open}>
+            <DirectionDown />
+          </Caret>
+        </Header>
 
-      {open && (
-        <Body>
-          {paths.map((text, i) => (
-            <PathRow key={i} onClick={() => handlePathClick(text)}>
-              <PathText>{text}</PathText>
-            </PathRow>
-          ))}
-        </Body>
+        {open && (
+          <Body>
+            {paths.map((text, i) => (
+              <PathRow key={i} onClick={() => handlePathClick(text)}>
+                <PathText>{text}</PathText>
+              </PathRow>
+            ))}
+          </Body>
+        )}
+      </Card>
+      {!!error && (
+        <ErrorMsgBox>
+          <ErrorMsg>{error}</ErrorMsg>
+        </ErrorMsgBox>
       )}
-    </Card>
+    </Wrapper>
   );
 };
 
 export default JoinPathAccordion;
 
-const Card = styled.div`
+const Wrapper = styled.div`
   position: relative;
 `;
+
+const Card = styled.div``;
 
 const Header = styled.button<{ $selected: boolean }>`
   width: 100%;
@@ -114,4 +125,14 @@ const PathRow = styled.div`
 const PathText = styled.span`
   font-size: 30px;
   color: ${colors.app_black};
+`;
+
+const ErrorMsgBox = styled.div`
+  position: absolute;
+  margin-top: 5px;
+`;
+
+const ErrorMsg = styled.p`
+  color: #ff0000;
+  font-size: 24px;
 `;

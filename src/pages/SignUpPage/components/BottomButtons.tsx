@@ -1,14 +1,21 @@
 import styled from "styled-components";
 import { colors } from "../../../colors";
+import { useNavigate } from "react-router";
 
-const BottomButtons = () => {
+type BottomButtonsProps = {
+  submit?: () => void;
+};
+
+const BottomButtons = ({ submit }: BottomButtonsProps) => {
+  const navigate = useNavigate();
+
   return (
     <Container>
-      <BackButton>
+      <BackButton onClick={() => navigate(-1)}>
         <Text>이전</Text>
       </BackButton>
 
-      <SingUpButton>
+      <SingUpButton onClick={submit}>
         <Text>회원가입</Text>
       </SingUpButton>
     </Container>

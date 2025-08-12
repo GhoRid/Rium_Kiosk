@@ -12,9 +12,10 @@ export type ConsentItem = {
 type ConsentListProps = {
   items: ConsentItem[];
   onChange: any;
+  error?: string;
 };
 
-const ConsentList = ({ items, onChange }: ConsentListProps) => {
+const ConsentList = ({ items, onChange, error }: ConsentListProps) => {
   const toggleCheckbox = (id: string) => {
     onChange((prev: any) =>
       prev.map((it: any) =>
@@ -41,6 +42,11 @@ const ConsentList = ({ items, onChange }: ConsentListProps) => {
           </ViewBtn>
         </Row>
       ))}
+      {!!error && (
+        <ErrorMsgBox>
+          <ErrorMsg>{error}</ErrorMsg>
+        </ErrorMsgBox>
+      )}
     </Wrap>
   );
 };
@@ -117,4 +123,14 @@ const ViewBtnText = styled.span`
   &:hover {
     color: #d7dbe0;
   }
+`;
+
+const ErrorMsgBox = styled.div`
+  position: absolute;
+  margin-top: 5px;
+`;
+
+const ErrorMsg = styled.p`
+  color: #ff0000;
+  font-size: 24px;
 `;

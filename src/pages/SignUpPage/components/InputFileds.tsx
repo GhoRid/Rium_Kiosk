@@ -9,10 +9,9 @@ export type InputFiledsProps = {
   placeholder?: string;
   type?: "text" | "password";
   inputMode?: React.InputHTMLAttributes<HTMLInputElement>["inputMode"]; // ✅ 수정
-  maxLength?: number;
   normalizer?: (raw: string) => string;
-  action?: { label: string; onClick: () => void; disabled?: boolean };
   rightSlot?: ReactNode;
+  error?: string;
 };
 
 const InputFileds = ({
@@ -21,33 +20,35 @@ const InputFileds = ({
   onChange,
   type = "text",
   inputMode,
-  maxLength,
   normalizer,
-  action,
   rightSlot,
+  error,
 }: InputFiledsProps) => {
-  const [focused, setFocused] = useState(false);
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const raw = e.target.value;
     const next = normalizer ? normalizer(raw) : raw;
-    onChange(maxLength ? next.slice(0, maxLength) : next);
+    onChange(next);
   };
 
   return (
     <Wrapper>
-      <Field $hasRightSlot={!!rightSlot} $hasValue={!!value}>
-        <PlainInput
-          value={value}
-          onChange={handleChange}
-          placeholder={label}
-          type={type}
-          inputMode={inputMode}
-          onFocus={() => setFocused(true)}
-          onBlur={() => setFocused(false)}
-        />
-      </Field>
-      {rightSlot && <>{rightSlot}</>}
+      <FiledBox>
+        <Field $hasRightSlot={!!rightSlot} $hasValue={!!value}>
+          <PlainInput
+            value={value}
+            onChange={handleChange}
+            placeholder={label}
+            type={type}
+            inputMode={inputMode}
+          />
+        </Field>
+        {rightSlot && <>{rightSlot}</>}
+      </FiledBox>
+      {!!error && (
+        <ErrorMsgBox>
+          <ErrorMsg>{error}</ErrorMsg>
+        </ErrorMsgBox>
+      )}
     </Wrapper>
   );
 };
@@ -55,6 +56,10 @@ const InputFileds = ({
 export default InputFileds;
 
 const Wrapper = styled.div`
+  position: relative;
+`;
+
+const FiledBox = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -85,4 +90,14 @@ const PlainInput = styled.input`
     color: ${colors.app_white};
     opacity: 1;
   }
+`;
+
+const ErrorMsgBox = styled.div`
+  position: absolute;
+  margin-top: 5px;
+`;
+
+const ErrorMsg = styled.p`
+  color: #ff0000;
+  font-size: 24px;
 `;
