@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 import { digitsOnly, formatPhoneNumber } from "../../utils/formatPhoneNumber";
 import InputFiled from "./components/InputFiled";
 import BottomButtons from "../../components/BottomButtons";
+import { isValidYmd } from "../../utils/checkValide";
 
 const ResetPasswordPage = () => {
   type FieldName = "name" | "phone" | "birth";
@@ -13,6 +14,17 @@ const ResetPasswordPage = () => {
   const [name, setName] = useState(""); // 4자리
   const [phone, setPhone] = useState(""); // 숫자만 저장
   const [birth, setBirth] = useState(""); // 생년월일
+
+  const validateName = (v: string) =>
+    v.trim() ? undefined : "이름을 입력해주세요.";
+  const validatePhone = (v: string) => {
+    const d = digitsOnly(v);
+    return d.length === 10 || d.length === 11
+      ? undefined
+      : "휴대폰 번호를 입력해주세요.";
+  };
+  const validateBirth = (v: string) =>
+    isValidYmd(v) ? undefined : "생년월일을 입력해주세요.";
 
   const InputFiledList = useMemo(
     () => [
