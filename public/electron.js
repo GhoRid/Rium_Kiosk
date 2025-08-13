@@ -15,6 +15,7 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1080,
     height: 1920,
+    // useContentSize: true,
     resizable: false, // ✅ 크기 조절 불가
     fullscreenable: false, // ✅ 최대화 불가
     maximizable: false, // ✅ 최대화 버튼 비활성화
