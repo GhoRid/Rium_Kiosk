@@ -1,18 +1,31 @@
 import styled from "styled-components";
 import { colors } from "../../../colors";
 
-const PaymentInfo = () => {
+type PaymentInfoProps = {
+  passType: string;
+  label: string;
+  price: number;
+};
+
+const PaymentInfo = ({
+  passType,
+  label,
+
+  price,
+}: PaymentInfoProps) => {
   return (
     <Wrapper>
       <InfoRow>
         <Label>상품명</Label>
         <Devider>|</Devider>
-        <Value>1회 이용권 10시간</Value>
+        <Value>
+          {passType} {label}
+        </Value>
       </InfoRow>
       <InfoRow>
         <Label>결제 금액</Label>
         <Devider>|</Devider>
-        <Value>₩ 12,000</Value>
+        <Value>₩ {price.toLocaleString()}</Value>
       </InfoRow>
     </Wrapper>
   );

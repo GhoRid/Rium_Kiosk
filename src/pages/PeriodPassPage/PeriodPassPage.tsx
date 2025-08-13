@@ -6,23 +6,13 @@ import { useEffect, useState } from "react";
 import ErrorMsg from "../../components/ErrorMsg";
 import OptionCard from "./components/OptionCard";
 import BottomButtons from "../../components/BottomButtons";
+import { useNavigate } from "react-router";
 
 const PeriodPassPage = () => {
+  const navigate = useNavigate();
+
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-
-  const handleNext = () => {
-    if (selectedOption) {
-      // Navigate to the next page with the selected option
-      window.location.href = `/payment?option=${selectedOption}`;
-    } else {
-      setError("이용권을 선택해주세요.");
-    }
-  };
-
-  useEffect(() => {
-    setError(null);
-  }, [selectedOption]);
 
   const SeatList = [
     {
@@ -42,6 +32,35 @@ const PeriodPassPage = () => {
       ],
     },
   ];
+
+  const handleNext = () => {
+    if (!selectedOption) {
+      setError("이용권을 선택해주세요.");
+      return;
+    }
+
+    let price: number | null = null;
+
+    for (const seat of SeatList) {
+      const found = seat.options.find((o) => o.label === selectedOption);
+      if (found) {
+        price = found.price;
+        break;
+      }
+    }
+
+    navigate("/payment", {
+      state: {
+        passType: "기간권",
+        label: selectedOption,
+        price,
+      },
+    });
+  };
+
+  useEffect(() => {
+    if (selectedOption) setError(null);
+  }, [selectedOption]);
 
   return (
     <Container>
@@ -64,7 +83,7 @@ const PeriodPassPage = () => {
                     width={240}
                     height={200}
                     selectedOption={selectedOption}
-                    selectOption={setSelectedOption}
+                    selectOption={setSelectedOption} // 그대로 사용
                   />
                 ))}
               </CardList>
@@ -72,8 +91,8 @@ const PeriodPassPage = () => {
           ))}
         </List>
       </Content>
-      {!!error && <ErrorMsg>{error}</ErrorMsg>}
 
+      {!!error && <ErrorMsg>{error}</ErrorMsg>}
       <BottomButtons submitName="다음" submit={handleNext} />
     </Container>
   );

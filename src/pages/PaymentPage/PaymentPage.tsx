@@ -9,8 +9,12 @@ import PaymentOptionSelector from "./components/PaymentOptionSelector";
 import PrintSetting from "./components/PrintSetting";
 import ErrorMsg from "../../components/ErrorMsg";
 import BottomButtons from "../../components/BottomButtons";
+import { useLocation } from "react-router";
 
 const PaymentPage = () => {
+  const location = useLocation();
+  const { passType, label, price } = location.state || {};
+
   const [paymentMethod, setPaymentMethod] = useState<string | null>(null);
   const [installment, setInstallment] = useState<string>("일시불");
   const [selectedInstallmentOption, setSelectedInstallmentOption] = useState<
@@ -36,7 +40,7 @@ const PaymentPage = () => {
       <GoToHomeButton />
       <Header title="결제하기" />
       <Content>
-        <PaymentInfo />
+        <PaymentInfo passType={passType} label={label} price={price} />
 
         <PaymentMethod
           paymentMethod={paymentMethod}

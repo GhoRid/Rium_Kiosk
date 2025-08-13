@@ -6,15 +6,31 @@ import OptionCard from "./components/OptionCard";
 import { useEffect, useState } from "react";
 import BottomButtons from "../../components/BottomButtons";
 import ErrorMsg from "../../components/ErrorMsg";
+import { useNavigate } from "react-router";
 
 const SinglePassPage = () => {
+  const navigate = useNavigate();
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const handleNext = () => {
     if (selectedOption) {
-      // Navigate to the next page with the selected option
-      window.location.href = `/payment?option=${selectedOption}`;
+      const selectedPass = passList.find(
+        (pass) => pass.label === selectedOption
+      );
+
+      if (!selectedPass) {
+        setError("선택한 이용권 정보를 찾을 수 없습니다.");
+        return;
+      }
+
+      navigate("/payment", {
+        state: {
+          passType: "1회 이용권",
+          label: selectedPass.label,
+          price: selectedPass.price,
+        },
+      });
     } else {
       setError("이용권을 선택해주세요.");
     }

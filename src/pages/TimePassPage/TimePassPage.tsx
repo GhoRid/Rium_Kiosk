@@ -6,8 +6,10 @@ import OptionCard from "./components/OptionCard";
 import { useEffect, useState } from "react";
 import ErrorMsg from "../../components/ErrorMsg";
 import BottomButtons from "../../components/BottomButtons";
+import { useNavigate } from "react-router";
 
 const TimePassPage = () => {
+  const navigate = useNavigate();
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -20,18 +22,28 @@ const TimePassPage = () => {
   ];
 
   const handleNext = () => {
-    if (selectedOption) {
-      // Navigate to the next page with the selected option
-      window.location.href = `/payment?option=${selectedOption}`;
-    } else {
+    if (!selectedOption) {
       setError("이용권을 선택해주세요.");
+      return;
     }
+
+    const selected = seatList.find((s) => s.label === selectedOption);
+    if (!selected) {
+      setError("선택한 이용권 정보를 찾을 수 없습니다.");
+      return;
+    }
+
+    navigate("/payment", {
+      state: {
+        passType: "시간권",
+        label: selected.label,
+        price: selected.price,
+      },
+    });
   };
 
   useEffect(() => {
-    if (selectedOption) {
-      setError(null);
-    }
+    if (selectedOption) setError(null);
   }, [selectedOption]);
 
   return (
@@ -57,8 +69,8 @@ const TimePassPage = () => {
           ))}
         </CardList>
       </Content>
-      {!!error && <ErrorMsg>{error}</ErrorMsg>}
 
+      {!!error && <ErrorMsg>{error}</ErrorMsg>}
       <BottomButtons submitName="다음" submit={handleNext} />
     </Container>
   );
