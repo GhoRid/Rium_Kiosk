@@ -30,7 +30,11 @@ const HomeMenu = () => {
   ];
 
   const ActionList = [
-    { name: "퇴실하기", icon: <Exit />, action: () => console.log("퇴실하기") },
+    {
+      name: "퇴실하기",
+      icon: <Exit />,
+      action: () => navigate("/payment"),
+    },
     {
       name: "입실하기",
       icon: <Enter />,
@@ -90,10 +94,6 @@ const BaseButton = styled.button`
 
   padding: 30px;
   text-align: left;
-
-  &:hover {
-    filter: brightness(1.05);
-  }
 `;
 
 const MenuButton = styled(BaseButton)`
@@ -105,7 +105,6 @@ const MenuButton = styled(BaseButton)`
       rgba(255, 255, 255, 0) 100%
     ),
     #2b2b2b;
-  box-shadow: 0 20px 30px rgba(0, 0, 0, 0.2);
 `;
 
 const Label = styled.span`
@@ -130,7 +129,6 @@ const ActionButton = styled(BaseButton)`
   height: 350px;
   background: linear-gradient(180deg, #1c2e4a 0%, #112037 100%),
     ${colors.app_main_color};
-  box-shadow: 0 20px 30px rgba(0, 0, 0, 0.2);
 `;
 
 const ReprintBox = styled.button`
@@ -153,13 +151,4 @@ const ReprintBox = styled.button`
       rgba(36, 38, 41, 1) 100%
     ),
     #2b2b2b;
-
-  &:hover {
-    filter: brightness(1.05);
-  }
-  &:active {
-    transform: translateY(1px);
-  }
-
-  box-shadow: 0 20px 30px rgba(0, 0, 0, 0.2);
 `;
