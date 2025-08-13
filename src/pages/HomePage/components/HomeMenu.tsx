@@ -20,12 +20,12 @@ const HomeMenu = () => {
     {
       name: "이용권\n확인/연장",
       icon: <CheckExtendPass />,
-      action: () => navigate("/select-seat"),
+      action: () => navigate("/checkextendpass"),
     },
     {
       name: "자리 이동",
       icon: <ChangeSeat />,
-      action: () => navigate("/login"),
+      action: () => navigate("/changeseat"),
     },
   ];
 
@@ -33,7 +33,7 @@ const HomeMenu = () => {
     {
       name: "퇴실하기",
       icon: <Exit />,
-      action: () => navigate("/payment"),
+      action: () => navigate("/select-seat"),
     },
     {
       name: "입실하기",

@@ -10,6 +10,8 @@ import PeriodPassPage from "./pages/PeriodPassPage/PeriodPassPage";
 import TimePassPage from "./pages/TimePassPage/TimePassPage";
 import SelectSeatPage from "./pages/SelectSeatPage/SelectSeatPage";
 import PaymentPage from "./pages/PaymentPage/PaymentPage";
+import CheckExtendPassPage from "./pages/CheckExtendPassPage/CheckExtendPassPage";
+import ChangeSeatPage from "./pages/ChangeSeatPage/ChangeSeatPage";
 
 function App() {
   return (
@@ -26,6 +28,8 @@ function App() {
           <Route path="/timepass" element={<TimePassPage />} />
           <Route path="/select-seat" element={<SelectSeatPage />} />
           <Route path="/payment" element={<PaymentPage />} />
+          <Route path="/checkextendpass" element={<CheckExtendPassPage />} />
+          <Route path="/changeseat" element={<ChangeSeatPage />} />
         </Route>
       </Routes>
     </HashRouter>
