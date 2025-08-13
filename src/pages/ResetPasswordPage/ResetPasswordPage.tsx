@@ -57,6 +57,7 @@ const ResetPasswordPage = () => {
     setErrors(v);
     if (Object.keys(v).length === 0) {
       console.log("PASS");
+      // api 로직 추가
     } else {
       console.log("FAILED", v);
     }
@@ -152,7 +153,10 @@ const Content = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: 700px;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: calc(100% - 320px);
 `;
 
 const ErrorMsgBox = styled.div`

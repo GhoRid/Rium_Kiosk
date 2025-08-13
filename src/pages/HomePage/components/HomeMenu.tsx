@@ -15,7 +15,7 @@ const HomeMenu = () => {
       name: "이용권 구매",
       icon: <PurchasePass />,
       // action: () => console.log("구매"),
-      action: () => navigate("/login"),
+      action: () => navigate("/select-pass"),
     },
     {
       name: "이용권\n확인/연장",
@@ -25,7 +25,7 @@ const HomeMenu = () => {
     {
       name: "자리 이동",
       icon: <ChangeSeat />,
-      action: () => console.log("자리 이동"),
+      action: () => navigate("/login"),
     },
   ];
 

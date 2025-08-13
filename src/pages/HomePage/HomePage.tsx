@@ -3,7 +3,7 @@ import HomeMenu from "./components/HomeMenu";
 import { colors } from "../../colors";
 import SeatInfo from "./components/SeatInfo";
 import DateInfo from "./components/DateInfo";
-import Header from "./components/Header";
+import HomeHeader from "./components/HomeHeader";
 import FooterCarousel from "./components/FooterCarousel";
 
 const HomePage = () => {
@@ -12,7 +12,7 @@ const HomePage = () => {
       <DateInfo />
       <ContentContainer>
         {/* 지점명/전화번호/로고 */}
-        <Header />
+        <HomeHeader />
 
         {/* 좌석 정보 */}
         <SeatInfo />

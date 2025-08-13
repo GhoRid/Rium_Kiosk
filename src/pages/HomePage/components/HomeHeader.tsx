@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { colors } from "../../../colors";
 import { ReactComponent as Logo } from "../../../assets/svgs/Logo1.svg";
 
-const Header = () => {
+const HomeHeader = () => {
   return (
     <Container>
       <BranchInfo>
@@ -19,7 +19,7 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default HomeHeader;
 
 const Container = styled.div`
   display: flex;
