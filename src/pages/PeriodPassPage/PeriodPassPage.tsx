@@ -1,10 +1,12 @@
 import styled from "styled-components";
 import { colors } from "../../colors";
 import Header from "../../components/Header";
+import GoToHomeButton from "../../components/GoToHomeButton";
 
 const PeriodPassPage = () => {
   return (
     <Container>
+      <GoToHomeButton />
       <Header title="기간권" />
     </Container>
   );

@@ -10,7 +10,7 @@ const MenuGrid = () => {
 
   return (
     <Container>
-      <OneButton>
+      <OneButton onClick={() => navigate("/singlepass")}>
         <Label>1회 이용권</Label>
         <IconBox>
           <ClockIcon />
@@ -18,13 +18,13 @@ const MenuGrid = () => {
       </OneButton>
 
       <TwoButtonRow>
-        <TwoButton>
+        <TwoButton onClick={() => navigate("/periodpass")}>
           <Label>기간권</Label>
           <IconBox>
             <CalendarIcon />
           </IconBox>
         </TwoButton>
-        <TwoButton>
+        <TwoButton onClick={() => navigate("/timepass")}>
           <Label>시간권</Label>
           <IconBox>
             <TimerIcon />
