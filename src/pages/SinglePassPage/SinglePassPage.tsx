@@ -3,7 +3,7 @@ import { colors } from "../../colors";
 import Header from "../../components/Header";
 import GoToHomeButton from "../../components/GoToHomeButton";
 import OptionCard from "./components/OptionCard";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import BottomButtons from "../../components/BottomButtons";
 import ErrorMsg from "../../components/ErrorMsg";
 
@@ -19,6 +19,10 @@ const SinglePassPage = () => {
       setError("이용권을 선택해주세요.");
     }
   };
+
+  useEffect(() => {
+    setError(null);
+  }, [selectedOption]);
 
   const passList = [
     {
