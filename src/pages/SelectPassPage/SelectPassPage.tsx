@@ -33,9 +33,7 @@ const Container = styled.div`
 `;
 
 const Content = styled.div`
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
+  padding-top: 480px;
   margin: 0 160px;
   width: calc(100% - 320px);
 `;

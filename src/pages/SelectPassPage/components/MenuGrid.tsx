@@ -11,7 +11,7 @@ const MenuGrid = () => {
   return (
     <Container>
       <OneButton>
-        <Label>이용권 구매</Label>
+        <Label>1회 이용권</Label>
         <IconBox>
           <ClockIcon />
         </IconBox>
