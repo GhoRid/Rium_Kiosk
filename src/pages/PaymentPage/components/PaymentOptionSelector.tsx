@@ -3,7 +3,19 @@ import { colors } from "../../../colors";
 import { useState } from "react";
 import { ReactComponent as DirectionDown } from "../../../assets/svgs/directionDown.svg";
 
-const PaymentOptionSelector = () => {
+type PaymentOptionSelectorProps = {
+  installment: string;
+  setInstallment: (v: string) => void;
+  selectedInstallmentOption: number | null;
+  setSelectedInstallmentOption: (v: number | null) => void;
+};
+
+const PaymentOptionSelector = ({
+  installment,
+  setInstallment,
+  selectedInstallmentOption,
+  setSelectedInstallmentOption,
+}: PaymentOptionSelectorProps) => {
   const [open, setOpen] = useState(false);
 
   const installmentOptions = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
@@ -11,22 +23,45 @@ const PaymentOptionSelector = () => {
   return (
     <Wrapper>
       <OptionRow>
-        <Option>
-          <RadioButton />
+        <Option
+          onClick={() => {
+            setInstallment("일시불");
+            setOpen(false);
+          }}
+        >
+          <RadioButton>
+            <RadioButtonIsOn $isSelected={installment === "일시불"} />
+          </RadioButton>
           <Label>일시불</Label>
         </Option>
-        <Option>
-          <RadioButton />
+        <Option
+          onClick={() => {
+            setInstallment("할부");
+          }}
+        >
+          <RadioButton>
+            <RadioButtonIsOn $isSelected={installment === "할부"} />
+          </RadioButton>
           <Label>할부</Label>
           <InstallmentSelector>
             <InstallmentSelectorHeader onClick={() => setOpen((prev) => !prev)}>
-              <InstallmentText>선택</InstallmentText>
+              <InstallmentText>
+                {selectedInstallmentOption
+                  ? `${selectedInstallmentOption}개월`
+                  : "선택"}
+              </InstallmentText>
               <DirectionDown width={30} />
             </InstallmentSelectorHeader>
             {open && (
               <OptionBody>
                 {installmentOptions.map((option) => (
-                  <InstallmentOption key={option}>
+                  <InstallmentOption
+                    key={option}
+                    onClick={() => {
+                      setSelectedInstallmentOption(option);
+                      setOpen(false);
+                    }}
+                  >
                     <InstallmentOptionText>{option}개월</InstallmentOptionText>
                   </InstallmentOption>
                 ))}
@@ -62,6 +97,17 @@ const RadioButton = styled.button`
   aspect-ratio: 1;
   border: 1px solid ${colors.app_white};
   border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const RadioButtonIsOn = styled.div<{ $isSelected: boolean }>`
+  width: 25px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background-color: ${colors.app_white};
+  display: ${({ $isSelected }) => ($isSelected ? "block" : "none")};
 `;
 
 const Label = styled.span`
@@ -74,10 +120,11 @@ const InstallmentSelector = styled.div`
 `;
 
 const InstallmentSelectorHeader = styled.button`
+  width: 180px;
   padding: 10px;
   display: flex;
   align-items: center;
-  gap: 60px;
+  justify-content: space-between;
   border-bottom: 1px solid ${colors.app_white};
 `;
 
@@ -108,7 +155,7 @@ const OptionBody = styled.div`
   }
 `;
 
-const InstallmentOption = styled.div`
+const InstallmentOption = styled.button`
   padding: 10px 20px;
 `;
 

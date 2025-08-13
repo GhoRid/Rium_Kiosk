@@ -9,6 +9,10 @@ import PaymentOptionSelector from "./components/PaymentOptionSelector";
 
 const PaymentPage = () => {
   const [paymentMethod, setPaymentMethod] = useState<string | null>(null);
+  const [installment, setInstallment] = useState<string>("일시불");
+  const [selectedInstallmentOption, setSelectedInstallmentOption] = useState<
+    number | null
+  >(null);
 
   return (
     <Container>
@@ -22,7 +26,12 @@ const PaymentPage = () => {
           setPaymentMethod={setPaymentMethod}
         />
 
-        <PaymentOptionSelector />
+        <PaymentOptionSelector
+          installment={installment}
+          setInstallment={setInstallment}
+          selectedInstallmentOption={selectedInstallmentOption}
+          setSelectedInstallmentOption={setSelectedInstallmentOption}
+        />
       </Content>
     </Container>
   );
