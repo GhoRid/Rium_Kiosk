@@ -5,6 +5,9 @@ import MainLayout from "./components/MainLayout";
 import SignUpPage from "./pages/SignUpPage/SignUpPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage/ResetPasswordPage";
 import SelectPassPage from "./pages/SelectPassPage/SelectPassPage";
+import SinglePassPage from "./pages/SinglePassPage/SinglePassPage";
+import PeriodPassPage from "./pages/PeriodPassPage/PeriodPassPage";
+import TimePassPage from "./pages/TimePassPage/TimePassPage";
 
 function App() {
   return (
@@ -16,6 +19,9 @@ function App() {
           <Route path="/signup" element={<SignUpPage />} />
           <Route path="/reset-password" element={<ResetPasswordPage />} />
           <Route path="/select-pass" element={<SelectPassPage />} />
+          <Route path="/singlepass" element={<SinglePassPage />} />
+          <Route path="/periodpass" element={<PeriodPassPage />} />
+          <Route path="/timepass" element={<TimePassPage />} />
         </Route>
       </Routes>
     </HashRouter>
