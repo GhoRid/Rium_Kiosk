@@ -5,9 +5,20 @@ import GoToHomeButton from "../../components/GoToHomeButton";
 import OptionCard from "./components/OptionCard";
 import { useState } from "react";
 import BottomButtons from "../../components/BottomButtons";
+import ErrorMsg from "../../components/ErrorMsg";
 
 const SinglePassPage = () => {
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleNext = () => {
+    if (selectedOption) {
+      // Navigate to the next page with the selected option
+      window.location.href = `/payment?option=${selectedOption}`;
+    } else {
+      setError("이용권을 선택해주세요.");
+    }
+  };
 
   const passList = [
     {
@@ -66,7 +77,9 @@ const SinglePassPage = () => {
           ))}
         </CardList>
       </Content>
-      <BottomButtons submitName="다음" />
+      {!!error && <ErrorMsg>{error}</ErrorMsg>}
+
+      <BottomButtons submitName="다음" submit={handleNext} />
     </Container>
   );
 };
