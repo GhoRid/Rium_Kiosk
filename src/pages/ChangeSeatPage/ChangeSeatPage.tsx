@@ -3,18 +3,45 @@ import GoToHomeButton from "../../components/GoToHomeButton";
 import Header from "../../components/Header";
 import { colors } from "../../colors";
 import SeatMap from "../../components/seat/SeatMap";
+import { useState } from "react";
+import BottomButtons from "../../components/BottomButtons";
+import ErrorMsg from "../../components/ErrorMsg";
 
 const ChangeSeatPage = () => {
+  const [selectedSeat, setSelectedSeat] = useState<number | null>(null);
+
+  const [error, setError] = useState<string | null>(null);
+
+  const handleNext = () => {
+    if (selectedSeat) {
+      // Navigate to the next page with the selected option
+      // window.location.href = `/payment?option=${selectedOption}`;
+    } else {
+      setError("좌석을 선택해주세요.");
+    }
+  };
+
   return (
     <Container>
       <GoToHomeButton />
       <Header title="자리 이동" />
+
       <Content>
-        <SeatMap
-          selectedSeat={null} // 선택된 좌석이 없으므로 null
-          onSelect={() => {}} // 선택 핸들러는 필요 없음
-        />
+        <MessageBox>
+          <Message>좌석을 선택해주세요.</Message>
+        </MessageBox>
+
+        <SeatMap selectedSeat={selectedSeat} onSelect={setSelectedSeat} />
       </Content>
+
+      {!!error && <ErrorMsg>{error}</ErrorMsg>}
+
+      <BottomButtons
+        submit={() => {
+          handleNext();
+        }}
+        submitName="자리 이동"
+      />
     </Container>
   );
 };
@@ -29,7 +56,19 @@ const Container = styled.div`
 `;
 
 const Content = styled.div`
-  padding-top: 280px;
-  margin: 0 160px;
-  width: calc(100% - 320px);
+  padding-top: 250px;
+  margin: 0 100px;
+  width: calc(100% - 200px);
+`;
+
+const MessageBox = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 65px;
+`;
+
+const Message = styled.span`
+  font-size: 50px;
+  font-weight: 700;
 `;

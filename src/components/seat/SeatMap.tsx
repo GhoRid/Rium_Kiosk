@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { colors } from "../../colors";
 import SeatMapImage from "../../assets/images/seatMapBackground.png";
+import Legend from "./Legend";
 
 const seats: Seat[] = [
   { id: 1, label: 1, x: 90, y: 57.8, available: false },
@@ -72,6 +73,7 @@ const SeatMap: React.FC<SeatMapProps> = ({ selectedSeat, onSelect }) => {
   return (
     <>
       <Wrap>
+        <Legend />
         <Canvas $bg={SeatMapImage}>
           {seats.map((s) => (
             <SeatBtn
@@ -91,7 +93,6 @@ const SeatMap: React.FC<SeatMapProps> = ({ selectedSeat, onSelect }) => {
           ))}
         </Canvas>
       </Wrap>
-      <Legend />
     </>
   );
 };
@@ -130,24 +131,4 @@ const SeatLabel = styled.span<{ $selected: boolean }>`
   font-size: 18px;
   color: ${({ $selected }) =>
     $selected ? colors.app_black : colors.app_white};
-`;
-
-const Legend = styled.div`
-  display: flex;
-  gap: 16px;
-  align-items: center;
-  color: #cfd5dc;
-  font-size: 16px;
-`;
-
-const LegendItem = styled.div`
-  display: inline-flex;
-  gap: 8px;
-  align-items: center;
-`;
-
-const Swatch = styled.span`
-  width: 18px;
-  height: 18px;
-  border-radius: 4px;
 `;

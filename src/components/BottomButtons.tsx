@@ -4,21 +4,28 @@ import { useNavigate } from "react-router";
 
 type BottomButtonsProps = {
   submitName: string;
-  submit?: () => void;
+  submit: () => void;
+  isSingle?: boolean;
 };
 
-const BottomButtons = ({ submitName, submit }: BottomButtonsProps) => {
+const BottomButtons = ({
+  submitName,
+  submit,
+  isSingle,
+}: BottomButtonsProps) => {
   const navigate = useNavigate();
 
   return (
     <Container>
-      <BackButton onClick={() => navigate(-1)}>
-        <Text>이전</Text>
-      </BackButton>
+      {!isSingle ? null : (
+        <BackButton onClick={() => navigate(-1)}>
+          <Text>이전</Text>
+        </BackButton>
+      )}
 
-      <SingUpButton onClick={submit}>
+      <SubmitButton onClick={submit} $isSingle={isSingle ?? false}>
         <Text>{submitName}</Text>
-      </SingUpButton>
+      </SubmitButton>
     </Container>
   );
 };
@@ -49,8 +56,8 @@ const BackButton = styled.button`
   border: 1px solid ${colors.app_white};
 `;
 
-const SingUpButton = styled.button`
-  width: 460px;
+const SubmitButton = styled.button<{ $isSingle: boolean }>`
+  width: ${({ $isSingle }) => ($isSingle ? "460px" : "760px")};
   height: 100%;
   border-radius: 30px;
   background-color: ${colors.app_main_color};
