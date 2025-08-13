@@ -20,7 +20,7 @@ const HomeMenu = () => {
     {
       name: "이용권\n확인/연장",
       icon: <CheckExtendPass />,
-      action: () => console.log("확인/연장"),
+      action: () => navigate("/select-seat"),
     },
     {
       name: "자리 이동",

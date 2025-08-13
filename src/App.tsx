@@ -8,6 +8,7 @@ import SelectPassPage from "./pages/SelectPassPage/SelectPassPage";
 import SinglePassPage from "./pages/SinglePassPage/SinglePassPage";
 import PeriodPassPage from "./pages/PeriodPassPage/PeriodPassPage";
 import TimePassPage from "./pages/TimePassPage/TimePassPage";
+import SelectSeatPage from "./pages/SelectSeatPage/SelectSeatPage";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           <Route path="/singlepass" element={<SinglePassPage />} />
           <Route path="/periodpass" element={<PeriodPassPage />} />
           <Route path="/timepass" element={<TimePassPage />} />
+          <Route path="/select-seat" element={<SelectSeatPage />} />
         </Route>
       </Routes>
     </HashRouter>
