@@ -1,13 +1,16 @@
 import styled from "styled-components";
 import { colors } from "../../../colors";
+import React from "react";
+
+type FieldName = "name" | "phone" | "birth";
 
 type Props = {
-  activeField: "name" | "phone" | "birth";
-  setActiveField: (f: "name" | "phone" | "birth") => void;
-  name: string;
+  activeField: FieldName;
+  setActiveField: (f: FieldName) => void;
+  name: FieldName;
   placeholder: string;
-  value: string;
-  setValue: (value: string) => void;
+  value: string; // 표시용 값 (phone은 포맷된 값)
+  setValue: (value: string) => void; // 상태 갱신 (phone은 숫자만)
 };
 
 const InputFiled = ({
@@ -18,19 +21,22 @@ const InputFiled = ({
   value,
   setValue,
 }: Props) => {
+  const isNumeric = name !== "name"; // phone/birth는 숫자 키패드 힌트
+
   return (
     <Container>
       <Field
-        key={name}
-        onClick={() => setActiveField(name as "name" | "phone" | "birth")}
+        onClick={() => setActiveField(name)}
         data-active={activeField === name}
+        $hasValue={!!value}
       >
         <PlainInput
           value={value}
           onChange={(e) => setValue(e.target.value)}
           placeholder={placeholder}
-          type={name === "password" ? "password" : "text"}
-          inputMode="numeric"
+          type={name === "birth" ? "text" : name === "phone" ? "text" : "text"}
+          inputMode={isNumeric ? "numeric" : undefined}
+          autoComplete="off"
         />
       </Field>
     </Container>
@@ -42,17 +48,19 @@ export default InputFiled;
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 35px;
+  gap: 8px;
   width: 100%;
-  height: 100%;
 `;
 
-const Field = styled.div`
+const Field = styled.div<{ $hasValue: boolean }>`
   user-select: none;
   display: flex;
   align-items: center;
   gap: 35px;
-  border-bottom: 1px solid ${colors.app_white};
+  border-bottom: ${({ $hasValue }) =>
+    $hasValue
+      ? `2px solid ${colors.app_white}`
+      : `1px solid ${colors.app_white}`};
   padding: 0 20px;
   width: 100%;
   height: 100px;

@@ -133,6 +133,6 @@ const ErrorMsgBox = styled.div`
 `;
 
 const ErrorMsg = styled.p`
-  color: #ff0000;
+  color: ${colors.red};
   font-size: 24px;
 `;

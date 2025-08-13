@@ -264,14 +264,11 @@ const Container = styled.div`
 `;
 
 const Content = styled.div`
-  padding-top: 200px;
+  padding-top: 400px;
   margin: 0 160px;
-  position: absolute;
   display: flex;
   flex-direction: column;
   align-items: center;
-  top: 50%;
-  transform: translateY(-50%);
 `;
 
 const Form = styled.div`
@@ -301,4 +298,8 @@ const RightButtonText = styled.span`
   font-size: 32px;
   color: ${colors.app_white};
   cursor: pointer;
+`;
+
+const Space = styled.div`
+  height: 150px;
 `;

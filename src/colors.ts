@@ -4,4 +4,5 @@ export const colors = {
   app_ivory: "#F6F5EC",
   app_black: "#16181C",
   app_white: "#F5F5F5",
+  red: "#FF0000",
 };

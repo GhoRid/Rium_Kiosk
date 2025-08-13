@@ -26,13 +26,15 @@ const BottomButtons = ({ submitName, submit }: BottomButtonsProps) => {
 export default BottomButtons;
 
 const Container = styled.div`
+  position: absolute;
+  bottom: 200px;
   display: flex;
   justify-content: center;
   align-items: center;
   height: 135px;
   width: 100%;
   gap: 20px;
-  margin-top: 200px;
+  /* margin-top: 50px; */
 `;
 
 const Text = styled.p`
