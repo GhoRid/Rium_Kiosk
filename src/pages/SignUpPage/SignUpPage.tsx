@@ -113,7 +113,7 @@ const SignUpPage = () => {
     if (Object.keys(v).length === 0) {
       console.log("PASS");
     } else {
-      console.log("FAILED", v);
+      // console.log("FAILED", v);
     }
   };
 

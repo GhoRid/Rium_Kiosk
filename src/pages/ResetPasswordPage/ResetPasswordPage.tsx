@@ -7,6 +7,7 @@ import InputFiled from "./components/InputFiled";
 import BottomButtons from "../../components/BottomButtons";
 import { isValidYmd } from "../../utils/checkValide";
 import { formatDateHyphen } from "../../utils/formatDate";
+import ErrorMsg from "../../components/ErrorMsg";
 
 const ResetPasswordPage = () => {
   type FieldName = "name" | "phone" | "birth";
@@ -59,7 +60,7 @@ const ResetPasswordPage = () => {
       console.log("PASS");
       // api 로직 추가
     } else {
-      console.log("FAILED", v);
+      // console.log("FAILED", v);
     }
   };
 
@@ -127,13 +128,10 @@ const ResetPasswordPage = () => {
             setValue={field.setValue}
           />
         ))}
-
-        {Object.keys(errors).length > 0 && (
-          <ErrorMsgBox>
-            <ErrorMsg>{"정보를 다시 입력해주세요."}</ErrorMsg>
-          </ErrorMsgBox>
-        )}
       </Content>
+      {Object.keys(errors).length > 0 && (
+        <ErrorMsg>정보를 다시 입력해주세요.</ErrorMsg>
+      )}
       <BottomButtons submitName="가입 정보 확인" submit={handleSubmit} />
     </Container>
   );
@@ -157,15 +155,4 @@ const Content = styled.div`
   top: 50%;
   transform: translateY(-50%);
   width: calc(100% - 320px);
-`;
-
-const ErrorMsgBox = styled.div`
-  margin-top: 500px;
-`;
-
-const ErrorMsg = styled.p`
-  color: ${colors.red};
-  font-size: 24px;
-  white-space: pre-wrap;
-  text-align: center;
 `;

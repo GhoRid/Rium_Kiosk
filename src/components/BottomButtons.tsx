@@ -34,7 +34,6 @@ const Container = styled.div`
   height: 135px;
   width: 100%;
   gap: 20px;
-  /* margin-top: 50px; */
 `;
 
 const Text = styled.p`

@@ -4,6 +4,7 @@ import Header from "../../components/Header";
 import GoToHomeButton from "../../components/GoToHomeButton";
 import OptionCard from "./components/OptionCard";
 import { useState } from "react";
+import BottomButtons from "../../components/BottomButtons";
 
 const SinglePassPage = () => {
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
@@ -65,6 +66,7 @@ const SinglePassPage = () => {
           ))}
         </CardList>
       </Content>
+      <BottomButtons submitName="다음" />
     </Container>
   );
 };
