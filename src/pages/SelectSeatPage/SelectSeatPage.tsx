@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import SeatMapImage from "../../assets/images/seatMapBackground.png"; // 도면 이미지 경로
 import ErrorMsg from "../../components/ErrorMsg";
 import BottomButtons from "../../components/BottomButtons";
+import Legend from "./components/Legend";
 
 const seats: Seat[] = [
   { id: 1, label: 1, x: 90, y: 57.8, available: false },
@@ -80,6 +81,8 @@ const SelectSeatPage = () => {
           <Message>좌석을 선택해주세요</Message>
         </MessageBox>
 
+        <Legend />
+
         <SeatMap
           selectedSeat={selectedSeat}
           onSelect={setSelectedSeat}
@@ -105,7 +108,7 @@ const Container = styled.div`
 `;
 
 const Content = styled.div`
-  padding-top: 200px;
+  padding-top: 280px;
   margin: 0 100px;
   width: calc(100% - 200px);
 `;
@@ -114,7 +117,7 @@ const MessageBox = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 40px;
+  margin-bottom: 65px;
 `;
 
 const Message = styled.span`
