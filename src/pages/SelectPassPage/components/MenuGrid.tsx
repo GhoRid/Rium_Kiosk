@@ -1,19 +1,34 @@
 import styled from "styled-components";
 import { colors } from "../../../colors";
+import { ReactComponent as ClockIcon } from "../../../assets/svgs/clock.svg";
+import { ReactComponent as CalendarIcon } from "../../../assets/svgs/calendar.svg";
+import { ReactComponent as TimerIcon } from "../../../assets/svgs/timer.svg";
+import { useNavigate } from "react-router";
 
 const MenuGrid = () => {
+  const navigate = useNavigate();
+
   return (
     <Container>
       <OneButton>
         <Label>이용권 구매</Label>
+        <IconBox>
+          <ClockIcon />
+        </IconBox>
       </OneButton>
 
       <TwoButtonRow>
         <TwoButton>
           <Label>기간권</Label>
+          <IconBox>
+            <CalendarIcon />
+          </IconBox>
         </TwoButton>
         <TwoButton>
           <Label>시간권</Label>
+          <IconBox>
+            <TimerIcon />
+          </IconBox>
         </TwoButton>
       </TwoButtonRow>
     </Container>
@@ -33,7 +48,14 @@ const Label = styled.span`
   white-space: pre-line;
 `;
 
+const IconBox = styled.div`
+  position: absolute;
+  bottom: 30px;
+  right: 40px;
+`;
+
 const BaseButton = styled.button`
+  position: relative;
   border: none;
   border-radius: 30px;
   color: ${colors.app_white};
@@ -54,7 +76,7 @@ const BaseButton = styled.button`
 const OneButton = styled(BaseButton)`
   width: 730px;
   height: 300px;
-  padding: 60px 0 0 50px;
+  padding: 60px 50px;
   background: linear-gradient(
       180deg,
       rgba(255, 255, 255, 0.1) 0%,
