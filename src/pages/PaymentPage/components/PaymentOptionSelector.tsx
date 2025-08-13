@@ -26,6 +26,7 @@ const PaymentOptionSelector = ({
         <Option
           onClick={() => {
             setInstallment("일시불");
+            setSelectedInstallmentOption(null);
             setOpen(false);
           }}
         >
@@ -34,11 +35,7 @@ const PaymentOptionSelector = ({
           </RadioButton>
           <Label>일시불</Label>
         </Option>
-        <Option
-          onClick={() => {
-            setInstallment("할부");
-          }}
-        >
+        <Option>
           <RadioButton>
             <RadioButtonIsOn $isSelected={installment === "할부"} />
           </RadioButton>
@@ -58,6 +55,7 @@ const PaymentOptionSelector = ({
                   <InstallmentOption
                     key={option}
                     onClick={() => {
+                      setInstallment("할부");
                       setSelectedInstallmentOption(option);
                       setOpen(false);
                     }}

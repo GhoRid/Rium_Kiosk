@@ -34,8 +34,6 @@ const PaymentMethod = ({
     },
   ];
 
-  console.log(paymentMethod);
-
   return (
     <Wrapper>
       <Title>결제 수단 선택</Title>

@@ -6,6 +6,9 @@ import PaymentInfo from "./components/PaymentInfo";
 import PaymentMethod from "./components/PaymentMethod";
 import { useState } from "react";
 import PaymentOptionSelector from "./components/PaymentOptionSelector";
+import PrintSetting from "./components/PrintSetting";
+import ErrorMsg from "../../components/ErrorMsg";
+import BottomButtons from "../../components/BottomButtons";
 
 const PaymentPage = () => {
   const [paymentMethod, setPaymentMethod] = useState<string | null>(null);
@@ -13,6 +16,20 @@ const PaymentPage = () => {
   const [selectedInstallmentOption, setSelectedInstallmentOption] = useState<
     number | null
   >(null);
+
+  const [printReceipt, setPrintReceipt] = useState<boolean>(false);
+  const [printPass, setPrintPass] = useState<boolean>(false);
+
+  const [error, setError] = useState<string | null>(null);
+
+  const handleNext = () => {
+    if (paymentMethod) {
+      // Navigate to the next page with the selected option
+      // window.location.href = `/payment?option=${selectedOption}`;
+    } else {
+      setError("결재 수단을 선택해주세요.");
+    }
+  };
 
   return (
     <Container>
@@ -32,7 +49,17 @@ const PaymentPage = () => {
           selectedInstallmentOption={selectedInstallmentOption}
           setSelectedInstallmentOption={setSelectedInstallmentOption}
         />
+
+        <PrintSetting
+          printReceipt={printReceipt}
+          setPrintReceipt={setPrintReceipt}
+          printPass={printPass}
+          setPrintPass={setPrintPass}
+        />
       </Content>
+      {!!error && <ErrorMsg>{error}</ErrorMsg>}
+
+      <BottomButtons submitName="결제하기" submit={handleNext} />
     </Container>
   );
 };
