@@ -10,6 +10,7 @@ import PrintSetting from "./components/PrintSetting";
 import ErrorMsg from "../../components/ErrorMsg";
 import BottomButtons from "../../components/BottomButtons";
 import { useLocation } from "react-router";
+import CardModal from "./components/CardModal";
 
 const PaymentPage = () => {
   const location = useLocation();
@@ -26,45 +27,53 @@ const PaymentPage = () => {
 
   const [error, setError] = useState<string | null>(null);
 
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+
   const handleNext = () => {
     if (paymentMethod) {
-      // Navigate to the next page with the selected option
-      // window.location.href = `/payment?option=${selectedOption}`;
+      setIsModalOpen(true);
     } else {
       setError("결재 수단을 선택해주세요.");
     }
   };
 
   return (
-    <Container>
-      <GoToHomeButton />
-      <Header title="결제하기" />
-      <Content>
-        <PaymentInfo passType={passType} label={label} price={price} />
+    <>
+      <Container>
+        <GoToHomeButton />
+        <Header title="결제하기" />
+        <Content>
+          <PaymentInfo passType={passType} label={label} price={price} />
 
-        <PaymentMethod
-          paymentMethod={paymentMethod}
-          setPaymentMethod={setPaymentMethod}
-        />
+          <PaymentMethod
+            paymentMethod={paymentMethod}
+            setPaymentMethod={setPaymentMethod}
+          />
 
-        <PaymentOptionSelector
-          installment={installment}
-          setInstallment={setInstallment}
-          selectedInstallmentOption={selectedInstallmentOption}
-          setSelectedInstallmentOption={setSelectedInstallmentOption}
-        />
+          <PaymentOptionSelector
+            installment={installment}
+            setInstallment={setInstallment}
+            selectedInstallmentOption={selectedInstallmentOption}
+            setSelectedInstallmentOption={setSelectedInstallmentOption}
+          />
 
-        <PrintSetting
-          printReceipt={printReceipt}
-          setPrintReceipt={setPrintReceipt}
-          printPass={printPass}
-          setPrintPass={setPrintPass}
-        />
-      </Content>
-      {!!error && <ErrorMsg>{error}</ErrorMsg>}
+          <PrintSetting
+            printReceipt={printReceipt}
+            setPrintReceipt={setPrintReceipt}
+            printPass={printPass}
+            setPrintPass={setPrintPass}
+          />
+        </Content>
+        {!!error && <ErrorMsg>{error}</ErrorMsg>}
 
-      <BottomButtons submitName="결제하기" submit={handleNext} />
-    </Container>
+        <BottomButtons submitName="결제하기" submit={handleNext} />
+      </Container>
+      <CardModal
+        isModalOpen={isModalOpen}
+        setIsModalOpen={setIsModalOpen}
+        price={price}
+      />
+    </>
   );
 };
 
