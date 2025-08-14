@@ -3,14 +3,18 @@ import { colors } from "../../colors";
 import GoToHomeButton from "../../components/GoToHomeButton";
 import Header from "../../components/Header";
 import UserInfo from "./components/UserInfo";
+import PassInfo from "./components/PassInfo";
 
 const CheckExtendPassPage = () => {
   return (
     <Container>
       <GoToHomeButton />
       <Header title="이용권 확인/연장" />
+
       <Content>
         <UserInfo />
+
+        <PassInfo />
       </Content>
     </Container>
   );

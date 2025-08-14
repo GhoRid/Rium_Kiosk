@@ -79,7 +79,7 @@ const OneButton = styled(BaseButton)`
   padding: 60px 50px;
   background: linear-gradient(
       180deg,
-      rgba(255, 255, 255, 0.1) 0%,
+      rgba(255, 255, 255, 0.01) 0%,
       rgba(255, 255, 255, 0) 100%
     ),
     #2b2b2b;
