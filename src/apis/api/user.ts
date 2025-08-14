@@ -1,0 +1,46 @@
+import { appInstance } from "..";
+
+// 회원 등록
+export const registerUser = async (data: any) => {
+  return await appInstance.post("/register", data);
+};
+
+// 사용자 유효성 확인
+export const validUser = async (params: any) => {
+  return await appInstance.get("/valid/user", { params });
+};
+
+// 토큰 유효성 확인
+export const validToken = async (params: any) => {
+  return await appInstance.get("/valid/token", { params });
+};
+
+// SMS 인증 코드 검증
+export const verifySmsCode = async (params: any) => {
+  return await appInstance.get("/sms/verify/code", { params });
+};
+
+// SMS 인증 코드 발송
+export const sendSmsCode = async (params: any) => {
+  return await appInstance.get("/sms/send/code", { params });
+};
+
+// 사용자 존재 여부 확인
+export const isPresentUser = async (params: any) => {
+  return await appInstance.get("/ispresent/user", { params });
+};
+
+// 잔여 좌석 조회
+export const getRemainSeat = async (params: any) => {
+  return await appInstance.get("/get/remain/seat", { params });
+};
+
+// 이용권 정보 조회
+export const getInformationTicket = async (params: any) => {
+  return await appInstance.get("/get/information/ticket", { params });
+};
+
+// 좌석 정보 조회
+export const getInformationSeat = async (params: any) => {
+  return await appInstance.get("/get/information/seat", { params });
+};

@@ -1,6 +1,6 @@
 // src/hooks/usePayment.ts
 import { useMutation } from "@tanstack/react-query";
-import { sendPayment } from "../apis/paymentApi";
+import { sendPayment } from "../apis/api/paymentApi";
 
 export const usePayment = () => {
   return useMutation({

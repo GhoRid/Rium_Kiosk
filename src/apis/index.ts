@@ -1,15 +1,22 @@
 import axios from "axios";
 
-export const instance = axios.create({
-  baseURL: "http://127.0.0.1:9188", // 백엔드 URL
+export const nvcatInstance = axios.create({
+  baseURL: "http://127.0.0.1:9188",
   timeout: 30000,
   headers: {
-    "Content-Type": "application/x-www-form-urlencoded", // Form Data로 전송
+    "Content-Type": "application/x-www-form-urlencoded",
   },
   transformRequest: [
     (data) => {
-      // data를 그대로 문자열로 변환
       return typeof data === "string" ? data : String(data);
     },
   ],
+});
+
+export const appInstance = axios.create({
+  baseURL: "https://onerivers.kr/api/rium",
+  timeout: 3000,
+  headers: {
+    "Content-Type": "application/json",
+  },
 });
