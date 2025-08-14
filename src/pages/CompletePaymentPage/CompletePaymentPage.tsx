@@ -2,9 +2,13 @@ import styled from "styled-components";
 import { colors } from "../../colors";
 import GoToHomeButton from "../../components/GoToHomeButton";
 import Header from "../../components/Header";
-import DemoQr from "./components/DemoQR";
+import BottomButton from "./components/BottomButton";
+import ResultForm from "./components/ResultForm";
 
 const CompletePaymentPage = () => {
+  const passtype = "고정석";
+  //   passType, label, price;
+
   return (
     <Container>
       <GoToHomeButton />
@@ -14,8 +18,14 @@ const CompletePaymentPage = () => {
           <Message>결제가 완료되었습니다.</Message>
         </MessageBox>
 
-        <DemoQr />
+        <ResultForm />
       </Content>
+      <BottomButton
+        submitName="확인"
+        submit={() => {
+          //   window.location.href = "/";
+        }}
+      />
     </Container>
   );
 };
