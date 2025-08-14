@@ -83,8 +83,8 @@ const Element = styled.button<{ $isSelected: boolean }>`
   width: 240px;
   height: 200px;
   border-radius: 30px;
-  border: ${(isSelected) =>
-    isSelected ? "" : `1px solid ${colors.app_white}`};
+  border: ${({ $isSelected }) =>
+    $isSelected ? `2px solid ${colors.app_white}` : "2px solid transparent"};
   background-color: #2b2d30;
   color: ${colors.app_white};
   padding: 35px;

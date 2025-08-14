@@ -65,7 +65,7 @@ const OptionRow = styled.div`
   margin-top: 20px;
 `;
 
-const Option = styled.button`
+const Option = styled.div`
   display: flex;
   align-items: center;
   gap: 20px;
