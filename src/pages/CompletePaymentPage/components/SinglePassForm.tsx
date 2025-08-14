@@ -5,11 +5,11 @@ import { colors } from "../../../colors";
 
 type PassType = "1회 이용권" | "자유석" | "고정석";
 
-const FixedSeatForm = () => {
+const SinglePassForm = () => {
   const InfoData = [
     {
-      label: "상품명",
-      value: "기간권 4주 고정석",
+      label: "입실 시간",
+      value: "2025-08-24 17:25",
     },
     {
       label: "좌석 번호",
@@ -34,7 +34,7 @@ const FixedSeatForm = () => {
   );
 };
 
-export default FixedSeatForm;
+export default SinglePassForm;
 
 const Wrapper = styled.div`
   display: flex;

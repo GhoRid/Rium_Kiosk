@@ -3,9 +3,10 @@ import { colors } from "../../colors";
 import GoToHomeButton from "../../components/GoToHomeButton";
 import Header from "../../components/Header";
 import BottomButton from "./components/BottomButton";
-import ResultForm from "./components/ResultForm";
 import { useLocation } from "react-router";
+import SinglePassForm from "./components/SinglePassForm";
 import FixedSeatForm from "./components/FixedSeatForm";
+import FreeSeatForm from "./components/FreeSeatForm";
 
 const CompletePaymentPage = () => {
   const location = useLocation();
@@ -23,8 +24,9 @@ const CompletePaymentPage = () => {
           <Message>결제가 완료되었습니다.</Message>
         </MessageBox>
 
-        {/* <ResultForm passtype={passtype} /> */}
-        <FixedSeatForm />
+        {/* <SinglePassForm /> */}
+        {/* <FixedSeatForm /> */}
+        <FreeSeatForm />
       </Content>
       <BottomButton submitName="확인" submit={() => {}} />
     </Container>

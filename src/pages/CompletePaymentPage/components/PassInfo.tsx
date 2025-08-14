@@ -6,8 +6,6 @@ type PassInfoProps = {
     label: string;
     value: string;
   }[];
-  // label: string;
-  // price: number;
 };
 
 const PassInfo = ({ InfoData }: PassInfoProps) => {
@@ -31,9 +29,9 @@ const Wrapper = styled.div`
   flex-direction: column;
   justify-content: center;
   gap: 20px;
-  width: 80%;
   margin-top: 80px;
-  margin-bottom: 130px;
+  margin-bottom: 100px;
+  height: 100px;
 `;
 
 const InfoRow = styled.div`
