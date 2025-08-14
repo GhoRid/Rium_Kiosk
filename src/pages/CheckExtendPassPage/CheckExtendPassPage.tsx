@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { colors } from "../../colors";
 import GoToHomeButton from "../../components/GoToHomeButton";
 import Header from "../../components/Header";
+import UserInfo from "./components/UserInfo";
 
 const CheckExtendPassPage = () => {
   return (
@@ -9,8 +10,7 @@ const CheckExtendPassPage = () => {
       <GoToHomeButton />
       <Header title="이용권 확인/연장" />
       <Content>
-        {/* 여기에 이용권 확인/연장 관련 컴포넌트들을 추가하세요 */}
-        {/* 예: 이용권 리스트, 연장 버튼 등 */}
+        <UserInfo />
       </Content>
     </Container>
   );

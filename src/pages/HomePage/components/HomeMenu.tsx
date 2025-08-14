@@ -33,7 +33,7 @@ const HomeMenu = () => {
     {
       name: "퇴실하기",
       icon: <Exit />,
-      action: () => navigate("/select-seat"),
+      action: () => console.log("퇴실하기"),
     },
     {
       name: "입실하기",
