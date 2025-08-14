@@ -2,26 +2,24 @@ import styled from "styled-components";
 import { colors } from "../../../colors";
 
 type PassInfoProps = {
-  passType: string;
-  label: string;
-  price: number;
+  InfoData: {
+    label: string;
+    value: string;
+  }[];
+  // label: string;
+  // price: number;
 };
 
-const PassInfo = ({ passType, label, price }: PassInfoProps) => {
+const PassInfo = ({ InfoData }: PassInfoProps) => {
   return (
     <Wrapper>
-      <InfoRow>
-        <Label>입실 시간</Label>
-        <Devider>|</Devider>
-        <Value>
-          {passType} {label}
-        </Value>
-      </InfoRow>
-      <InfoRow>
-        <Label>좌석 번호</Label>
-        <Devider>|</Devider>
-        <Value>₩ {price.toLocaleString()}</Value>
-      </InfoRow>
+      {InfoData.map((info, index) => (
+        <InfoRow key={index}>
+          <Label>{info.label}</Label>
+          <Devider>|</Devider>
+          <Value>{info.value}</Value>
+        </InfoRow>
+      ))}
     </Wrapper>
   );
 };
@@ -33,11 +31,9 @@ const Wrapper = styled.div`
   flex-direction: column;
   justify-content: center;
   gap: 20px;
-  margin-top: 50px;
-  height: 225px;
-  width: 100%;
-  border-top: 1px solid ${colors.app_white};
-  border-bottom: 1px solid ${colors.app_white};
+  width: 80%;
+  margin-top: 80px;
+  margin-bottom: 130px;
 `;
 
 const InfoRow = styled.div`

@@ -5,13 +5,14 @@ import Header from "../../components/Header";
 import BottomButton from "./components/BottomButton";
 import ResultForm from "./components/ResultForm";
 import { useLocation } from "react-router";
+import FixedSeatForm from "./components/FixedSeatForm";
 
 const CompletePaymentPage = () => {
   const location = useLocation();
   // const { passType, label, price } = location.state || {};
 
+  // 1회 이용권, 자유석, 고정석
   const passtype = "고정석";
-  //   passType, label, price;
 
   return (
     <Container>
@@ -22,7 +23,8 @@ const CompletePaymentPage = () => {
           <Message>결제가 완료되었습니다.</Message>
         </MessageBox>
 
-        <ResultForm passtype={passtype} />
+        {/* <ResultForm passtype={passtype} /> */}
+        <FixedSeatForm />
       </Content>
       <BottomButton submitName="확인" submit={() => {}} />
     </Container>
@@ -39,7 +41,7 @@ const Container = styled.div`
 `;
 
 const Content = styled.div`
-  padding-top: 280px;
+  padding-top: 400px;
   margin: 0 160px;
   width: calc(100% - 320px);
   display: flex;
@@ -51,7 +53,6 @@ const MessageBox = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 65px;
 `;
 
 const Message = styled.span`

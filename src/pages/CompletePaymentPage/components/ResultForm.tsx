@@ -11,8 +11,6 @@ type ResultFormProps = {
 const ResultForm = ({ passtype }: ResultFormProps) => {
   return (
     <Wrapper>
-      {/* <PassInfo /> */}
-
       <DemoQr />
     </Wrapper>
   );
