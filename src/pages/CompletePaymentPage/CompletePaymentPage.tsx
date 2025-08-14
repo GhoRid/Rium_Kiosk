@@ -4,8 +4,12 @@ import GoToHomeButton from "../../components/GoToHomeButton";
 import Header from "../../components/Header";
 import BottomButton from "./components/BottomButton";
 import ResultForm from "./components/ResultForm";
+import { useLocation } from "react-router";
 
 const CompletePaymentPage = () => {
+  const location = useLocation();
+  // const { passType, label, price } = location.state || {};
+
   const passtype = "고정석";
   //   passType, label, price;
 
@@ -18,14 +22,9 @@ const CompletePaymentPage = () => {
           <Message>결제가 완료되었습니다.</Message>
         </MessageBox>
 
-        <ResultForm />
+        <ResultForm passtype={passtype} />
       </Content>
-      <BottomButton
-        submitName="확인"
-        submit={() => {
-          //   window.location.href = "/";
-        }}
-      />
+      <BottomButton submitName="확인" submit={() => {}} />
     </Container>
   );
 };

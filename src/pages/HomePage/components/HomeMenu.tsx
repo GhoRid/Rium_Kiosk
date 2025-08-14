@@ -69,7 +69,7 @@ const HomeMenu = ({ setIsModalOpen }: HomeMenuProps) => {
         ))}
       </ActionBox>
 
-      <ReprintBox onClick={() => console.log("출입증 재발행")}>
+      <ReprintBox onClick={() => navigate("/login")}>
         <Label>출입증 재발행</Label>
       </ReprintBox>
     </MenuContainer>

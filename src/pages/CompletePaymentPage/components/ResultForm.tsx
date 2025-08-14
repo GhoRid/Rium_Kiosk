@@ -2,7 +2,13 @@ import styled from "styled-components";
 import PassInfo from "./PassInfo";
 import DemoQr from "./DemoQR";
 
-const ResultForm = () => {
+type PassType = "일반" | "고정석" | "VIP";
+
+type ResultFormProps = {
+  passtype: string;
+};
+
+const ResultForm = ({ passtype }: ResultFormProps) => {
   return (
     <Wrapper>
       {/* <PassInfo /> */}

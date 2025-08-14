@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import styled from "styled-components";
 import InputFileds from "./components/InputFileds";
 import RadioGroup from "./components/RadioGroup";
@@ -10,6 +10,8 @@ import JoinPathAccordion from "./components/JoinPathAccordion";
 import GoToHomeButton from "../../components/GoToHomeButton";
 import BottomButtons from "../../components/BottomButtons";
 import { isValidYmd } from "../../utils/checkValide";
+import { useMutation } from "@tanstack/react-query";
+import { sendSmsCode, verifySmsCode } from "../../apis/api/user";
 
 const digitsOnly = (s: string) => s.replace(/\D/g, "");
 const fmtBirth = (v: string) => digitsOnly(v).slice(0, 8);
@@ -35,6 +37,8 @@ const SignUpPage = () => {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [cert, setCert] = useState("");
+  const [isCodeVerified, setIsCodeVerified] = useState(false);
+
   const [pin, setPin] = useState("");
   const [birth, setBirth] = useState("");
   const [gender, setGender] = useState("M");
@@ -58,6 +62,8 @@ const SignUpPage = () => {
   const [submitted, setSubmitted] = useState(false);
   const [errors, setErrors] = useState<Errors>({});
 
+  console.log(errors);
+
   const validateName = (v: string) =>
     v.trim() ? undefined : "이름을 입력해주세요.";
   const validatePhone = (v: string) => {
@@ -66,7 +72,7 @@ const SignUpPage = () => {
       ? undefined
       : "휴대폰 번호를 입력해주세요.";
   };
-  const validateCert = (v: string) =>
+  const validateCertLength = (v: string) =>
     digitsOnly(v).length === 6 ? undefined : "인증번호가 올바르지 않습니다.";
   const validatePin = (v: string) =>
     digitsOnly(v).length === 4 ? undefined : "비밀번호를 입력해주세요.";
@@ -87,13 +93,47 @@ const SignUpPage = () => {
     });
   };
 
+  const sendCodeMutation = useMutation({
+    mutationFn: async () => sendSmsCode({ mobileNumber: digitsOnly(phone) }),
+    onSuccess: () => {},
+    onError: (e: any) => {
+      setFieldError("phone", e?.message || "인증 요청에 실패했습니다.");
+    },
+  });
+
+  const verifyCodeMutation = useMutation({
+    mutationFn: async () =>
+      verifySmsCode({
+        mobileNumber: digitsOnly(phone),
+        code: digitsOnly(cert),
+      }),
+    onSuccess: () => {
+      setIsCodeVerified(true);
+      setFieldError("cert", undefined);
+    },
+    onError: (e: any) => {
+      setIsCodeVerified(false);
+      setFieldError("cert", e?.message || "인증번호가 일치하지 않습니다.");
+    },
+  });
+
+  const canRequestCode = useMemo(() => {
+    const len = digitsOnly(phone).length;
+    return (len === 10 || len === 11) && !sendCodeMutation.isPending;
+  }, [phone, sendCodeMutation.isPending]);
+
+  const canVerifyCode = useMemo(
+    () => digitsOnly(cert).length === 6 && !verifyCodeMutation.isPending,
+    [cert, verifyCodeMutation.isPending]
+  );
+
   const validateAll = (): Errors => {
     const e: Errors = {};
     const n = validateName(name);
     if (n) e.name = n;
     const p = validatePhone(phone);
     if (p) e.phone = p;
-    const c = validateCert(cert);
+    const c = validateCertLength(cert);
     if (c) e.cert = c;
     const pi = validatePin(pin);
     if (pi) e.pin = pi;
@@ -105,15 +145,12 @@ const SignUpPage = () => {
     if (t) e.terms = t;
     return e;
   };
-
   const handleSubmit = () => {
     setSubmitted(true);
     const v = validateAll();
     setErrors(v);
     if (Object.keys(v).length === 0) {
       console.log("PASS");
-    } else {
-      // console.log("FAILED", v);
     }
   };
 
@@ -121,20 +158,28 @@ const SignUpPage = () => {
     setName(v);
     if (submitted) setFieldError("name", validateName(v));
   };
+
   const onChangePhone = (v: string) => {
-    setPhone(v);
-    if (submitted) setFieldError("phone", validatePhone(v));
+    const d = digitsOnly(v).slice(0, 11);
+    setPhone(d);
+
+    if (isCodeVerified) setIsCodeVerified(false);
+    if (submitted) setFieldError("phone", validatePhone(d));
   };
+
   const onChangeCert = (v: string) => {
     const nv = digitsOnly(v).slice(0, 6);
     setCert(nv);
-    if (submitted) setFieldError("cert", validateCert(nv));
+    if (isCodeVerified) setIsCodeVerified(false);
+    if (submitted) setFieldError("cert", validateCertLength(nv));
   };
+
   const onChangePin = (v: string) => {
     const nv = digitsOnly(v).slice(0, 4);
     setPin(nv);
     if (submitted) setFieldError("pin", validatePin(nv));
   };
+
   const onChangeBirth = (v: string) => {
     setBirth(v);
     if (submitted) setFieldError("birth", validateBirth(v));
@@ -180,22 +225,35 @@ const SignUpPage = () => {
             rightSlot={
               <RightButton
                 type="button"
-                onClick={() => console.log("send code")}
+                disabled={!canRequestCode}
+                onClick={() => sendCodeMutation.mutate()}
               >
-                <RightButtonText>인증 요청</RightButtonText>
+                <RightButtonText>
+                  {sendCodeMutation.isPending ? "요청중..." : "인증 요청"}
+                </RightButtonText>
               </RightButton>
             }
             error={err("phone")}
           />
 
           <InputFileds
-            label="인증번호"
+            label={`인증번호${isCodeVerified ? " (인증 완료)" : ""}`}
             value={cert}
             onChange={onChangeCert}
             inputMode="numeric"
             rightSlot={
-              <RightButton type="button" onClick={() => console.log("verify")}>
-                <RightButtonText>인증하기</RightButtonText>
+              <RightButton
+                type="button"
+                disabled={!canVerifyCode || isCodeVerified}
+                onClick={() => verifyCodeMutation.mutate()}
+              >
+                <RightButtonText>
+                  {isCodeVerified
+                    ? "완료"
+                    : verifyCodeMutation.isPending
+                    ? "확인중..."
+                    : "인증하기"}
+                </RightButtonText>
               </RightButton>
             }
             error={err("cert")}
@@ -292,6 +350,7 @@ const RightButton = styled.button`
       rgba(255, 255, 255, 0) 100%
     ),
     #2b2b2b;
+  opacity: ${(p) => (p.disabled ? 0.5 : 1)};
 `;
 
 const RightButtonText = styled.span`

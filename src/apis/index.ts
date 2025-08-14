@@ -20,3 +20,7 @@ export const appInstance = axios.create({
     "Content-Type": "application/json",
   },
 });
+
+// https://onerivers.kr/api/rium/sms/send/code?mobileNumber=01022025489
+
+// https://onerivers.kr/api/rium/sms/send/code?phone=01022025489

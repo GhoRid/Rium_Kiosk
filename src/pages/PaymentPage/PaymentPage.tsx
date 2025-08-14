@@ -16,6 +16,8 @@ const PaymentPage = () => {
   const location = useLocation();
   const { passType, label, price } = location.state || {};
 
+  // console.log("PaymentPage location state:", passType, label, price);
+
   const [paymentMethod, setPaymentMethod] = useState<string | null>(null);
   const [installment, setInstallment] = useState<string>("일시불");
   const [selectedInstallmentOption, setSelectedInstallmentOption] = useState<

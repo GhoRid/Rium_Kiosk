@@ -13,12 +13,14 @@ import PaymentPage from "./pages/PaymentPage/PaymentPage";
 import CheckExtendPassPage from "./pages/CheckExtendPassPage/CheckExtendPassPage";
 import ChangeSeatPage from "./pages/ChangeSeatPage/ChangeSeatPage";
 import CompletePaymentPage from "./pages/CompletePaymentPage/CompletePaymentPage";
+import KioskLoginPage from "./pages/KioskLoginPage/KioskLoginPage";
 
 function App() {
   return (
     <HashRouter>
       <Routes>
         <Route element={<MainLayout />}>
+          {/* <Route path="/" element={<KioskLoginPage />} /> */}
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignUpPage />} />
