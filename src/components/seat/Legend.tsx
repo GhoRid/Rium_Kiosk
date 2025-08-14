@@ -5,12 +5,26 @@ const Legend = () => {
   return (
     <Wrap>
       <LegendItem>
+        <Swatch
+          style={{
+            background: `${colors.app_main_color}`,
+            border: `2px solid ${colors.app_white}`,
+          }}
+        />
+        <Text>고정석 이용중</Text>
+      </LegendItem>
+
+      <LegendItem>
         <Swatch style={{ background: "#3b3f45" }} />
         <Text>사용 불가</Text>
       </LegendItem>
+
       <LegendItem>
         <Swatch
-          style={{ background: "transparent", border: "2px solid #d7dbe0" }}
+          style={{
+            background: "transparent",
+            border: `2px solid ${colors.app_white}`,
+          }}
         />
         <Text>사용 가능</Text>
       </LegendItem>

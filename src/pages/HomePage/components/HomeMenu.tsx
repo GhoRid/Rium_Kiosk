@@ -7,7 +7,11 @@ import { ReactComponent as Exit } from "../../../assets/svgs/exit.svg";
 import { colors } from "../../../colors";
 import { useNavigate } from "react-router";
 
-const HomeMenu = () => {
+type HomeMenuProps = {
+  setIsModalOpen: (isModalOpen: boolean) => void;
+};
+
+const HomeMenu = ({ setIsModalOpen }: HomeMenuProps) => {
   const navigate = useNavigate();
 
   const FeatureList = [
@@ -33,12 +37,15 @@ const HomeMenu = () => {
     {
       name: "퇴실하기",
       icon: <Exit />,
-      action: () => console.log("퇴실하기"),
+      action: () => {
+        console.log("퇴실하기");
+        setIsModalOpen(true);
+      },
     },
     {
       name: "입실하기",
       icon: <Enter />,
-      action: () => console.log("입실하기"),
+      action: () => navigate("/completepayment"),
     },
   ];
 

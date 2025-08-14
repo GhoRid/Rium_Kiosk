@@ -5,24 +5,41 @@ import SeatInfo from "./components/SeatInfo";
 import DateInfo from "./components/DateInfo";
 import HomeHeader from "./components/HomeHeader";
 import FooterCarousel from "./components/FooterCarousel";
+import CustomModal from "../../components/CustomModal";
+import { useState } from "react";
 
 const HomePage = () => {
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+
   return (
-    <Container>
-      <DateInfo />
-      <ContentContainer>
-        {/* 지점명/전화번호/로고 */}
-        <HomeHeader />
+    <>
+      <Container>
+        <DateInfo />
+        <ContentContainer>
+          {/* 지점명/전화번호/로고 */}
+          <HomeHeader />
 
-        {/* 좌석 정보 */}
-        <SeatInfo />
+          {/* 좌석 정보 */}
+          <SeatInfo />
 
-        {/* 메뉴 버튼 */}
-        <HomeMenu />
-      </ContentContainer>
-      {/* 하단 배너 */}
-      <FooterCarousel />
-    </Container>
+          {/* 메뉴 버튼 */}
+          <HomeMenu setIsModalOpen={setIsModalOpen} />
+        </ContentContainer>
+        {/* 하단 배너 */}
+        <FooterCarousel />
+      </Container>
+
+      <CustomModal
+        isModalOpen={isModalOpen}
+        setIsModalOpen={setIsModalOpen}
+        modalContent={"12번 좌석\n퇴실하시겠습니까?"}
+        submitText={"퇴실하기"}
+        submitAction={() => {
+          console.log("퇴실하기");
+          // setIsModalOpen(false);
+        }}
+      />
+    </>
   );
 };
 

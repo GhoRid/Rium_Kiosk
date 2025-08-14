@@ -12,6 +12,7 @@ import SelectSeatPage from "./pages/SelectSeatPage/SelectSeatPage";
 import PaymentPage from "./pages/PaymentPage/PaymentPage";
 import CheckExtendPassPage from "./pages/CheckExtendPassPage/CheckExtendPassPage";
 import ChangeSeatPage from "./pages/ChangeSeatPage/ChangeSeatPage";
+import CompletePaymentPage from "./pages/CompletePaymentPage/CompletePaymentPage";
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
           <Route path="/payment" element={<PaymentPage />} />
           <Route path="/checkextendpass" element={<CheckExtendPassPage />} />
           <Route path="/changeseat" element={<ChangeSeatPage />} />
+          <Route path="/completepayment" element={<CompletePaymentPage />} />
         </Route>
       </Routes>
     </HashRouter>

@@ -2,25 +2,18 @@ import styled from "styled-components";
 import { colors } from "../../colors";
 import GoToHomeButton from "../../components/GoToHomeButton";
 import Header from "../../components/Header";
-import UserInfo from "../../components/Pass/UserInfo";
-import PassInfo from "../../components/Pass/PassInfo";
 
-const CheckExtendPassPage = () => {
+const CompletePaymentPage = () => {
   return (
     <Container>
       <GoToHomeButton />
-      <Header title="이용권 확인/연장" />
-
-      <Content>
-        <UserInfo />
-
-        <PassInfo />
-      </Content>
+      <Header title="결제완료" />
+      <Content></Content>
     </Container>
   );
 };
 
-export default CheckExtendPassPage;
+export default CompletePaymentPage;
 
 const Container = styled.div`
   background-color: ${colors.app_black};
