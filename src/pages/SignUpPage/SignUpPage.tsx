@@ -392,7 +392,3 @@ const RightButtonText = styled.span`
   color: ${colors.app_white};
   cursor: pointer;
 `;
-
-const Space = styled.div`
-  height: 150px;
-`;

@@ -44,3 +44,11 @@ export const getInformationTicket = async (params: any) => {
 export const getInformationSeat = async () => {
   return await appInstance.get("/get/information/seat");
 };
+
+export const getInformationMyseat = async (params: any) => {
+  return await appInstance.get("/get/information/myseat", { params });
+};
+
+export const checkMembership = async (params: any) => {
+  return await appInstance.get("/check/membership", { params });
+};

@@ -17,6 +17,7 @@ export const clearTokens = () => {
 };
 
 export const getAccessToken = () => localStorage.getItem(ACCESS_TOKEN_KEY);
+export const getRefreshToken = () => localStorage.getItem(REFRESH_TOKEN_KEY);
 
 export const saveUserId = (userId: string) => {
   localStorage.setItem(USER_ID_KEY, userId);

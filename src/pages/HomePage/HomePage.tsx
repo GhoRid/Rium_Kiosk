@@ -9,11 +9,19 @@ import CustomModal from "../../components/CustomModal";
 import { useState } from "react";
 import LogoutButton from "./components/LogoutButton";
 import { useUserId } from "../../hooks/useUserId";
+import { useQuery } from "@tanstack/react-query";
+import { getPlaceInformation } from "../../apis/api/kioskAuth";
 
 const HomePage = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   const userId = useUserId();
+
+  const { data } = useQuery({
+    queryKey: ["userInfo"],
+    queryFn: () => getPlaceInformation(),
+  });
+
   return (
     <>
       <Container>

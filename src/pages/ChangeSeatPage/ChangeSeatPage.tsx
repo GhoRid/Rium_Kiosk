@@ -6,16 +6,31 @@ import SeatMap from "../../components/seat/SeatMap";
 import { useState } from "react";
 import BottomButtons from "../../components/BottomButtons";
 import ErrorMsg from "../../components/ErrorMsg";
-import { useQuery } from "@tanstack/react-query";
-import { getInformationSeat } from "../../apis/api/user";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { getInformationMyseat, getInformationSeat } from "../../apis/api/user";
+import CustomModal from "../../components/CustomModal";
+import { useNavigate } from "react-router";
+import { changeSeat } from "../../apis/api/pass";
+import { useUserId } from "../../hooks/useUserId";
 
 const ChangeSeatPage = () => {
+  const navigate = useNavigate();
   const [selectedSeat, setSelectedSeat] = useState<number | null>(null);
-
   const [error, setError] = useState<string | null>(null);
 
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+
+  const userId = useUserId();
+
+  const { data: myseatResponse } = useQuery({
+    queryKey: ["mySeats"],
+    queryFn: () => getInformationMyseat({ mobileNumber: userId! }),
+  });
+
+  const mySeat = myseatResponse?.data || {};
+
   const { data: response, error: fetchError } = useQuery({
-    queryKey: ["seats"],
+    queryKey: ["infoSeats"],
     queryFn: () => getInformationSeat(),
   });
 
@@ -23,39 +38,63 @@ const ChangeSeatPage = () => {
 
   const handleNext = () => {
     if (selectedSeat) {
-      // Navigate to the next page with the selected option
-      // window.location.href = `/payment?option=${selectedOption}`;
+      changeSeatMutation.mutate();
     } else {
       setError("좌석을 선택해주세요.");
     }
   };
 
+  const changeSeatMutation = useMutation({
+    mutationKey: ["changeSeat"],
+    mutationFn: () =>
+      changeSeat({
+        mobileNumber: userId!,
+        seatId: selectedSeat!,
+      }),
+    onSuccess: () => {
+      setIsModalOpen(true);
+    },
+    onError: (error) => {
+      setError("자리 이동에 실패했습니다.");
+    },
+  });
+
   return (
-    <Container>
-      <GoToHomeButton />
-      <Header title="자리 이동" />
+    <>
+      <Container>
+        <GoToHomeButton />
+        <Header title="자리 이동" />
 
-      <Content>
-        <MessageBox>
-          <Message>좌석을 선택해주세요.</Message>
-        </MessageBox>
+        <Content>
+          <MessageBox>
+            <Message>좌석을 선택해주세요.</Message>
+          </MessageBox>
 
-        <SeatMap
-          selectedSeat={selectedSeat}
-          onSelect={setSelectedSeat}
-          seatsState={seatsState}
+          <SeatMap
+            myseat={mySeat}
+            selectedSeat={selectedSeat}
+            onSelect={setSelectedSeat}
+            seatsState={seatsState}
+          />
+        </Content>
+
+        {!!error && <ErrorMsg>{error}</ErrorMsg>}
+
+        <BottomButtons
+          submit={() => {
+            handleNext();
+          }}
+          submitName="자리 이동"
         />
-      </Content>
-
-      {!!error && <ErrorMsg>{error}</ErrorMsg>}
-
-      <BottomButtons
-        submit={() => {
-          handleNext();
-        }}
-        submitName="자리 이동"
+      </Container>
+      <CustomModal
+        isModalOpen={isModalOpen}
+        setIsModalOpen={setIsModalOpen}
+        modalContent={"12번 좌석으로\n자리 이동이 완료되었습니다."}
+        submitText="홈으로"
+        submitAction={() => navigate("/home")}
       />
-    </Container>
+    </>
   );
 };
 

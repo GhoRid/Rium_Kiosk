@@ -1,7 +1,7 @@
 import { appInstance } from "..";
 
 // 시간권 구매
-export const purchaseTicketTime = async (data: any) => {
+export const purchaseseatTime = async (data: any) => {
   return await appInstance.post("/purchase/ticket/time", data);
 };
 
@@ -33,4 +33,8 @@ export const enableTicket = async (data: any) => {
 // 이용권 비활성화
 export const disableTicket = async (data: any) => {
   return await appInstance.post("/disable/ticket", data);
+};
+
+export const changeSeat = async (data: any) => {
+  return await appInstance.post("/change/seat", data);
 };

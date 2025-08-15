@@ -1,14 +1,15 @@
 import styled from "styled-components";
 import { colors } from "../../../colors";
-import React from "react";
+import React, { ReactNode } from "react";
 
-type FieldName = "name" | "phone" | "birth";
+type FieldName = "name" | "phone" | "birth" | "code" | "newPassword";
 
 type Props = {
   activeField: FieldName;
   setActiveField: (f: FieldName) => void;
   name: FieldName;
   placeholder: string;
+  rightSlot?: ReactNode;
   value: string; // 표시용 값 (phone은 포맷된 값)
   setValue: (value: string) => void; // 상태 갱신 (phone은 숫자만)
 };
@@ -18,27 +19,34 @@ const InputFiled = ({
   setActiveField,
   name,
   placeholder,
+  rightSlot,
   value,
   setValue,
 }: Props) => {
-  const isNumeric = name !== "name"; // phone/birth는 숫자 키패드 힌트
+  const isNumeric = name !== "name";
 
   return (
     <Container>
-      <Field
-        onClick={() => setActiveField(name)}
-        data-active={activeField === name}
-        $hasValue={!!value}
-      >
-        <PlainInput
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-          placeholder={placeholder}
-          type={name === "birth" ? "text" : name === "phone" ? "text" : "text"}
-          inputMode={isNumeric ? "numeric" : undefined}
-          autoComplete="off"
-        />
-      </Field>
+      <FiledBox>
+        <Field
+          onClick={() => setActiveField(name)}
+          data-active={activeField === name}
+          $hasValue={!!value}
+          $hasRightSlot={!!rightSlot}
+        >
+          <PlainInput
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+            placeholder={placeholder}
+            type={
+              name === "birth" ? "text" : name === "phone" ? "text" : "text"
+            }
+            inputMode={isNumeric ? "numeric" : undefined}
+            autoComplete="off"
+          />
+        </Field>
+        {rightSlot && <>{rightSlot}</>}
+      </FiledBox>
     </Container>
   );
 };
@@ -52,7 +60,16 @@ const Container = styled.div`
   width: 100%;
 `;
 
-const Field = styled.div<{ $hasValue: boolean }>`
+const FiledBox = styled.div`
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  width: 100%;
+  height: 100px;
+  gap: 20px;
+`;
+
+const Field = styled.div<{ $hasRightSlot: boolean; $hasValue: boolean }>`
   user-select: none;
   display: flex;
   align-items: center;
@@ -62,7 +79,7 @@ const Field = styled.div<{ $hasValue: boolean }>`
       ? `2px solid ${colors.app_white}`
       : `1px solid ${colors.app_white}`};
   padding: 0 20px;
-  width: 100%;
+  width: ${({ $hasRightSlot }) => ($hasRightSlot ? "540px" : "100%")};
   height: 100px;
 `;
 

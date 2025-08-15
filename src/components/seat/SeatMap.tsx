@@ -19,6 +19,7 @@ type SeatState = {
 };
 
 type SeatMapProps = {
+  myseat?: {};
   selectedSeat: number | null;
   onSelect: (selected: number | null) => void;
   seatsState: SeatState[]; // ✅ 타입 명시
@@ -68,21 +69,34 @@ const seats: Seat[] = [
 ];
 
 const SeatMap: React.FC<SeatMapProps> = ({
+  myseat,
   selectedSeat,
   onSelect,
   seatsState,
 }) => {
+  console.log(myseat);
+
   const toggle = (id: number, disabled: boolean) => {
     if (disabled) return; // 비활성화면 클릭 무시
     onSelect(selectedSeat === id ? null : id);
   };
+
+  const seatsStateList = React.useMemo<SeatState[]>(() => {
+    if (Array.isArray(seatsState)) return seatsState;
+    if (seatsState && typeof seatsState === "object") {
+      return Object.values(seatsState);
+    }
+    return [];
+  }, [seatsState]);
+
+  // if (!seatsState) return null; // 좌석 상태가 없으면 아무것도 렌더링하지 않음
 
   return (
     <Wrap>
       <Legend />
       <Canvas $bg={SeatMapImage}>
         {seats.map((s) => {
-          const live = seatsState?.find(
+          const live = seatsStateList?.find(
             (v) => v.seatId === s.id || v.seatNumber === s.label
           );
           // 사용 중이면 비활성화

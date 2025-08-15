@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { colors } from "../colors";
 
-const ErrorMsg = ({ children }: { children: string }) => {
+const ErrorMsg = ({ children }: { children: any }) => {
   return (
     <ErrorMsgBox>
       <ErrorMsgText>{children}</ErrorMsgText>
