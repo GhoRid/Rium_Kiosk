@@ -6,11 +6,20 @@ import SeatMap from "../../components/seat/SeatMap";
 import { useState } from "react";
 import BottomButtons from "../../components/BottomButtons";
 import ErrorMsg from "../../components/ErrorMsg";
+import { useQuery } from "@tanstack/react-query";
+import { getInformationSeat } from "../../apis/api/user";
 
 const ChangeSeatPage = () => {
   const [selectedSeat, setSelectedSeat] = useState<number | null>(null);
 
   const [error, setError] = useState<string | null>(null);
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["seatData"],
+    queryFn: () => getInformationSeat(),
+  });
+
+  console.log(data);
 
   const handleNext = () => {
     if (selectedSeat) {

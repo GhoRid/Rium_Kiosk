@@ -5,17 +5,20 @@ import { getAccessToken } from "../../utils/tokens";
 const MainLayout = () => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
+  const token = getAccessToken();
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
 
   useEffect(() => {
-    const token = getAccessToken();
     if (token && pathname === "/") {
       navigate("/home", { replace: true });
     }
-  }, [pathname, navigate]);
+    if (!token && pathname !== "/") {
+      navigate("/", { replace: true });
+    }
+  }, [pathname, navigate, token]);
 
   return <Outlet />;
 };

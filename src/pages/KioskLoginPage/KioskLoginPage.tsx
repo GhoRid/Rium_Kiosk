@@ -3,12 +3,14 @@ import { colors } from "../../colors";
 import { useMutation } from "@tanstack/react-query";
 import { loginKiosk } from "../../apis/api/kioskAuth";
 import Input from "./components/Input";
-import { useMemo, useState } from "react";
+import { use, useMemo, useState } from "react";
 import { saveTokens } from "../../utils/tokens";
+import { useNavigate } from "react-router";
 
 type ActiveField = "id" | "password";
 
 const KioskLoginPage = () => {
+  const navigate = useNavigate();
   const [activeField, setActiveField] = useState<ActiveField>("id");
   const [id, setId] = useState("");
   const [password, setPassword] = useState("");
@@ -24,8 +26,8 @@ const KioskLoginPage = () => {
       const jwt = res?.data?.jwt ?? res?.data?.data?.jwt;
       const refreshToken =
         res?.data?.refreshToken ?? res?.data?.data?.refreshToken;
-
       saveTokens(jwt, refreshToken);
+      navigate("/home", { replace: true });
     },
     onError: (error) => {
       console.error("로그인 실패:", error);
