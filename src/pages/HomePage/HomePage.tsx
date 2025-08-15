@@ -116,6 +116,27 @@ const HomePage = () => {
     }
   };
 
+  const handleChangeSeat = () => {
+    if (!userId) {
+      navigate("/login");
+      return;
+    }
+
+    if (isUsing) {
+      navigate("/change-seat");
+    } else {
+      setModalContent({
+        content: "좌석을 이용중이 아닙니다.",
+        submitText: "확인",
+        submitAction: () => {
+          setIsModalOpen(false);
+        },
+        isCloseIconVisible: true,
+      });
+      setIsModalOpen(true);
+    }
+  };
+
   const {
     placeName,
     placeMobileNumber,
@@ -148,6 +169,7 @@ const HomePage = () => {
             setIsModalOpen={setIsModalOpen}
             handleLogout={handleLogout}
             hanleCheckIn={hanleCheckIn}
+            handleChangeSeat={handleChangeSeat}
           />
         </ContentContainer>
         {/* 하단 배너 */}

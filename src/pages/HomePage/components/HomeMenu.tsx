@@ -11,12 +11,14 @@ type HomeMenuProps = {
   setIsModalOpen: (isModalOpen: boolean) => void;
   handleLogout: () => void;
   hanleCheckIn: () => void;
+  handleChangeSeat: () => void;
 };
 
 const HomeMenu = ({
   setIsModalOpen,
   handleLogout,
   hanleCheckIn,
+  handleChangeSeat,
 }: HomeMenuProps) => {
   const navigate = useNavigate();
 
@@ -35,7 +37,7 @@ const HomeMenu = ({
     {
       name: "자리 이동",
       icon: <ChangeSeat />,
-      action: () => navigate("/changeseat"),
+      action: () => handleChangeSeat(),
     },
   ];
 
