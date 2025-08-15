@@ -23,6 +23,7 @@ type SeatMapProps = {
   selectedSeat: number | null;
   onSelect: (selected: number | null) => void;
   seatsState: SeatState[]; // ✅ 타입 명시
+  usingSeatNumber?: number;
 };
 
 const seats: Seat[] = [
@@ -69,12 +70,12 @@ const seats: Seat[] = [
 ];
 
 const SeatMap: React.FC<SeatMapProps> = ({
-  myseat,
   selectedSeat,
   onSelect,
   seatsState,
+  usingSeatNumber,
 }) => {
-  console.log(myseat);
+  console.log(usingSeatNumber);
 
   const toggle = (id: number, disabled: boolean) => {
     if (disabled) return; // 비활성화면 클릭 무시
@@ -88,8 +89,6 @@ const SeatMap: React.FC<SeatMapProps> = ({
     }
     return [];
   }, [seatsState]);
-
-  // if (!seatsState) return null; // 좌석 상태가 없으면 아무것도 렌더링하지 않음
 
   return (
     <Wrap>
@@ -108,6 +107,7 @@ const SeatMap: React.FC<SeatMapProps> = ({
             <SeatBtn
               key={s.id}
               style={{ left: `${s.x}%`, top: `${s.y}%` }}
+              $isUsingSeat={usingSeatNumber === s.id}
               $reservedIsAvailable={reservedIsAvailable}
               $selected={selectedSeat === s.id}
               $disabled={isDisabled}
@@ -143,6 +143,7 @@ const Canvas = styled.div<{ $bg?: string }>`
 `;
 
 const SeatBtn = styled.button<{
+  $isUsingSeat: boolean;
   $reservedIsAvailable: boolean;
   $selected: boolean;
   $disabled: boolean;
@@ -153,9 +154,15 @@ const SeatBtn = styled.button<{
   display: grid;
   place-items: center;
 
-  background: ${({ $disabled, $reservedIsAvailable, $selected }) =>
-    // $disabled
-    $selected
+  background: ${({
+    $isUsingSeat,
+    $disabled,
+    $reservedIsAvailable,
+    $selected,
+  }) =>
+    $isUsingSeat
+      ? "#A90003"
+      : $selected
       ? colors.app_white
       : $reservedIsAvailable
       ? colors.app_main_color

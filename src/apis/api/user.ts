@@ -45,6 +45,20 @@ export const getInformationSeat = async () => {
   return await appInstance.get("/get/information/seat");
 };
 
+// 이용권 활성화
+export const enableTicket = async (data: any) => {
+  return await appInstance.post("/enable/ticket", data);
+};
+
+// 이용권 비활성화
+export const disableTicket = async (data: any) => {
+  return await appInstance.post("/disable/ticket", data);
+};
+
+export const checkUsing = async (params: any) => {
+  return await appInstance.get("/check/using", { params });
+};
+
 export const getInformationMyseat = async (params: any) => {
   return await appInstance.get("/get/information/myseat", { params });
 };

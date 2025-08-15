@@ -78,14 +78,14 @@ const PassBox = styled.div`
       rgba(255, 255, 255, 0) 100%
     ),
     #2b2b2b;
-  min-height: 275px; /* ✅ 중앙정렬 기준 높이 */
+  min-height: 275px;
 `;
 
 const PassTextBox = styled.div`
   display: flex;
   flex-direction: column;
   gap: 20px;
-  padding: 50px 70px; /* ✅ 내용 있을 때만 패딩 적용 */
+  padding: 50px 70px 0 70px;
 `;
 
 const PassHeader = styled.div`
@@ -97,6 +97,7 @@ const PassHeader = styled.div`
 
 const PassName = styled.span`
   font-size: 36px;
+  font-weight: 700;
   color: ${colors.app_white};
 `;
 
@@ -119,15 +120,15 @@ const Button = styled.button`
   color: ${colors.app_white};
   font-size: 30px;
   font-weight: bold;
-  margin: 40px 0 50px; /* 여백 약간 */
+  margin: 40px 0 50px;
 `;
 
 const BoxCenter = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100%; /* ✅ PassBox 내부를 꽉 채움 */
-  min-height: 275px; /* ✅ PassBox와 동일한 최소 높이 */
+  height: 100%;
+  min-height: 275px;
   width: 100%;
 `;
 

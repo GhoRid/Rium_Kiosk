@@ -6,25 +6,53 @@ import { useEffect, useState } from "react";
 import ErrorMsg from "../../components/ErrorMsg";
 import BottomButtons from "../../components/BottomButtons";
 import SeatMap from "../../components/seat/SeatMap";
-import { useQuery } from "@tanstack/react-query";
-import { getInformationSeat } from "../../apis/api/user";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import {
+  disableTicket,
+  enableTicket,
+  getInformationMyseat,
+  getInformationSeat,
+} from "../../apis/api/user";
+import { useUserId } from "../../hooks/useUserId";
 
 const SelectSeatPage = () => {
   const [selectedSeat, setSelectedSeat] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  const userId = useUserId();
 
   const { data: response, error: fetchError } = useQuery({
     queryKey: ["seats"],
     queryFn: () => getInformationSeat(),
   });
 
+  const disableTicketMutation = useMutation({
+    mutationFn: () =>
+      disableTicket({
+        mobileNumber: userId!,
+        seatNumber: null,
+      }),
+    onError: (error) => {
+      setError("좌석 선택을 취소하는 데 실패했습니다. 다시 시도해주세요.");
+    },
+  });
+
   const seatsState = response?.data || [];
-  console.log(seatsState);
+
+  const selectSeatMutatuion = useMutation({
+    mutationFn: () =>
+      enableTicket({
+        mobileNumber: userId!,
+        seatNumber: selectedSeat!,
+      }),
+    onError: (error) => {
+      setError("좌석 선택에 실패했습니다. 다시 시도해주세요.");
+    },
+  });
 
   const handleNext = () => {
     if (selectedSeat) {
-      // Navigate to the next page with the selected option
-      //   window.location.href = `/payment?option=${selectedSeat}`;
+      selectSeatMutatuion.mutate();
     } else {
       setError("좌석을 선택해주세요.");
     }

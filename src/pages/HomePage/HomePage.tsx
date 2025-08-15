@@ -9,18 +9,112 @@ import CustomModal from "../../components/CustomModal";
 import { useState } from "react";
 import LogoutButton from "./components/LogoutButton";
 import { useUserId } from "../../hooks/useUserId";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { getPlaceInformation } from "../../apis/api/kioskAuth";
+import { checkUsing, disableTicket } from "../../apis/api/user";
+import { clearUserId } from "../../utils/tokens";
+import { useNavigate } from "react-router";
 
 const HomePage = () => {
+  const navigate = useNavigate();
+
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [modalContent, setModalContent] = useState<{
+    content: string;
+    submitText: string;
+    submitAction: () => void;
+    isCloseIconVisible: boolean;
+  }>({
+    content: "",
+    submitText: "",
+    submitAction: () => {},
+    isCloseIconVisible: true,
+  });
 
   const userId = useUserId();
 
-  const { data } = useQuery({
-    queryKey: ["userInfo"],
+  const { data: placeInfoData } = useQuery({
+    queryKey: ["placeInformation"],
     queryFn: () => getPlaceInformation(),
   });
+
+  const { data: checkUsingData } = useQuery({
+    queryKey: ["checkUsing", userId],
+    queryFn: () => checkUsing({ mobileNumber: userId }),
+    enabled: !!userId,
+  });
+
+  const { isUsing, seatNumber } = checkUsingData?.data || {};
+
+  const disableTicketMutation = useMutation({
+    mutationKey: ["disableTicket", userId],
+    mutationFn: () =>
+      disableTicket({
+        mobileNumber: userId,
+      }),
+    onSuccess: () => {
+      setModalContent({
+        content: `${seatNumber}번 좌석\n퇴실 처리가 완료되었습니다..`,
+        submitText: "확인",
+        submitAction: () => {
+          clearUserId();
+          setIsModalOpen(false);
+        },
+        isCloseIconVisible: false,
+      });
+    },
+    onError: (error) => {
+      console.error("이용권 비활성화 실패:", error);
+    },
+  });
+
+  const handleLogout = () => {
+    if (!userId) {
+      navigate("/login");
+    }
+
+    if (isUsing) {
+      setModalContent({
+        content: `${seatNumber}번 좌석\n퇴실하시겠습니까?`,
+        submitText: "퇴실하기",
+        submitAction: () => disableTicketMutation.mutate(),
+        isCloseIconVisible: true,
+      });
+      setIsModalOpen(true);
+    } else {
+      setModalContent({
+        content: "좌석 이용중이 아닙니다.",
+        submitText: "확인",
+        submitAction: () => {
+          setIsModalOpen(false);
+        },
+        isCloseIconVisible: true,
+      });
+      setIsModalOpen(true);
+    }
+  };
+
+  const hanleCheckIn = () => {
+    if (!userId) {
+      navigate("/login");
+      return;
+    }
+
+    if (isUsing) {
+      setModalContent({
+        content: "좌석을 이용중입니다.",
+        submitText: "확인",
+        submitAction: () => {
+          setIsModalOpen(false);
+        },
+        isCloseIconVisible: true,
+      });
+      setIsModalOpen(true);
+    }
+    if (!isUsing) {
+      navigate("/select-seat");
+    }
+  };
 
   const {
     placeName,
@@ -28,7 +122,7 @@ const HomePage = () => {
     totalSeat,
     remainSeat,
     expectCheckoutSeat,
-  } = data?.data || {};
+  } = placeInfoData?.data || {};
 
   return (
     <>
@@ -50,7 +144,11 @@ const HomePage = () => {
           />
 
           {/* 메뉴 버튼 */}
-          <HomeMenu setIsModalOpen={setIsModalOpen} />
+          <HomeMenu
+            setIsModalOpen={setIsModalOpen}
+            handleLogout={handleLogout}
+            hanleCheckIn={hanleCheckIn}
+          />
         </ContentContainer>
         {/* 하단 배너 */}
         <FooterCarousel />
@@ -59,12 +157,10 @@ const HomePage = () => {
       <CustomModal
         isModalOpen={isModalOpen}
         setIsModalOpen={setIsModalOpen}
-        modalContent={"12번 좌석\n퇴실하시겠습니까?"}
-        submitText={"퇴실하기"}
-        submitAction={() => {
-          console.log("퇴실하기");
-          // setIsModalOpen(false);
-        }}
+        modalContent={modalContent.content}
+        submitText={modalContent.submitText}
+        submitAction={modalContent.submitAction}
+        isCloseIconVisible={modalContent.isCloseIconVisible}
       />
     </>
   );

@@ -9,9 +9,15 @@ import { useNavigate } from "react-router";
 
 type HomeMenuProps = {
   setIsModalOpen: (isModalOpen: boolean) => void;
+  handleLogout: () => void;
+  hanleCheckIn: () => void;
 };
 
-const HomeMenu = ({ setIsModalOpen }: HomeMenuProps) => {
+const HomeMenu = ({
+  setIsModalOpen,
+  handleLogout,
+  hanleCheckIn,
+}: HomeMenuProps) => {
   const navigate = useNavigate();
 
   const FeatureList = [
@@ -37,15 +43,12 @@ const HomeMenu = ({ setIsModalOpen }: HomeMenuProps) => {
     {
       name: "퇴실하기",
       icon: <Exit />,
-      action: () => {
-        console.log("퇴실하기");
-        setIsModalOpen(true);
-      },
+      action: () => handleLogout(),
     },
     {
       name: "입실하기",
       icon: <Enter />,
-      action: () => navigate("/select-seat"),
+      action: () => hanleCheckIn(),
     },
   ];
 

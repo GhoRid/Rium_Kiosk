@@ -27,7 +27,7 @@ const ChangeSeatPage = () => {
     queryFn: () => getInformationMyseat({ mobileNumber: userId! }),
   });
 
-  const mySeat = myseatResponse?.data || {};
+  const { seatNumber } = myseatResponse?.data || {};
 
   const { data: response, error: fetchError } = useQuery({
     queryKey: ["infoSeats"],
@@ -71,10 +71,10 @@ const ChangeSeatPage = () => {
           </MessageBox>
 
           <SeatMap
-            myseat={mySeat}
             selectedSeat={selectedSeat}
             onSelect={setSelectedSeat}
             seatsState={seatsState}
+            usingSeatNumber={seatNumber}
           />
         </Content>
 

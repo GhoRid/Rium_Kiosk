@@ -8,6 +8,7 @@ type CustomModalProps = {
   modalContent: string;
   submitText: string;
   submitAction: () => void;
+  isCloseIconVisible?: boolean;
 };
 
 const CustomModal = ({
@@ -16,15 +17,18 @@ const CustomModal = ({
   modalContent,
   submitText = "닫기",
   submitAction = () => {},
+  isCloseIconVisible = true,
 }: CustomModalProps) => {
   if (!isModalOpen) return null;
 
   return (
     <ModalOverlay>
       <ModalContent>
-        <CLoseIconBox onClick={() => setIsModalOpen(false)}>
-          <CloseIcon />
-        </CLoseIconBox>
+        {isCloseIconVisible && (
+          <CLoseIconBox onClick={() => setIsModalOpen(false)}>
+            <CloseIcon />
+          </CLoseIconBox>
+        )}
 
         <ContentBox>
           <ContentText>{modalContent}</ContentText>
