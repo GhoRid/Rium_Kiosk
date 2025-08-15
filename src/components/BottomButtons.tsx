@@ -17,7 +17,7 @@ const BottomButtons = ({
 
   return (
     <Container>
-      {!isSingle ? null : (
+      {isSingle ? null : (
         <BackButton onClick={() => navigate(-1)}>
           <Text>이전</Text>
         </BackButton>
@@ -57,7 +57,7 @@ const BackButton = styled.button`
 `;
 
 const SubmitButton = styled.button<{ $isSingle: boolean }>`
-  width: ${({ $isSingle }) => ($isSingle ? "460px" : "760px")};
+  width: ${({ $isSingle }) => ($isSingle ? "760px" : "460px")};
   height: 100%;
   border-radius: 30px;
   background-color: ${colors.app_main_color};

@@ -11,12 +11,12 @@ const Legend = () => {
             border: `2px solid ${colors.app_white}`,
           }}
         />
-        <Text>고정석 이용중</Text>
+        <Text>이용 가능 고정석</Text>
       </LegendItem>
 
       <LegendItem>
         <Swatch style={{ background: "#3b3f45" }} />
-        <Text>사용 불가</Text>
+        <Text>이용 불가</Text>
       </LegendItem>
 
       <LegendItem>
@@ -26,7 +26,7 @@ const Legend = () => {
             border: `2px solid ${colors.app_white}`,
           }}
         />
-        <Text>사용 가능</Text>
+        <Text>이용 가능</Text>
       </LegendItem>
     </Wrap>
   );

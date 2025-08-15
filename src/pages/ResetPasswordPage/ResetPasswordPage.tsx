@@ -8,6 +8,7 @@ import BottomButtons from "../../components/BottomButtons";
 import { isValidYmd } from "../../utils/checkValide";
 import { formatDateHyphen } from "../../utils/formatDate";
 import ErrorMsg from "../../components/ErrorMsg";
+import Header from "../../components/Header";
 
 const ResetPasswordPage = () => {
   type FieldName = "name" | "phone" | "birth";
@@ -19,6 +20,8 @@ const ResetPasswordPage = () => {
 
   const [submitted, setSubmitted] = useState(false);
   const [errors, setErrors] = useState<Partial<Record<FieldName, string>>>({});
+
+  // const
 
   const validateName = (v: string) =>
     v.trim() ? undefined : "이름을 입력해주세요.";
@@ -109,13 +112,10 @@ const ResetPasswordPage = () => {
     [name, phone, birth, submitted, errors]
   );
 
-  {
-    /* "입력하신 정보로 가입한 기록이 없어요.\n철자나 번호를 다시 확인해주세요." */
-  }
-
   return (
     <Container>
       <GoToHomeButton />
+      <Header title="비밀번호 재설정" />
       <Content>
         {InputFiledList.map((field) => (
           <InputFiled

@@ -66,7 +66,7 @@ const SignUpPage = () => {
   const [submitted, setSubmitted] = useState(false);
   const [errors, setErrors] = useState<Errors>({});
 
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(true);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   const validateName = (v: string) =>
     v.trim() ? undefined : "이름을 입력해주세요.";

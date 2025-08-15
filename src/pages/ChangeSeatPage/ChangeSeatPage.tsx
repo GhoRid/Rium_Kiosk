@@ -14,12 +14,12 @@ const ChangeSeatPage = () => {
 
   const [error, setError] = useState<string | null>(null);
 
-  const { data, isLoading } = useQuery({
-    queryKey: ["seatData"],
+  const { data: response, error: fetchError } = useQuery({
+    queryKey: ["seats"],
     queryFn: () => getInformationSeat(),
   });
 
-  console.log(data);
+  const seatsState = response?.data || [];
 
   const handleNext = () => {
     if (selectedSeat) {
@@ -40,7 +40,11 @@ const ChangeSeatPage = () => {
           <Message>좌석을 선택해주세요.</Message>
         </MessageBox>
 
-        <SeatMap selectedSeat={selectedSeat} onSelect={setSelectedSeat} />
+        <SeatMap
+          selectedSeat={selectedSeat}
+          onSelect={setSelectedSeat}
+          seatsState={seatsState}
+        />
       </Content>
 
       {!!error && <ErrorMsg>{error}</ErrorMsg>}

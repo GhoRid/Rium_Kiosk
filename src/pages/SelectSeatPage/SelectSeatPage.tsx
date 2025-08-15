@@ -6,10 +6,20 @@ import { useEffect, useState } from "react";
 import ErrorMsg from "../../components/ErrorMsg";
 import BottomButtons from "../../components/BottomButtons";
 import SeatMap from "../../components/seat/SeatMap";
+import { useQuery } from "@tanstack/react-query";
+import { getInformationSeat } from "../../apis/api/user";
 
 const SelectSeatPage = () => {
   const [selectedSeat, setSelectedSeat] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  const { data: response, error: fetchError } = useQuery({
+    queryKey: ["seats"],
+    queryFn: () => getInformationSeat(),
+  });
+
+  const seatsState = response?.data || [];
+  console.log(seatsState);
 
   const handleNext = () => {
     if (selectedSeat) {
@@ -36,12 +46,16 @@ const SelectSeatPage = () => {
           <Message>좌석을 선택해주세요</Message>
         </MessageBox>
 
-        <SeatMap selectedSeat={selectedSeat} onSelect={setSelectedSeat} />
+        <SeatMap
+          selectedSeat={selectedSeat}
+          onSelect={setSelectedSeat}
+          seatsState={seatsState}
+        />
       </Content>
 
       {!!error && <ErrorMsg>{error}</ErrorMsg>}
 
-      <BottomButtons submitName="다음" submit={handleNext} />
+      <BottomButtons submitName="입실하기" submit={handleNext} />
     </Container>
   );
 };

@@ -45,7 +45,7 @@ const HomeMenu = ({ setIsModalOpen }: HomeMenuProps) => {
     {
       name: "입실하기",
       icon: <Enter />,
-      action: () => navigate("/completepayment"),
+      action: () => navigate("/select-seat"),
     },
   ];
 
