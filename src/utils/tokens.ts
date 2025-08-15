@@ -14,11 +14,11 @@ export const clearTokens = () => {
 
 export const getAccessToken = () => localStorage.getItem(ACCESS_TOKEN_KEY);
 
-export const saveUserId = (userId: number) => {
-  localStorage.setItem(USER_ID_KEY, String(userId));
+export const saveUserId = (userId: string) => {
+  localStorage.setItem(USER_ID_KEY, userId);
 };
 
-const clearUserId = () => {
+export const clearUserId = () => {
   localStorage.removeItem(USER_ID_KEY);
 };
 

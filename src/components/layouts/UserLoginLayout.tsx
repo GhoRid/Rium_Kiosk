@@ -3,18 +3,23 @@ import { Outlet, useLocation, useNavigate } from "react-router";
 import { getUserId } from "../../utils/tokens";
 
 const UserLoginLayout = () => {
-  const { pathname } = useLocation();
+  const location = useLocation();
   const navigate = useNavigate();
 
   useEffect(() => {
     const userId = getUserId();
+    const fullPath = location.pathname + location.search + location.hash;
 
-    if (userId && pathname === "/") {
+    if (userId && location.pathname === "/") {
       navigate("/home", { replace: true });
-    } else if (!userId && pathname !== "/login") {
-      navigate("/login", { replace: true });
+    } else if (!userId && location.pathname !== "/login") {
+      // 로그인 페이지로 보낼 때 'from' 상태에 원래 가려던 경로를 저장
+      navigate("/login", {
+        replace: true,
+        state: { from: fullPath },
+      });
     }
-  }, [pathname, navigate]);
+  }, [location, navigate]);
 
   return <Outlet />;
 };

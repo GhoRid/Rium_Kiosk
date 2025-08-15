@@ -8,15 +8,47 @@ import AuthLinks from "./components/AuthLinks";
 import { formatPhoneNumber } from "../../utils/formatPhoneNumber";
 import { ReactComponent as PhoneIcon } from "../../assets/svgs/phone.svg";
 import { ReactComponent as LockIcon } from "../../assets/svgs/password.svg";
+import { useLocation, useNavigate } from "react-router";
+import { useMutation } from "@tanstack/react-query";
+import { validUser } from "../../apis/api/user";
+import { saveUserId } from "../../utils/tokens";
 
+type FieldName = "phone" | "password";
 const digitsOnly = (s: string) => s.replace(/\D/g, "");
 
 const LoginPage = () => {
-  type FieldName = "phone" | "password";
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // 리다이렉트 목적지 계산
+  const searchParams = new URLSearchParams(location.search);
+  const redirectFromState = (location.state as any)?.from as string | undefined;
+  const redirectFromQuery = searchParams.get("redirect") || undefined;
+  const redirectTo = redirectFromState || redirectFromQuery || "/home";
 
   const [activeField, setActiveField] = useState<FieldName>("phone");
-  const [phone, setPhone] = useState(""); // 숫자만 저장
-  const [password, setPassword] = useState(""); // 4자리
+  const [phone, setPhone] = useState("");
+  const [password, setPassword] = useState("");
+
+  const userLoginMutation = useMutation({
+    mutationFn: async () => {
+      return await validUser({
+        mobileNumber: digitsOnly(phone),
+        password,
+      });
+    },
+    onSuccess: (data) => {
+      saveUserId(phone);
+      navigate(redirectTo, { replace: true });
+    },
+    onError: (error) => {
+      if ((error as any)?.response?.status) {
+        console.error("로그인 실패:", (error as any).response.status);
+      } else {
+        console.error("로그인 실패:", error);
+      }
+    },
+  });
 
   const handleKeypad = useCallback(
     (val: string) => {
@@ -56,6 +88,11 @@ const LoginPage = () => {
 
   const canLogin = phone.length >= 10 && password.length === 4;
 
+  const onSubmit = () => {
+    if (!canLogin || userLoginMutation.isPending) return;
+    userLoginMutation.mutate();
+  };
+
   return (
     <Container>
       <GoToHomeButton />
@@ -74,7 +111,7 @@ const LoginPage = () => {
           />
         ))}
 
-        <LoginButton disabled={!canLogin}>
+        <LoginButton disabled={!canLogin} onClick={onSubmit}>
           <LoginText>로그인</LoginText>
         </LoginButton>
 
