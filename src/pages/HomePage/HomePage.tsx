@@ -123,7 +123,7 @@ const HomePage = () => {
     }
 
     if (isUsing) {
-      navigate("/change-seat");
+      navigate("/changeseat");
     } else {
       setModalContent({
         content: "좌석을 이용중이 아닙니다.",

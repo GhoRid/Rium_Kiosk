@@ -7,7 +7,11 @@ import { useState } from "react";
 import BottomButtons from "../../components/BottomButtons";
 import ErrorMsg from "../../components/ErrorMsg";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { getInformationMyseat, getInformationSeat } from "../../apis/api/user";
+import {
+  getInformationMyseat,
+  getInformationSeat,
+  getInformationTicket,
+} from "../../apis/api/user";
 import CustomModal from "../../components/CustomModal";
 import { useNavigate } from "react-router";
 import { changeSeat } from "../../apis/api/pass";
@@ -22,14 +26,21 @@ const ChangeSeatPage = () => {
 
   const userId = useUserId();
 
-  const { data: myseatResponse } = useQuery({
-    queryKey: ["mySeats"],
-    queryFn: () => getInformationMyseat({ mobileNumber: userId! }),
+  // const { data: myseatResponse } = useQuery({
+  //   queryKey: ["mySeats"],
+  //   queryFn: () => getInformationMyseat({ mobileNumber: userId! }),
+  // });
+
+  // console.log(myseatResponse);
+
+  // const { seatNumber } = myseatResponse?.data || {};
+
+  const { data: myTicketResponse } = useQuery({
+    queryKey: ["myTicket"],
+    queryFn: () => getInformationTicket({ mobileNumber: userId! }),
   });
 
-  console.log(myseatResponse);
-
-  const { seatNumber } = myseatResponse?.data || {};
+  const { isReservedTicket, seatNumber } = myTicketResponse?.data || {};
 
   const { data: response, error: fetchError } = useQuery({
     queryKey: ["infoSeats"],
@@ -77,6 +88,7 @@ const ChangeSeatPage = () => {
             onSelect={setSelectedSeat}
             seatsState={seatsState}
             usingSeatNumber={seatNumber}
+            isReservedTicket={isReservedTicket}
           />
         </Content>
 

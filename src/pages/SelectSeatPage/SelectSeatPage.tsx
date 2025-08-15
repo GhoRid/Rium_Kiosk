@@ -8,10 +8,10 @@ import BottomButtons from "../../components/BottomButtons";
 import SeatMap from "../../components/seat/SeatMap";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
-  disableTicket,
   enableTicket,
-  getInformationMyseat,
+  // getInformationMyseat,
   getInformationSeat,
+  getInformationTicket,
 } from "../../apis/api/user";
 import { useUserId } from "../../hooks/useUserId";
 import { useNavigate } from "react-router";
@@ -28,6 +28,13 @@ const SelectSeatPage = () => {
     queryKey: ["seats"],
     queryFn: () => getInformationSeat(),
   });
+
+  const { data: myTicketResponse } = useQuery({
+    queryKey: ["myTicket"],
+    queryFn: () => getInformationTicket({ mobileNumber: userId! }),
+  });
+
+  const { isReservedTicket } = myTicketResponse?.data || {};
 
   const seatsState = response?.data || [];
 
@@ -73,6 +80,7 @@ const SelectSeatPage = () => {
           selectedSeat={selectedSeat}
           onSelect={setSelectedSeat}
           seatsState={seatsState}
+          isReservedTicket={isReservedTicket}
         />
       </Content>
 
