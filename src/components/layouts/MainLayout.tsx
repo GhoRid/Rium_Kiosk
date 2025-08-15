@@ -1,6 +1,6 @@
 import { Outlet, useLocation, useNavigate } from "react-router";
 import { useEffect } from "react";
-import { getAccessToken } from "../utils/tokens";
+import { getAccessToken } from "../../utils/tokens";
 
 const MainLayout = () => {
   const { pathname } = useLocation();

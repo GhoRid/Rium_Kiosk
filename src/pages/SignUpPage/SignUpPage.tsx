@@ -11,7 +11,9 @@ import GoToHomeButton from "../../components/GoToHomeButton";
 import BottomButtons from "../../components/BottomButtons";
 import { isValidYmd } from "../../utils/checkValide";
 import { useMutation } from "@tanstack/react-query";
-import { sendSmsCode, verifySmsCode } from "../../apis/api/user";
+import { registerUser, sendSmsCode, verifySmsCode } from "../../apis/api/user";
+import SignUpSuccessModal from "./components/SignUpSuccessModal";
+import { useNavigate } from "react-router";
 
 const digitsOnly = (s: string) => s.replace(/\D/g, "");
 const fmtBirth = (v: string) => digitsOnly(v).slice(0, 8);
@@ -34,6 +36,8 @@ type Errors = Partial<{
 }>;
 
 const SignUpPage = () => {
+  const navigate = useNavigate();
+
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [cert, setCert] = useState("");
@@ -62,7 +66,7 @@ const SignUpPage = () => {
   const [submitted, setSubmitted] = useState(false);
   const [errors, setErrors] = useState<Errors>({});
 
-  console.log(errors);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(true);
 
   const validateName = (v: string) =>
     v.trim() ? undefined : "이름을 입력해주세요.";
@@ -117,6 +121,26 @@ const SignUpPage = () => {
     },
   });
 
+  const registerUserMutation = useMutation({
+    mutationFn: async () => {
+      registerUser({
+        mobileNumber: digitsOnly(phone),
+        password: pin,
+        placeId: 1,
+        name: name,
+        birth: birth,
+        sighUpPath: route,
+      });
+    },
+    onSuccess: (res) => {
+      setIsModalOpen(true);
+    },
+    onError: (e: any) => {
+      // 실패 시 처리 로직
+      console.error("회원가입 실패:", e);
+    },
+  });
+
   const canRequestCode = useMemo(() => {
     const len = digitsOnly(phone).length;
     return (len === 10 || len === 11) && !sendCodeMutation.isPending;
@@ -150,7 +174,7 @@ const SignUpPage = () => {
     const v = validateAll();
     setErrors(v);
     if (Object.keys(v).length === 0) {
-      console.log("PASS");
+      registerUserMutation.mutate();
     }
   };
 
@@ -205,110 +229,120 @@ const SignUpPage = () => {
     submitted ? errors[k] : undefined;
 
   return (
-    <Container>
-      <GoToHomeButton />
-      <Content>
-        <Form>
-          <InputFileds
-            label="이름"
-            value={name}
-            onChange={onChangeName}
-            error={err("name")}
+    <>
+      <Container>
+        <GoToHomeButton />
+        <Content>
+          <Form>
+            <InputFileds
+              label="이름"
+              value={name}
+              onChange={onChangeName}
+              error={err("name")}
+            />
+
+            <InputFileds
+              label="휴대폰 번호"
+              value={formatPhoneNumber(phone)}
+              onChange={onChangePhone}
+              inputMode="numeric"
+              normalizer={(s) => digitsOnly(s).slice(0, 11)}
+              rightSlot={
+                <RightButton
+                  type="button"
+                  disabled={!canRequestCode}
+                  onClick={() => sendCodeMutation.mutate()}
+                >
+                  <RightButtonText>
+                    {sendCodeMutation.isPending ? "요청중..." : "인증 요청"}
+                  </RightButtonText>
+                </RightButton>
+              }
+              error={err("phone")}
+            />
+
+            <InputFileds
+              label={`인증번호${isCodeVerified ? " (인증 완료)" : ""}`}
+              value={cert}
+              onChange={onChangeCert}
+              inputMode="numeric"
+              rightSlot={
+                <RightButton
+                  type="button"
+                  disabled={!canVerifyCode || isCodeVerified}
+                  onClick={() => verifyCodeMutation.mutate()}
+                >
+                  <RightButtonText>
+                    {isCodeVerified
+                      ? "완료"
+                      : verifyCodeMutation.isPending
+                      ? "확인중..."
+                      : "인증하기"}
+                  </RightButtonText>
+                </RightButton>
+              }
+              error={err("cert")}
+            />
+
+            <InputFileds
+              label="비밀번호 (4자리)"
+              value={pin}
+              onChange={onChangePin}
+              type="password"
+              inputMode="numeric"
+              error={err("pin")}
+            />
+
+            <InputFileds
+              label="생년월일(YYYYMMDD)"
+              value={formatDateHyphen(birth)}
+              onChange={onChangeBirth}
+              inputMode="numeric"
+              normalizer={fmtBirth}
+              rightSlot={
+                <RadioGroup
+                  value={gender}
+                  onChange={setGender}
+                  options={[
+                    { label: "남", value: "M" },
+                    { label: "여", value: "F" },
+                  ]}
+                />
+              }
+              error={err("birth")}
+            />
+
+            <JoinPathAccordion
+              route={route}
+              setRoute={onSelectRoute}
+              paths={[
+                "포털 사이트 검색",
+                "네이버 플레이스",
+                "인스타그램",
+                "지인 추천",
+              ]}
+              error={err("route")}
+            />
+          </Form>
+
+          <ConsentList
+            items={terms}
+            onChange={onChangeTerms}
+            error={err("terms")}
           />
 
-          <InputFileds
-            label="휴대폰 번호"
-            value={formatPhoneNumber(phone)}
-            onChange={onChangePhone}
-            inputMode="numeric"
-            normalizer={(s) => digitsOnly(s).slice(0, 11)}
-            rightSlot={
-              <RightButton
-                type="button"
-                disabled={!canRequestCode}
-                onClick={() => sendCodeMutation.mutate()}
-              >
-                <RightButtonText>
-                  {sendCodeMutation.isPending ? "요청중..." : "인증 요청"}
-                </RightButtonText>
-              </RightButton>
-            }
-            error={err("phone")}
-          />
-
-          <InputFileds
-            label={`인증번호${isCodeVerified ? " (인증 완료)" : ""}`}
-            value={cert}
-            onChange={onChangeCert}
-            inputMode="numeric"
-            rightSlot={
-              <RightButton
-                type="button"
-                disabled={!canVerifyCode || isCodeVerified}
-                onClick={() => verifyCodeMutation.mutate()}
-              >
-                <RightButtonText>
-                  {isCodeVerified
-                    ? "완료"
-                    : verifyCodeMutation.isPending
-                    ? "확인중..."
-                    : "인증하기"}
-                </RightButtonText>
-              </RightButton>
-            }
-            error={err("cert")}
-          />
-
-          <InputFileds
-            label="비밀번호 (4자리)"
-            value={pin}
-            onChange={onChangePin}
-            type="password"
-            inputMode="numeric"
-            error={err("pin")}
-          />
-
-          <InputFileds
-            label="생년월일(YYYYMMDD)"
-            value={formatDateHyphen(birth)}
-            onChange={onChangeBirth}
-            inputMode="numeric"
-            normalizer={fmtBirth}
-            rightSlot={
-              <RadioGroup
-                value={gender}
-                onChange={setGender}
-                options={[
-                  { label: "남", value: "M" },
-                  { label: "여", value: "F" },
-                ]}
-              />
-            }
-            error={err("birth")}
-          />
-
-          <JoinPathAccordion
-            route={route}
-            setRoute={onSelectRoute}
-            paths={[
-              "포털 사이트 검색",
-              "네이버 플레이스",
-              "인스타그램",
-              "지인 추천",
-            ]}
-            error={err("route")}
-          />
-        </Form>
-
-        <ConsentList
-          items={terms}
-          onChange={onChangeTerms}
-          error={err("terms")}
-        />
-
-        <BottomButtons submitName={"회원가입"} submit={handleSubmit} />
-      </Content>
-    </Container>
+          <BottomButtons submitName={"회원가입"} submit={handleSubmit} />
+        </Content>
+      </Container>
+      <SignUpSuccessModal
+        isModalOpen={isModalOpen}
+        setIsModalOpen={setIsModalOpen}
+        submitAction={() => {
+          setIsModalOpen(false);
+          navigate("/login", { replace: true });
+        }}
+      />
+    </>
   );
 };
 
