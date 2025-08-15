@@ -2,37 +2,45 @@ import styled from "styled-components";
 import { colors } from "../../colors";
 import GoToHomeButton from "../../components/GoToHomeButton";
 import Header from "../../components/Header";
-import { useLocation } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import FreeSeatForm from "../../components/completeForm/FreeSeatForm";
 import BottomButton from "../CompletePaymentPage/components/BottomButton";
+import CompleteCheckInForm from "./components/CompleteCheckInForm";
+import { clearUserId } from "../../utils/tokens";
 
-const CompletePaymentPage = () => {
+const CompleteCheckInPage = () => {
+  const date = new Date();
+  const navigate = useNavigate();
+
+  const pad = (n: number) => String(n).padStart(2, "0");
+  const formattedDate = `${date.getFullYear()}-${pad(
+    date.getMonth() + 1
+  )}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
+
   const location = useLocation();
-  console.log("CompletePaymentPage location state:", location.state);
-  // const { passType, label, price } = location.state || {};
+  const { selectedSeat } = location.state || {};
 
-  // 1회 이용권, 자유석, 고정석
-  const passtype = "고정석";
+  const handleOkay = () => {
+    navigate("/home");
+    clearUserId();
+  };
 
   return (
     <Container>
-      <GoToHomeButton />
       <Header title="결제완료" />
       <Content>
         <MessageBox>
-          <Message>결제가 완료되었습니다.</Message>
+          <Message>입실 처리가 완료되었습니다.</Message>
         </MessageBox>
 
-        {/* <SinglePassForm /> */}
-        {/* <FixedSeatForm /> */}
-        <FreeSeatForm />
+        <CompleteCheckInForm date={formattedDate} selectedSeat={selectedSeat} />
       </Content>
-      <BottomButton submitName="확인" submit={() => {}} />
+      <BottomButton submitName="확인" submit={() => handleOkay()} />
     </Container>
   );
 };
 
-export default CompletePaymentPage;
+export default CompleteCheckInPage;
 
 const Container = styled.div`
   background-color: ${colors.app_black};

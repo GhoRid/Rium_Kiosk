@@ -15,6 +15,7 @@ import ChangeSeatPage from "./pages/ChangeSeatPage/ChangeSeatPage";
 import CompletePaymentPage from "./pages/CompletePaymentPage/CompletePaymentPage";
 import KioskLoginPage from "./pages/KioskLoginPage/KioskLoginPage";
 import UserLoginLayout from "./components/layouts/UserLoginLayout";
+import CompleteCheckInPage from "./pages/CompleteCheckInPage/CompleteCheckInPage";
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
             <Route path="/checkextendpass" element={<CheckExtendPassPage />} />
             <Route path="/changeseat" element={<ChangeSeatPage />} />
             <Route path="/completepayment" element={<CompletePaymentPage />} />
+            <Route path="/completecheckin" element={<CompleteCheckInPage />} />
           </Route>
         </Route>
       </Routes>

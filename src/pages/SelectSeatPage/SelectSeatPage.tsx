@@ -17,10 +17,9 @@ import { useUserId } from "../../hooks/useUserId";
 import { useNavigate } from "react-router";
 
 const SelectSeatPage = () => {
+  const navigate = useNavigate();
   const [selectedSeat, setSelectedSeat] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
-
-  const navigate = useNavigate();
 
   const userId = useUserId();
 
@@ -45,7 +44,11 @@ const SelectSeatPage = () => {
         seatId: selectedSeat!,
       }),
     onSuccess: () => {
-      // navigate("/select-pass", {
+      navigate("/completecheckin", {
+        state: {
+          selectedSeat: selectedSeat,
+        },
+      });
     },
     onError: (error) => {
       setError("좌석 선택에 실패했습니다. 다시 시도해주세요.");

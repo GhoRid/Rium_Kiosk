@@ -55,11 +55,11 @@ const Card = styled(BaseButton)<{
   $width: number;
   $height: number;
 }>`
-  width: ${({ $width }) => $width}px;
-  height: ${({ $height }) => $height}px;
+  width: ${({ $width }) => (Number.isFinite($width) ? $width : 320)}px;
+  height: ${({ $height }) => (Number.isFinite($height) ? $height : 160)}px;
+  padding: 24px;
   border: ${({ $isSelected }) =>
-    $isSelected ? `2px solid ${colors.app_white}` : "none"};
-
+    $isSelected ? `2px solid ${colors.app_white}` : ""};
   background: linear-gradient(
       180deg,
       rgba(255, 255, 255, 0.01) 0%,
@@ -67,14 +67,16 @@ const Card = styled(BaseButton)<{
     ),
     #2b2b2b;
 `;
-
 const Label = styled.span`
+  /* 또는 && { ... } */
   font-size: 36px;
   font-weight: 700;
+  line-height: 1.1;
+  text-align: center;
 `;
-
 const Price = styled.span`
   font-size: 30px;
-
   margin-top: 25px;
+  line-height: 1.2;
+  text-align: center;
 `;

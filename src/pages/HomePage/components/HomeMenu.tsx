@@ -74,7 +74,7 @@ const HomeMenu = ({
         ))}
       </ActionBox>
 
-      <ReprintBox onClick={() => navigate("/login")}>
+      <ReprintBox onClick={() => console.log("재발행")}>
         <Label>출입증 재발행</Label>
       </ReprintBox>
     </MenuContainer>
