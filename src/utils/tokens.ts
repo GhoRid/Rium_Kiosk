@@ -2,6 +2,10 @@ export const ACCESS_TOKEN_KEY = "accessToken";
 export const REFRESH_TOKEN_KEY = "refreshToken";
 export const USER_ID_KEY = "userId";
 
+const emitAuthChange = () => {
+  window.dispatchEvent(new Event("authchange"));
+};
+
 export const saveTokens = (jwt: string, refreshToken?: string) => {
   localStorage.setItem(ACCESS_TOKEN_KEY, jwt);
   if (refreshToken) localStorage.setItem(REFRESH_TOKEN_KEY, refreshToken);
@@ -16,10 +20,12 @@ export const getAccessToken = () => localStorage.getItem(ACCESS_TOKEN_KEY);
 
 export const saveUserId = (userId: string) => {
   localStorage.setItem(USER_ID_KEY, userId);
+  emitAuthChange();
 };
 
 export const clearUserId = () => {
   localStorage.removeItem(USER_ID_KEY);
+  emitAuthChange();
 };
 
 export const getUserId = () => {

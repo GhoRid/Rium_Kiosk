@@ -7,14 +7,18 @@ import HomeHeader from "./components/HomeHeader";
 import FooterCarousel from "./components/FooterCarousel";
 import CustomModal from "../../components/CustomModal";
 import { useState } from "react";
+import LogoutButton from "./components/LogoutButton";
+import { useUserId } from "../../hooks/useUserId";
 
 const HomePage = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
+  const userId = useUserId();
   return (
     <>
       <Container>
         <DateInfo />
+        {userId && <LogoutButton />}
         <ContentContainer>
           {/* 지점명/전화번호/로고 */}
           <HomeHeader />
@@ -55,5 +59,5 @@ const Container = styled.div`
 
 const ContentContainer = styled.div`
   padding: 0 130px;
-  margin-top: 200px;
+  margin-top: 120px;
 `;
