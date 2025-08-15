@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import PassInfo from "./PassInfo";
 import DemoQr from "./DemoQR";
-import { colors } from "../../../colors";
+import { colors } from "../../colors";
 
 type PassType = "1회 이용권" | "자유석" | "고정석";
 

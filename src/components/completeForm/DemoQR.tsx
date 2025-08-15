@@ -1,6 +1,6 @@
 import styled, { keyframes } from "styled-components";
 import { ReactComponent as DemoQrSvg } from "../../../assets/svgs/demoQR.svg";
-import { colors } from "../../../colors";
+import { colors } from "../../colors";
 
 const DemoQr = () => {
   return (

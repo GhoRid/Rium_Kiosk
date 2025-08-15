@@ -2,11 +2,9 @@ import styled from "styled-components";
 import { colors } from "../../colors";
 import GoToHomeButton from "../../components/GoToHomeButton";
 import Header from "../../components/Header";
-import BottomButton from "./components/BottomButton";
 import { useLocation } from "react-router";
 import FreeSeatForm from "../../components/completeForm/FreeSeatForm";
-import FixedSeatForm from "../../components/completeForm/FixedSeatForm";
-import SinglePassForm from "../../components/completeForm/SinglePassForm";
+import BottomButton from "../CompletePaymentPage/components/BottomButton";
 
 const CompletePaymentPage = () => {
   const location = useLocation();

@@ -1,6 +1,6 @@
 import styled, { keyframes } from "styled-components";
-import { ReactComponent as DeskIconSvg } from "../../../assets/svgs/desk.svg";
-import { ReactComponent as HandIconSvg } from "../../../assets/svgs/hand.svg";
+import { ReactComponent as DeskIconSvg } from "../../assets/svgs/desk.svg";
+import { ReactComponent as HandIconSvg } from "../../assets/svgs/hand.svg";
 
 const DeskAnimation = () => {
   return (

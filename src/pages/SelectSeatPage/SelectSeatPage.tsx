@@ -14,10 +14,13 @@ import {
   getInformationSeat,
 } from "../../apis/api/user";
 import { useUserId } from "../../hooks/useUserId";
+import { useNavigate } from "react-router";
 
 const SelectSeatPage = () => {
   const [selectedSeat, setSelectedSeat] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  const navigate = useNavigate();
 
   const userId = useUserId();
 
@@ -26,25 +29,17 @@ const SelectSeatPage = () => {
     queryFn: () => getInformationSeat(),
   });
 
-  const disableTicketMutation = useMutation({
-    mutationFn: () =>
-      disableTicket({
-        mobileNumber: userId!,
-        seatNumber: null,
-      }),
-    onError: (error) => {
-      setError("좌석 선택을 취소하는 데 실패했습니다. 다시 시도해주세요.");
-    },
-  });
-
   const seatsState = response?.data || [];
 
   const selectSeatMutatuion = useMutation({
     mutationFn: () =>
       enableTicket({
         mobileNumber: userId!,
-        seatNumber: selectedSeat!,
+        seatId: selectedSeat!,
       }),
+    onSuccess: () => {
+      // navigate("/select-pass", {
+    },
     onError: (error) => {
       setError("좌석 선택에 실패했습니다. 다시 시도해주세요.");
     },

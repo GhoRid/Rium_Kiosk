@@ -27,6 +27,8 @@ const ChangeSeatPage = () => {
     queryFn: () => getInformationMyseat({ mobileNumber: userId! }),
   });
 
+  console.log(myseatResponse);
+
   const { seatNumber } = myseatResponse?.data || {};
 
   const { data: response, error: fetchError } = useQuery({
