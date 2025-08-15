@@ -28,6 +28,7 @@ const SinglePassPage = () => {
         state: {
           passType: "1회 이용권",
           label: selectedPass.label,
+          time: selectedPass.time,
           price: selectedPass.price,
         },
       });
@@ -43,34 +44,42 @@ const SinglePassPage = () => {
   const passList = [
     {
       label: "2시간",
+      time: 2,
       price: 4000,
     },
     {
       label: "3시간",
+      time: 3,
       price: 5000,
     },
     {
       label: "4시간",
+      time: 4,
       price: 6000,
     },
     {
       label: "5시간",
+      time: 5,
       price: 7000,
     },
     {
       label: "6시간",
+      time: 6,
       price: 8000,
     },
     {
       label: "8시간",
+      time: 8,
       price: 10000,
     },
     {
       label: "10시간",
+      time: 10,
       price: 12000,
     },
     {
       label: "12시간",
+      time: 12,
       price: 14000,
     },
   ];

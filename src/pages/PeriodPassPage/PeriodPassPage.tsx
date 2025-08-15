@@ -8,27 +8,39 @@ import OptionCard from "./components/OptionCard";
 import BottomButtons from "../../components/BottomButtons";
 import { useNavigate } from "react-router";
 
+type SeatOption = {
+  label: string;
+  time: number; // 주 단위
+  seatType: string; // "고정석" | "자유석"
+  price: number;
+};
+
+type SeatGroup = {
+  type: string; // "고정석" | "자유석"
+  options: SeatOption[];
+};
+
 const PeriodPassPage = () => {
   const navigate = useNavigate();
 
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const SeatList = [
+  const SeatList: SeatGroup[] = [
     {
       type: "고정석",
       options: [
-        { label: "2주 고정석", price: 150000 },
-        { label: "4주 고정석", price: 250000 },
-        { label: "8주 고정석", price: 450000 },
+        { label: "2주 고정석", time: 2, seatType: "고정석", price: 150000 },
+        { label: "4주 고정석", time: 4, seatType: "고정석", price: 250000 },
+        { label: "8주 고정석", time: 8, seatType: "고정석", price: 450000 },
       ],
     },
     {
       type: "자유석",
       options: [
-        { label: "2주 자유석", price: 100000 },
-        { label: "4주 자유석", price: 200000 },
-        { label: "8주 자유석", price: 380000 },
+        { label: "2주 자유석", time: 2, seatType: "자유석", price: 100000 },
+        { label: "4주 자유석", time: 4, seatType: "자유석", price: 200000 },
+        { label: "8주 자유석", time: 8, seatType: "자유석", price: 380000 },
       ],
     },
   ];
@@ -39,20 +51,33 @@ const PeriodPassPage = () => {
       return;
     }
 
+    let seatType: string | null = null;
+    let label: string | null = null;
+    let time: number | null = null;
     let price: number | null = null;
 
     for (const seat of SeatList) {
-      const found = seat.options.find((o) => o.label === selectedOption);
-      if (found) {
-        price = found.price;
+      const opt = seat.options.find((o) => o.label === selectedOption);
+      if (opt) {
+        seatType = seat.type;
+        label = opt.label;
+        time = opt.time;
+        price = opt.price;
         break;
       }
+    }
+
+    if (!seatType || !label || time == null || price == null) {
+      setError("선택한 이용권 정보를 찾을 수 없습니다.");
+      return;
     }
 
     navigate("/payment", {
       state: {
         passType: "기간권",
-        label: selectedOption,
+        seatType,
+        label,
+        time,
         price,
       },
     });
@@ -83,7 +108,7 @@ const PeriodPassPage = () => {
                     width={240}
                     height={200}
                     selectedOption={selectedOption}
-                    selectOption={setSelectedOption} // 그대로 사용
+                    selectOption={setSelectedOption}
                   />
                 ))}
               </CardList>

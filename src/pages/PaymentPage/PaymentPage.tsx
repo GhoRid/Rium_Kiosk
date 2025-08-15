@@ -14,9 +14,8 @@ import CardModal from "./components/CardModal";
 
 const PaymentPage = () => {
   const location = useLocation();
-  const { passType, label, price } = location.state || {};
-
-  // console.log("PaymentPage location state:", passType, label, price);
+  console.log("PaymentPage location state:", location.state);
+  const { passType, label, price, time, seatType } = location.state || {};
 
   const [paymentMethod, setPaymentMethod] = useState<string | null>(null);
   const [installment, setInstallment] = useState<string>("일시불");

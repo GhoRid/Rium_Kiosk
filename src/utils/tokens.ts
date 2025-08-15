@@ -30,5 +30,5 @@ export const clearUserId = () => {
 
 export const getUserId = () => {
   const userId = localStorage.getItem(USER_ID_KEY);
-  return userId ? Number(userId) : null;
+  return userId;
 };

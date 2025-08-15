@@ -10,6 +10,7 @@ import FreeSeatForm from "./components/FreeSeatForm";
 
 const CompletePaymentPage = () => {
   const location = useLocation();
+  console.log("CompletePaymentPage location state:", location.state);
   // const { passType, label, price } = location.state || {};
 
   // 1회 이용권, 자유석, 고정석

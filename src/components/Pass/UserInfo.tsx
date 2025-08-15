@@ -1,16 +1,21 @@
 import styled from "styled-components";
 import { colors } from "../../colors";
 
-const UserInfo = () => {
+type UserInfoProps = {
+  name: string;
+  isUsing: boolean;
+};
+
+const UserInfo = ({ name, isUsing }: UserInfoProps) => {
   return (
     <Wrapper>
       <NameBox>
-        <Name>리움</Name>
+        <Name>{name}</Name>
         <Text>님</Text>
       </NameBox>
 
-      <IsUsingBox>
-        <IsUsingText>좌석 이용중</IsUsingText>
+      <IsUsingBox $isUsing={!!isUsing}>
+        <IsUsingText>{isUsing ? "좌석 이용중" : "미 이용중"}</IsUsingText>
       </IsUsingBox>
     </Wrapper>
   );
@@ -40,12 +45,13 @@ const Name = styled.span`
   font-weight: bold;
 `;
 
-const IsUsingBox = styled.div`
+const IsUsingBox = styled.div<{ $isUsing?: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 15px 30px;
-  background-color: ${colors.app_main_color};
+  background-color: ${({ $isUsing }) =>
+    $isUsing ? colors.app_main_color : "#2C2E32"};
   border-radius: 30px;
 `;
 
