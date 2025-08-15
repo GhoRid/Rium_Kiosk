@@ -2,12 +2,17 @@ import styled from "styled-components";
 import { colors } from "../../../colors";
 import { ReactComponent as Logo } from "../../../assets/svgs/Logo1.svg";
 
-const HomeHeader = () => {
+type HomeHeaderProps = {
+  placeName: string;
+  placeMobileNumber: string;
+};
+
+const HomeHeader = ({ placeName, placeMobileNumber }: HomeHeaderProps) => {
   return (
     <Container>
       <BranchInfo>
-        <BranchName>문흥점</BranchName>
-        <BranchPhone>010-5391-2895</BranchPhone>
+        <BranchName>{placeName}</BranchName>
+        <BranchPhone>{placeMobileNumber}</BranchPhone>
       </BranchInfo>
 
       {/* 로고 + 지점명 */}

@@ -15,3 +15,10 @@ export const formatDateHyphen = (s: string, maxLen = 8) => {
   if (d.length <= 6) return `${d.slice(0, 4)}-${d.slice(4)}`; // YYYY-MM
   return `${d.slice(0, 4)}-${d.slice(4, 6)}-${d.slice(6)}`; // YYYY-MM-DD
 };
+
+export const formatIsoToTwoLinesRaw = (iso: string) => {
+  // "YYYY-MM-DDTHH:mm:ss(.SSS...)" 가정
+  const [datePart, timePart = ""] = iso.split("T");
+  const [hh = "00", mm = "00"] = timePart.split(":");
+  return `${datePart}\n${hh.padStart(2, "0")}:${mm.padStart(2, "0")}`;
+};

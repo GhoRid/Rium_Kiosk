@@ -1,18 +1,28 @@
 import styled from "styled-components";
 
-const SeatInfo = () => {
+type SeatInfoProps = {
+  totalSeat: number;
+  remainSeat: number;
+  expectCheckoutSeat: number;
+};
+
+const SeatInfo = ({
+  totalSeat,
+  remainSeat,
+  expectCheckoutSeat,
+}: SeatInfoProps) => {
   return (
     <SeatInfoWrapper>
       <SeatInfoBox>
         <Label>잔여좌석</Label>
         <Value>
-          24 <Small>/ 36</Small>
+          {remainSeat} <Small>/ {totalSeat}</Small>
         </Value>
       </SeatInfoBox>
       <SeatInfoBox>
         <Label>퇴실 예정</Label>
         <Value>
-          4 <Small>/ 36</Small>
+          {expectCheckoutSeat} <Small>/ {totalSeat}</Small>
         </Value>
       </SeatInfoBox>
     </SeatInfoWrapper>

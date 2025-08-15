@@ -22,6 +22,14 @@ const HomePage = () => {
     queryFn: () => getPlaceInformation(),
   });
 
+  const {
+    placeName,
+    placeMobileNumber,
+    totalSeat,
+    remainSeat,
+    expectCheckoutSeat,
+  } = data?.data || {};
+
   return (
     <>
       <Container>
@@ -29,10 +37,17 @@ const HomePage = () => {
         {userId && <LogoutButton />}
         <ContentContainer>
           {/* 지점명/전화번호/로고 */}
-          <HomeHeader />
+          <HomeHeader
+            placeName={placeName}
+            placeMobileNumber={placeMobileNumber}
+          />
 
           {/* 좌석 정보 */}
-          <SeatInfo />
+          <SeatInfo
+            totalSeat={totalSeat}
+            remainSeat={remainSeat}
+            expectCheckoutSeat={expectCheckoutSeat}
+          />
 
           {/* 메뉴 버튼 */}
           <HomeMenu setIsModalOpen={setIsModalOpen} />

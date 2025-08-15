@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { colors } from "../../colors";
+import { formatIsoToTwoLinesRaw } from "../../utils/formatDate";
 
 type PassInfoProps = {
   expirationDate: string;
@@ -29,10 +30,14 @@ const PassInfo = ({
           <>
             <PassTextBox>
               <PassHeader>
-                <PassName>{ticketType}</PassName>
-                <PassPeriod>{expirationDate} 까지</PassPeriod>
+                <PassName>{ticketName}</PassName>
+                <PassPeriod>
+                  {formatIsoToTwoLinesRaw(expirationDate)} 까지
+                </PassPeriod>
               </PassHeader>
-              <PassContent>{seatNumber}번 좌석</PassContent>
+              <PassContent>
+                {seatNumber ? `${seatNumber} 번 좌석` : "미 이용중"}
+              </PassContent>
               <PassContent>{remainTime} 남음</PassContent>
             </PassTextBox>
 
