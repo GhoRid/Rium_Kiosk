@@ -153,7 +153,8 @@ const FooterCarousel = () => {
 export default FooterCarousel;
 
 const Wrapper = styled.div`
-  position: relative;
+  position: absolute;
+  bottom: 0;
   width: 100%;
   overflow: hidden;
   margin-top: 160px;
