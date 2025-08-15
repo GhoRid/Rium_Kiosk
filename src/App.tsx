@@ -16,6 +16,7 @@ import CompletePaymentPage from "./pages/CompletePaymentPage/CompletePaymentPage
 import KioskLoginPage from "./pages/KioskLoginPage/KioskLoginPage";
 import UserLoginLayout from "./components/layouts/UserLoginLayout";
 import CompleteCheckInPage from "./pages/CompleteCheckInPage/CompleteCheckInPage";
+import PaymentFormComponent from "./PaymentFormComponent";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
         <Route element={<MainLayout />}>
           <Route path="/" element={<KioskLoginPage />} />
           <Route path="/home" element={<HomePage />} />
+          {/* <Route path="/home" element={<PaymentFormComponent />} /> */}
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignUpPage />} />
           <Route path="/reset-password" element={<ResetPasswordPage />} />

@@ -3,7 +3,7 @@ import { colors } from "../../colors";
 import { formatIsoToTwoLinesRaw } from "../../utils/formatDate";
 
 type PassInfoProps = {
-  expirationDate: string;
+  expirationDate?: string;
   remainTime: string; // 예: "2시간 30분"
   seatNumber: string; // 예: "12"
   ticketName: string; // 예: "4주 자유석" (없으면 빈 상태로 간주)
@@ -19,7 +19,7 @@ const PassInfo = ({
   ticketType,
   isUsing,
 }: PassInfoProps) => {
-  const hasTicket = !!ticketName;
+  const hasTicket = !!expirationDate;
 
   return (
     <Wrapper>

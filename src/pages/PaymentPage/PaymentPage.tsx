@@ -11,17 +11,22 @@ import ErrorMsg from "../../components/ErrorMsg";
 import BottomButtons from "../../components/BottomButtons";
 import { useLocation } from "react-router";
 import CardModal from "./components/CardModal";
+import { formatDateToYYMMDD } from "../../utils/formatDate";
+import { usePayment } from "../../hooks/usePayment";
+import { createPaymentBuffer } from "../../utils/paymentUtils/paymentUtils";
+import { makeSendData } from "../../utils/paymentUtils/vcatUtils";
+import { parseFullResponsePacket } from "../../utils/paymentUtils/formatResponse";
+
+type PaymentType = "credit" | "credit_fallback" | "credit_cancel";
 
 const PaymentPage = () => {
   const location = useLocation();
-  console.log("PaymentPage location state:", location.state);
-  const { passType, label, price, time, seatType } = location.state || {};
-
+  const { passType, label, price: dd, time, seatType } = location.state || {};
+  const price = 100;
   const [paymentMethod, setPaymentMethod] = useState<string | null>(null);
   const [installment, setInstallment] = useState<string>("일시불");
-  const [selectedInstallmentOption, setSelectedInstallmentOption] = useState<
-    number | null
-  >(null);
+  const [selectedInstallmentOption, setSelectedInstallmentOption] =
+    useState<number>(0);
 
   const [printReceipt, setPrintReceipt] = useState<boolean>(false);
   const [printPass, setPrintPass] = useState<boolean>(false);
@@ -30,13 +35,55 @@ const PaymentPage = () => {
 
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
-  const handleNext = () => {
-    if (paymentMethod) {
-      setIsModalOpen(true);
+  const [paymentType, setPaymentType] = useState<PaymentType>("credit");
+  const [newdate, setNewdate] = useState(formatDateToYYMMDD(new Date()));
+  const [form, setForm] = useState({
+    money: String(price),
+    tax: "",
+    bongsa: "",
+    halbu: "",
+    catid: "2393300001",
+    myunse: "",
+    agreenum: "",
+    agreedate: newdate,
+    cashno: "",
+  });
+
+  const paymentMutation = usePayment();
+
+  const handleSubmit = () => {
+    if (!paymentMethod) {
+      setError("결제 수단을 선택해주세요.");
+      return;
     } else {
-      setError("결재 수단을 선택해주세요.");
+      setIsModalOpen(true);
+      setNewdate(formatDateToYYMMDD(new Date()));
+      const paymentData = createPaymentBuffer(paymentType, form);
+      const vcatPacket = makeSendData(paymentData);
+      const sendbuf = encodeURI(vcatPacket);
+
+      paymentMutation.mutate(sendbuf);
     }
   };
+
+  const parsedPacket = paymentMutation.isSuccess
+    ? parseFullResponsePacket(paymentMutation.data)
+    : null;
+
+  const totalSize = parsedPacket?.totalSize || "";
+  const vcat = parsedPacket?.vcat || "";
+  const recvCode = parsedPacket?.recvCode || "";
+  const recvDataSize = parsedPacket?.recvDataSize || "";
+  const parsedRecvData = parsedPacket?.recvData || null;
+  console.log("parsedRecvData:", parsedRecvData);
+
+  if (
+    recvCode === "1000" &&
+    parsedRecvData &&
+    parsedRecvData["응답코드"] === "0000"
+  ) {
+    console.log("결제 성공, 넘어가면 됨:");
+  }
 
   return (
     <>
@@ -67,7 +114,7 @@ const PaymentPage = () => {
         </Content>
         {!!error && <ErrorMsg>{error}</ErrorMsg>}
 
-        <BottomButtons submitName="결제하기" submit={handleNext} />
+        <BottomButtons submitName="결제하기" submit={handleSubmit} />
       </Container>
       <CardModal
         isModalOpen={isModalOpen}

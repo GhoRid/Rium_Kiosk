@@ -4,6 +4,8 @@ import { usePayment } from "./hooks/usePayment";
 import { formatDateToYYMMDD } from "./utils/formatDate";
 import { makeSendData } from "./utils/paymentUtils/vcatUtils";
 import { parseFullResponsePacket } from "./utils/paymentUtils/formatResponse";
+import styled from "styled-components";
+import { FS } from "./utils/paymentUtils/constants";
 
 const PAYMENT_TYPES = [
   { value: "credit", label: "신용승인" },
@@ -52,7 +54,6 @@ const PaymentFormComponent = () => {
     paymentMutation.mutate(sendbuf);
   };
 
-  // ✅ createPaymentBuffer 결과를 실시간으로 계산해서 표시
   const sendDataPreview = useMemo(() => {
     return createPaymentBuffer(paymentType, form);
   }, [paymentType, form]);
@@ -68,7 +69,7 @@ const PaymentFormComponent = () => {
   const parsedRecvData = parsedPacket?.recvData || null;
 
   return (
-    <div style={{ padding: "20px", maxWidth: "800px", margin: "0 auto" }}>
+    <Container style={{ padding: "20px", maxWidth: "800px", margin: "0 auto" }}>
       <h2>거래 테스트 Form</h2>
 
       {/* 거래 유형 선택 */}
@@ -257,7 +258,7 @@ const PaymentFormComponent = () => {
         <input
           type="text"
           readOnly
-          value={sendDataPreview}
+          value={sendDataPreview.replace(FS, " ")}
           style={{
             width: "100%",
             marginTop: "5px",
@@ -266,8 +267,17 @@ const PaymentFormComponent = () => {
           }}
         />
       </div>
-    </div>
+    </Container>
   );
 };
 
 export default PaymentFormComponent;
+
+const Container = styled.div`
+  padding: 20px;
+  border: 1px solid #eee;
+  background: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 1080px;
+  height: 1920px;
+`;

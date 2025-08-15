@@ -11,7 +11,7 @@ import LogoutButton from "./components/LogoutButton";
 import { useUserId } from "../../hooks/useUserId";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { getPlaceInformation } from "../../apis/api/kioskAuth";
-import { checkUsing, disableTicket } from "../../apis/api/user";
+import { checkPresentTicket, checkUsing, disableTicket } from "../../apis/api/user";
 import { clearUserId } from "../../utils/tokens";
 import { useNavigate } from "react-router";
 
@@ -44,7 +44,16 @@ const HomePage = () => {
     enabled: !!userId,
   });
 
+  const { data: checkPresentTicketData } = useQuery({
+    queryKey: ["checkPresentTicket", userId],
+    queryFn: () => checkPresentTicket({ mobileNumber: userId }),
+    enabled: !!userId,
+  });
+
   const { isUsing, seatNumber } = checkUsingData?.data || {};
+  const { isPresent } = checkPresentTicketData?.data || {};
+
+  console.log("isUsing:", checkUsingData);
 
   const disableTicketMutation = useMutation({
     mutationKey: ["disableTicket", userId],
@@ -67,6 +76,27 @@ const HomePage = () => {
       console.error("이용권 비활성화 실패:", error);
     },
   });
+
+  const handleBuyTicket = () => {
+    if (!userId) {
+      navigate("/login");
+      return;
+    }
+    if (isPresent) {
+      setModalContent({
+        content: "이미 이용권이 있습니다.",
+        submitText: "확인",
+        submitAction: () => {
+          setIsModalOpen(false);
+        },
+        isCloseIconVisible: false,
+      });
+      setIsModalOpen(true);
+      return;
+    } else {
+      navigate("/select-pass");
+    }
+  };
 
   const handleLogout = () => {
     if (!userId) {
@@ -167,6 +197,7 @@ const HomePage = () => {
           {/* 메뉴 버튼 */}
           <HomeMenu
             setIsModalOpen={setIsModalOpen}
+            handleBuyTicket={handleBuyTicket}
             handleLogout={handleLogout}
             hanleCheckIn={hanleCheckIn}
             handleChangeSeat={handleChangeSeat}

@@ -21,6 +21,7 @@ export const createPaymentBuffer = (
   paymentType: PaymentType,
   form: PaymentForm
 ): string => {
+  console.log("form", form);
   // ✅ 기본값 처리
   const tax = form.tax && form.tax.trim() !== "" ? form.tax : "0";
   const bongsa = form.bongsa && form.bongsa.trim() !== "" ? form.bongsa : "0";

@@ -55,8 +55,13 @@ export const disableTicket = async (data: any) => {
   return await appInstance.post("/disable/ticket", data);
 };
 
+// 이용권 사용 중인지 확인
 export const checkUsing = async (params: any) => {
   return await appInstance.get("/check/using", { params });
+};
+
+export const checkPresentTicket = async (params: any) => {
+  return await appInstance.get("/check/present/ticket", { params });
 };
 
 export const getInformationMyseat = async (params: any) => {

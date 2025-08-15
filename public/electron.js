@@ -13,7 +13,7 @@ function createWindow() {
   // const { width, height } = screen.getPrimaryDisplay().workAreaSize;
 
   mainWindow = new BrowserWindow({
-    width: 1080,
+    width: 1100,
     height: 1920,
     // useContentSize: true,
     resizable: false, // ✅ 크기 조절 불가

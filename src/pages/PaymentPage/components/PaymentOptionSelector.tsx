@@ -6,8 +6,8 @@ import { ReactComponent as DirectionDown } from "../../../assets/svgs/directionD
 type PaymentOptionSelectorProps = {
   installment: string;
   setInstallment: (v: string) => void;
-  selectedInstallmentOption: number | null;
-  setSelectedInstallmentOption: (v: number | null) => void;
+  selectedInstallmentOption: number;
+  setSelectedInstallmentOption: (v: number) => void;
 };
 
 const PaymentOptionSelector = ({
@@ -26,7 +26,7 @@ const PaymentOptionSelector = ({
         <Option
           onClick={() => {
             setInstallment("일시불");
-            setSelectedInstallmentOption(null);
+            setSelectedInstallmentOption(0);
             setOpen(false);
           }}
         >

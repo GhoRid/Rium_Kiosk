@@ -9,6 +9,7 @@ import { useNavigate } from "react-router";
 
 type HomeMenuProps = {
   setIsModalOpen: (isModalOpen: boolean) => void;
+  handleBuyTicket: () => void;
   handleLogout: () => void;
   hanleCheckIn: () => void;
   handleChangeSeat: () => void;
@@ -16,6 +17,7 @@ type HomeMenuProps = {
 
 const HomeMenu = ({
   setIsModalOpen,
+  handleBuyTicket,
   handleLogout,
   hanleCheckIn,
   handleChangeSeat,
@@ -26,8 +28,7 @@ const HomeMenu = ({
     {
       name: "이용권 구매",
       icon: <PurchasePass />,
-      // action: () => console.log("구매"),
-      action: () => navigate("/select-pass"),
+      action: () => handleBuyTicket(),
     },
     {
       name: "이용권\n확인/연장",
