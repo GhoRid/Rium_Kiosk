@@ -1,4 +1,5 @@
 import axios from "axios";
+import { getAccessToken } from "../utils/tokens";
 
 export const nvcatInstance = axios.create({
   baseURL: "http://127.0.0.1:9188",
@@ -21,6 +22,19 @@ export const appInstance = axios.create({
   },
 });
 
-// https://onerivers.kr/api/rium/sms/send/code?mobileNumber=01022025489
+appInstance.interceptors.request.use((config) => {
+  const token = getAccessToken();
+  if (token) {
+    config.headers["Authorization"] = token;
+  }
+  return config;
+});
 
-// https://onerivers.kr/api/rium/sms/send/code?phone=01022025489
+appInstance.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);

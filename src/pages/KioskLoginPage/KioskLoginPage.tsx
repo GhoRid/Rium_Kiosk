@@ -4,6 +4,7 @@ import { useMutation } from "@tanstack/react-query";
 import { loginKiosk } from "../../apis/api/kioskAuth";
 import Input from "./components/Input";
 import { useMemo, useState } from "react";
+import { saveTokens } from "../../utils/tokens";
 
 type ActiveField = "id" | "password";
 
@@ -19,8 +20,12 @@ const KioskLoginPage = () => {
         password: vars.password,
       });
     },
-    onSuccess: (data) => {
-      console.log("로그인 성공 데이터:", data);
+    onSuccess: (res) => {
+      const jwt = res?.data?.jwt ?? res?.data?.data?.jwt;
+      const refreshToken =
+        res?.data?.refreshToken ?? res?.data?.data?.refreshToken;
+
+      saveTokens(jwt, refreshToken);
     },
     onError: (error) => {
       console.error("로그인 실패:", error);

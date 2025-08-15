@@ -20,8 +20,8 @@ function App() {
     <HashRouter>
       <Routes>
         <Route element={<MainLayout />}>
-          {/* <Route path="/" element={<KioskLoginPage />} /> */}
-          <Route path="/" element={<HomePage />} />
+          <Route path="/" element={<KioskLoginPage />} />
+          <Route path="/home" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignUpPage />} />
           <Route path="/reset-password" element={<ResetPasswordPage />} />
