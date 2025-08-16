@@ -50,12 +50,6 @@ type handlePaymentCodeArgs = {
   parsed?: ParsedRecv; // 전체 파싱 데이터
   passType: string;
   seatType: string;
-  onAfterSuccess?: (payload: {
-    approvedAt: string;
-    amount?: string;
-    approvalNo?: string;
-    parsed?: ParsedRecv;
-  }) => Promise<void> | void; // 블루투스 전송 등 후처리 훅(선택)
 };
 
 /**
@@ -69,8 +63,8 @@ export async function handlePaymentCode({
   recvCode,
   respCode,
   parsed,
-
-  onAfterSuccess,
+  passType,
+  seatType,
 }: handlePaymentCodeArgs): Promise<boolean> {
   const isOk = recvCode === "0000" && respCode === "0000";
   if (!isOk) return false;
@@ -78,10 +72,6 @@ export async function handlePaymentCode({
   const approvedAt = new Date().toISOString();
   const amount = parsed?.["승인금액"];
   const approvalNo = parsed?.["승인번호"];
-
-  if (onAfterSuccess) {
-    await onAfterSuccess({ approvedAt, amount, approvalNo, parsed });
-  }
 
   //   navigate("/qr-validate", {
   //     replace: true,
