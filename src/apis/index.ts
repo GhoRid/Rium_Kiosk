@@ -60,15 +60,16 @@ const reissueToken = async (base: AxiosInstance) => {
 appInstance.interceptors.response.use(
   (res) => res,
   async (err) => {
+    const errorStatus = err.response?.status;
     const originalRequest = err.config as any;
 
-    // ✅ 백엔드에서 "토큰 만료"를 4111로 내려줌
-    if (err.response?.data?.error?.code === "4111") {
+    // ✅ 백엔드에서 "토큰 만료"를 419로 내려줌
+    if (errorStatus === 419) {
       localStorage.removeItem("accessToken");
       try {
         const token = await reissueToken(appInstance);
         if (token) {
-          originalRequest.headers.Authorization = token;
+          originalRequest.headers.Authorization = `Bearer ${token}`;
           return appInstance(originalRequest);
         }
       } catch (reissueError) {
