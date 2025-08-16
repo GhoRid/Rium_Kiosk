@@ -1,8 +1,10 @@
-// src/hooks/usePayment.ts
-import { useMutation } from "@tanstack/react-query";
 import { sendPayment } from "../apis/api/paymentApi";
+import { useMutation, UseMutationResult } from "@tanstack/react-query";
+import { PurchaseTicketData, QRData, ReceiptData } from "../types/payment";
+import { postQR, postreceipt } from "../apis/api/receipt";
+import { purchaseTicket } from "../apis/api/pass";
 
-export const usePayment = () => {
+export const useNVCatPayment = () => {
   return useMutation({
     mutationFn: (sendbuf: string) => sendPayment(sendbuf),
     onSuccess: (data) => {
@@ -15,3 +17,27 @@ export const usePayment = () => {
     },
   });
 };
+export function usePaymentMutations() {
+  const receiptMutation = useMutation({
+    mutationKey: ["receipt"],
+    mutationFn: (body: ReceiptData) => postreceipt(body),
+  });
+
+  const qrMutation = useMutation({
+    mutationKey: ["qr"],
+    mutationFn: (data: QRData) => postQR(data),
+  });
+
+  const purchaseTicketMutation = useMutation({
+    mutationKey: ["purchaseTicket"],
+    mutationFn: ({
+      passtype,
+      requestBody,
+    }: {
+      passtype: string;
+      requestBody: PurchaseTicketData;
+    }) => purchaseTicket({ passtype, requestBody }),
+  });
+
+  return { receiptMutation, qrMutation, purchaseTicketMutation };
+}

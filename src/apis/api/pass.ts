@@ -1,7 +1,7 @@
 import { appInstance } from "..";
 
 // passtype에 따른 티켓 구매
-export const purchaseTicketPeriod = async (data: any) => {
+export const purchaseTicket = async (data: any) => {
   const { passtype, requestBody } = data;
   let endPoint = "";
 

@@ -57,25 +57,6 @@ const HomeMenu = ({
     },
   ];
 
-  // const receiptData = {
-  //   company: "퇴근퇴근",
-  //   ceo: "박건형",
-  //   company_num: "220-81-155770",
-  //   tel: "010-1234-1234",
-  //   address: "광주광역시 북구 신안고운하이플러스 상가동",
-  //   cardCompany: "현대카드",
-  //   catId: "23922****1",
-  //   cardNum: "4854-8076-****-730*",
-  //   date: "25/08/16 13:57:52",
-  //   transactionAmount: 100,
-  //   vat: 0,
-  //   total: 100,
-  //   approvalNumber: "12345678",
-  //   merchantNumber: "106707835",
-  //   acquier: "아아아카드",
-  //   installment: false,
-  // };
-
   const receiptData = {
     company: "투리버스",
     ceo: "이헌재",
@@ -97,7 +78,7 @@ const HomeMenu = ({
 
   const receiptMutation = useMutation({
     mutationKey: ["receipt"],
-    mutationFn: () => postreceipt(receiptData),
+    mutationFn: () => postreceipt(receiptData as any),
   });
 
   return (

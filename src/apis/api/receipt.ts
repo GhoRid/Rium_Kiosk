@@ -1,24 +1,10 @@
 import { receiptInstance } from "..";
-
-type ReceiptData = {
-  company: string;
-  ceo: string;
-  company_num: string;
-  tel: string;
-  address: string;
-  cardCompany: string;
-  catId: string;
-  cardNum: string;
-  date: string;
-  transactionAmount: number;
-  vat: number;
-  total: number;
-  approvalNumber: string;
-  merchantNumber: string;
-  acquier: string;
-  installment: boolean;
-};
+import { QRData, ReceiptData } from "../../types/payment";
 
 export const postreceipt = async (data: ReceiptData) => {
   return await receiptInstance.post("", data);
+};
+
+export const postQR = async (data: QRData) => {
+  return await receiptInstance.post("/qr", data);
 };

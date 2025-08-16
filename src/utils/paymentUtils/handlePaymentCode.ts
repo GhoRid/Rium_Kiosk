@@ -51,6 +51,11 @@ type handlePaymentCodeArgs = {
   passType: string;
   seatType: string;
   seatNumber?: number;
+  printReceipt: boolean;
+  printPass: boolean;
+  receiptMutation: any;
+  qrMutation: any;
+  purchaseTicketMutation: any;
 };
 
 /**
@@ -69,6 +74,11 @@ export async function handlePaymentCode({
   passType,
   seatType,
   seatNumber,
+  printReceipt,
+  printPass,
+  receiptMutation,
+  qrMutation,
+  purchaseTicketMutation,
 }: handlePaymentCodeArgs): Promise<boolean> {
   const isOk = recvCode === "0000" && respCode === "0000";
   if (!isOk) return false;
@@ -78,6 +88,12 @@ export async function handlePaymentCode({
   const approvedAt = new Date().toISOString();
   const amount = parsed?.["승인금액"];
   const approvalNo = parsed?.["승인번호"];
+  console.log(parsed);
+
+  purchaseTicketMutation.mutate({
+    passtype: passType,
+    requestBody: {},
+  });
 
   if (passType === "1회 이용권") {
     statusForm = {
