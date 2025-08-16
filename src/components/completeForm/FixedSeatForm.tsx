@@ -3,17 +3,20 @@ import PassInfo from "./PassInfo";
 import DemoQr from "./DemoQR";
 import { colors } from "../../colors";
 
-type PassType = "1회 이용권" | "자유석" | "고정석";
-
-const FixedSeatForm = () => {
+type FixedSeatFormProps = {
+  passType: string;
+  label: string;
+  seatNumber: number;
+};
+const FixedSeatForm = ({ passType, label, seatNumber }: FixedSeatFormProps) => {
   const InfoData = [
     {
       label: "상품명",
-      value: "기간권 4주 고정석",
+      value: `${passType} ${label}`,
     },
     {
       label: "좌석 번호",
-      value: "12번",
+      value: String(seatNumber),
     },
   ];
 

@@ -3,15 +3,20 @@ import PassInfo from "./PassInfo";
 import DemoQr from "./DemoQR";
 import { colors } from "../../colors";
 
-const SinglePassForm = () => {
+type SinglePassFormProps = {
+  approvedAt: string;
+  seatNumber: string;
+};
+
+const SinglePassForm = ({ approvedAt, seatNumber }: SinglePassFormProps) => {
   const InfoData = [
     {
       label: "입실 시간",
-      value: "2025-08-24 17:25",
+      value: approvedAt,
     },
     {
       label: "좌석 번호",
-      value: "12번",
+      value: `${seatNumber}번`,
     },
   ];
 

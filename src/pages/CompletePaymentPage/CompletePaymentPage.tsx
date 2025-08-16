@@ -14,7 +14,8 @@ type ResultType = "자유석" | "고정석" | "1회 이용권";
 const CompletePaymentPage = () => {
   const location = useLocation();
   console.log("CompletePaymentPage location state:", location.state);
-  const [resultType, setResultType] = useState<ResultType>("1회 이용권");
+  const { resultType, seatNumber, approvedAt, passType, label } =
+    location.state || {};
 
   return (
     <Container>
@@ -25,9 +26,19 @@ const CompletePaymentPage = () => {
           <Message>결제가 완료되었습니다.</Message>
         </MessageBox>
 
-        {resultType === "1회 이용권" && <SinglePassForm />}
-        {resultType === "고정석" && <FixedSeatForm />}
-        {resultType === "자유석" && <FreeSeatForm />}
+        {resultType === "1회 이용권" && (
+          <SinglePassForm seatNumber={seatNumber} approvedAt={approvedAt} />
+        )}
+        {resultType === "자유석" && (
+          <FreeSeatForm passType={passType} label={label} />
+        )}
+        {resultType === "고정석" && (
+          <FixedSeatForm
+            passType={passType}
+            label={label}
+            seatNumber={seatNumber}
+          />
+        )}
       </Content>
       <BottomButton submitName="확인" submit={() => {}} />
     </Container>

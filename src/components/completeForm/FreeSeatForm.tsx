@@ -3,13 +3,16 @@ import { colors } from "../../colors";
 import PassInfo from "./PassInfo";
 import DeskAnimation from "./DeskAnimation";
 
-type PassType = "1회 이용권" | "자유석" | "고정석";
+type FreeSeatFormProps = {
+  passType: string;
+  label: string;
+};
 
-const FreeSeatForm = () => {
+const FreeSeatForm = ({ passType, label }: FreeSeatFormProps) => {
   const InfoData = [
     {
       label: "상품명",
-      value: "시간권 50시간",
+      value: `${passType} ${label}`,
     },
   ];
 
