@@ -17,10 +17,6 @@ import { makeSendData } from "../../utils/paymentUtils/vcatUtils";
 import { parseFullResponsePacket } from "../../utils/paymentUtils/formatResponse";
 import { handlePaymentCode } from "../../utils/paymentUtils/handlePaymentCode";
 import PayAnimationModal from "./components/PayAnimationModal";
-import { useMutation } from "@tanstack/react-query";
-import { postQR, postreceipt } from "../../apis/api/receipt";
-import { PurchaseTicketData, QRData, ReceiptData } from "../../types/payment";
-import { purchaseTicket } from "../../apis/api/pass";
 
 type PaymentType = "credit" | "credit_fallback" | "credit_cancel";
 
@@ -88,49 +84,46 @@ const PaymentPage = () => {
 
   const recvCode = parsedPacket?.recvCode || "";
   const parsedRecvData = parsedPacket?.recvData || null;
+  console.log(seatType);
 
   useEffect(() => {
-    if (!recvCode || !parsedRecvData) return;
     if (didProceedRef.current) return;
+    if (!recvCode || !parsedRecvData) return;
 
     const respCode = parsedRecvData["응답코드"] ?? "";
+    if (recvCode !== "0000" || respCode !== "0000") return;
+    didProceedRef.current = true;
 
     (async () => {
-      const processed = await handlePaymentCode({
-        navigate,
-        recvCode,
-        respCode,
-        parsed: parsedRecvData,
-        label,
-        passType,
-        seatType,
-        seatNumber,
-        printReceipt,
-        printPass,
-        receiptMutation,
-        qrMutation,
-        purchaseTicketMutation,
-      });
+      try {
+        const processed = await handlePaymentCode({
+          navigate,
+          recvCode,
+          respCode,
+          parsed: parsedRecvData,
+          label,
+          time,
+          passType,
+          seatType,
+          seatNumber,
+          printReceipt,
+          printPass,
+          receiptMutation,
+          qrMutation,
+          purchaseTicketMutation,
+        });
 
-      if (processed) {
-        didProceedRef.current = true;
-        setIsModalOpen(false);
+        if (processed) {
+          setIsModalOpen(false);
+        } else {
+          didProceedRef.current = false;
+        }
+      } catch (e) {
+        console.error("handlePaymentCode 실패:", e);
+        didProceedRef.current = false;
       }
     })();
-  }, [
-    recvCode,
-    parsedRecvData,
-    navigate,
-    passType,
-    seatType,
-    seatNumber,
-    label,
-    printReceipt,
-    printPass,
-    purchaseTicketMutation.mutate,
-    receiptMutation.mutate,
-    qrMutation.mutate,
-  ]);
+  }, [recvCode, parsedRecvData]);
 
   return (
     <>

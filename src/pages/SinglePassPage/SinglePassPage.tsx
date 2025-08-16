@@ -32,7 +32,7 @@ const SinglePassPage = () => {
             label: selectedPass.label,
             time: selectedPass.time,
             price: selectedPass.price,
-            seatType: "자유석",
+            // seatType: "자유석",
           },
         },
       });

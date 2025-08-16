@@ -70,8 +70,8 @@ const SelectSeatPage = () => {
             label: passInformation.label,
             time: passInformation.time,
             price: passInformation.price,
-            seatType: passInformation.seatType,
             seatNumber: selectedSeat,
+            seatType: passInformation.seatType,
           },
         });
       } else {

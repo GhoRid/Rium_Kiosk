@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from "react";
 import { createPaymentBuffer } from "./utils/paymentUtils/paymentUtils";
-import { usePayment } from "./hooks/usePayment";
+import { useNVCatPayment } from "./hooks/usePayment";
 import { formatDateToYYMMDD } from "./utils/formatDate";
 import { makeSendData } from "./utils/paymentUtils/vcatUtils";
 import { parseFullResponsePacket } from "./utils/paymentUtils/formatResponse";
@@ -35,7 +35,7 @@ const PaymentFormComponent = () => {
     cashno: "",
   });
 
-  const paymentMutation = usePayment();
+  const paymentMutation = useNVCatPayment();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

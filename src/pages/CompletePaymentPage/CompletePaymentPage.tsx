@@ -3,17 +3,14 @@ import { colors } from "../../colors";
 import GoToHomeButton from "../../components/GoToHomeButton";
 import Header from "../../components/Header";
 import BottomButton from "./components/BottomButton";
-import { useLocation } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import FreeSeatForm from "../../components/completeForm/FreeSeatForm";
 import FixedSeatForm from "../../components/completeForm/FixedSeatForm";
 import SinglePassForm from "../../components/completeForm/SinglePassForm";
-import { useState } from "react";
-
-type ResultType = "자유석" | "고정석" | "1회 이용권";
 
 const CompletePaymentPage = () => {
+  const navigate = useNavigate();
   const location = useLocation();
-  console.log("CompletePaymentPage location state:", location.state);
   const { resultType, seatNumber, approvedAt, passType, label } =
     location.state || {};
 
@@ -40,7 +37,12 @@ const CompletePaymentPage = () => {
           />
         )}
       </Content>
-      <BottomButton submitName="확인" submit={() => {}} />
+      <BottomButton
+        submitName="확인"
+        submit={() => {
+          navigate("/home", { replace: true });
+        }}
+      />
     </Container>
   );
 };

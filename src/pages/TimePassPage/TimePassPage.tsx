@@ -39,7 +39,6 @@ const TimePassPage = () => {
         label: selected.label,
         price: selected.price,
         time: selected.time,
-        seatType: "자유석",
       },
     });
   };
