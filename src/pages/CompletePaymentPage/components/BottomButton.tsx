@@ -12,7 +12,7 @@ const BottomButton = ({ submitName = "확인", submit }: BottomButtonProps) => {
 
   return (
     <Container>
-      <BackButton onClick={() => navigate(-1)}>
+      <BackButton onClick={() => navigate("/home")}>
         <Text>로그아웃</Text>
       </BackButton>
 
