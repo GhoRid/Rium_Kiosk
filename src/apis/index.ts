@@ -14,6 +14,14 @@ export const nvcatInstance = axios.create({
   ],
 });
 
+export const receiptInstance = axios.create({
+  baseURL: "http://127.0.0.1:3030/print/receipt",
+  timeout: 3000,
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+
 export const appInstance = axios.create({
   baseURL: "https://onerivers.kr/api/rium",
   timeout: 3000,

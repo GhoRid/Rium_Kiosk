@@ -6,6 +6,8 @@ import { ReactComponent as Enter } from "../../../assets/svgs/enter.svg";
 import { ReactComponent as Exit } from "../../../assets/svgs/exit.svg";
 import { colors } from "../../../colors";
 import { useNavigate } from "react-router";
+import { useMutation } from "@tanstack/react-query";
+import { postreceipt } from "../../../apis/api/receipt";
 
 type HomeMenuProps = {
   setIsModalOpen: (isModalOpen: boolean) => void;
@@ -55,6 +57,49 @@ const HomeMenu = ({
     },
   ];
 
+  // const receiptData = {
+  //   company: "퇴근퇴근",
+  //   ceo: "박건형",
+  //   company_num: "220-81-155770",
+  //   tel: "010-1234-1234",
+  //   address: "광주광역시 북구 신안고운하이플러스 상가동",
+  //   cardCompany: "현대카드",
+  //   catId: "23922****1",
+  //   cardNum: "4854-8076-****-730*",
+  //   date: "25/08/16 13:57:52",
+  //   transactionAmount: 100,
+  //   vat: 0,
+  //   total: 100,
+  //   approvalNumber: "12345678",
+  //   merchantNumber: "106707835",
+  //   acquier: "아아아카드",
+  //   installment: false,
+  // };
+
+  const receiptData = {
+    company: "투리버스",
+    ceo: "이헌재",
+    company_num: "220-81-155770",
+    tel: "010-1234-1234",
+    address: "광주광역시 북구 신안고운하이플러스 상가동",
+    cardCompany: "현대카드",
+    catId: "23922****1",
+    cardNum: "4854-8076-****-730*",
+    date: "25/08/16 13:57:52",
+    transactionAmount: 100,
+    vat: 0,
+    total: 100,
+    approvalNumber: "60996351",
+    merchantNumber: "106707835",
+    acquier: "현대카드",
+    installment: false,
+  };
+
+  const receiptMutation = useMutation({
+    mutationKey: ["receipt"],
+    mutationFn: () => postreceipt(receiptData),
+  });
+
   return (
     <MenuContainer>
       <FeatureBox>
@@ -75,7 +120,7 @@ const HomeMenu = ({
         ))}
       </ActionBox>
 
-      <ReprintBox onClick={() => console.log("재발행")}>
+      <ReprintBox onClick={() => receiptMutation.mutate()}>
         <Label>출입증 재발행</Label>
       </ReprintBox>
     </MenuContainer>
