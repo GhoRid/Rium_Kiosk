@@ -16,7 +16,7 @@ import { usePayment } from "../../hooks/usePayment";
 import { createPaymentBuffer } from "../../utils/paymentUtils/paymentUtils";
 import { makeSendData } from "../../utils/paymentUtils/vcatUtils";
 import { parseFullResponsePacket } from "../../utils/paymentUtils/formatResponse";
-import { handlePaymentSuccess } from "../../utils/handlePaymentSuccess";
+import { handlePaymentCode } from "../../utils/handlePaymentCode";
 
 type PaymentType = "credit" | "credit_fallback" | "credit_cancel";
 
@@ -107,7 +107,7 @@ const PaymentPage = () => {
     const respCode = parsedRecvData["응답코드"];
 
     const run = async () => {
-      const processed = await handlePaymentSuccess({
+      const processed = await handlePaymentCode({
         recvCode,
         respCode,
         passType,

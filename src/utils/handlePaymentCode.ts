@@ -1,4 +1,4 @@
-// src/utils/handlePaymentSuccess.ts
+// src/utils/handlePaymentCode.ts
 
 import { parsePaymentRecvData } from "./paymentUtils/formatResponse";
 
@@ -44,7 +44,7 @@ const fields = [
   "실승인금액",
 ];
 
-type HandlePaymentSuccessArgs = {
+type handlePaymentCodeArgs = {
   recvCode: string; // VCAT 통신 코드
   respCode?: string; // 전문 응답코드 (parsed["응답코드"])
   parsed?: ParsedRecv; // 전체 파싱 데이터
@@ -65,13 +65,13 @@ type HandlePaymentSuccessArgs = {
  * - QR 검증 화면으로 네비게이션
  * @returns 처리했으면 true, 아니면 false
  */
-export async function handlePaymentSuccess({
+export async function handlePaymentCode({
   recvCode,
   respCode,
   parsed,
 
   onAfterSuccess,
-}: HandlePaymentSuccessArgs): Promise<boolean> {
+}: handlePaymentCodeArgs): Promise<boolean> {
   const isOk = recvCode === "0000" && respCode === "0000";
   if (!isOk) return false;
 
