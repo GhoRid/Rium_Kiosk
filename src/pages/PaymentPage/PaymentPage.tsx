@@ -108,10 +108,13 @@ const PaymentPage = () => {
 
     const run = async () => {
       const processed = await handlePaymentCode({
+        navigate,
         recvCode,
         respCode,
         passType,
+        label,
         seatType,
+        seatNumber,
         parsed: parsedRecvData,
       });
 

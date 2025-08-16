@@ -7,14 +7,14 @@ import { useLocation } from "react-router";
 import FreeSeatForm from "../../components/completeForm/FreeSeatForm";
 import FixedSeatForm from "../../components/completeForm/FixedSeatForm";
 import SinglePassForm from "../../components/completeForm/SinglePassForm";
+import { useState } from "react";
+
+type ResultType = "자유석" | "고정석" | "1회 이용권";
 
 const CompletePaymentPage = () => {
   const location = useLocation();
   console.log("CompletePaymentPage location state:", location.state);
-  // const { passType, label, price } = location.state || {};
-
-  // 1회 이용권, 자유석, 고정석
-  const passtype = "고정석";
+  const [resultType, setResultType] = useState<ResultType>("1회 이용권");
 
   return (
     <Container>
@@ -25,9 +25,9 @@ const CompletePaymentPage = () => {
           <Message>결제가 완료되었습니다.</Message>
         </MessageBox>
 
-        {/* <SinglePassForm /> */}
-        {/* <FixedSeatForm /> */}
-        <FreeSeatForm />
+        {resultType === "1회 이용권" && <SinglePassForm />}
+        {resultType === "고정석" && <FixedSeatForm />}
+        {resultType === "자유석" && <FreeSeatForm />}
       </Content>
       <BottomButton submitName="확인" submit={() => {}} />
     </Container>

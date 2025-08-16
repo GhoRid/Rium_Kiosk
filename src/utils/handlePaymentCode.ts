@@ -1,6 +1,4 @@
-// src/utils/handlePaymentCode.ts
-
-import { parsePaymentRecvData } from "./paymentUtils/formatResponse";
+import { NavigateFunction } from "react-router";
 
 export type ParsedRecv = Record<string, string | undefined>;
 
@@ -45,11 +43,14 @@ const fields = [
 ];
 
 type handlePaymentCodeArgs = {
+  navigate: NavigateFunction;
   recvCode: string; // VCAT 통신 코드
-  respCode?: string; // 전문 응답코드 (parsed["응답코드"])
-  parsed?: ParsedRecv; // 전체 파싱 데이터
+  respCode: string; // 전문 응답코드 (parsed["응답코드"])
+  parsed: ParsedRecv; // 전체 파싱 데이터
+  label?: string;
   passType: string;
   seatType: string;
+  seatNumber?: number;
 };
 
 /**
@@ -60,23 +61,49 @@ type handlePaymentCodeArgs = {
  * @returns 처리했으면 true, 아니면 false
  */
 export async function handlePaymentCode({
+  navigate,
   recvCode,
   respCode,
   parsed,
+  label,
   passType,
   seatType,
+  seatNumber,
 }: handlePaymentCodeArgs): Promise<boolean> {
   const isOk = recvCode === "0000" && respCode === "0000";
   if (!isOk) return false;
+
+  let statusForm: Record<string, unknown> = {};
 
   const approvedAt = new Date().toISOString();
   const amount = parsed?.["승인금액"];
   const approvalNo = parsed?.["승인번호"];
 
-  //   navigate("/qr-validate", {
-  //     replace: true,
-  //     state: { approvedAt, amount, approvalNo, parsed },
-  //   });
+  if (passType === "1회 이용권") {
+    statusForm = {
+      resultType: passType,
+      seatNumber,
+      approvedAt,
+    };
+  } else if (passType === "기간권" && seatType === "고정석") {
+    statusForm = {
+      resultType: seatType,
+      seatNumber,
+      passType,
+      label,
+    };
+  } else if (passType === "시간권") {
+    statusForm = {
+      resultType: seatType,
+      passType,
+      label,
+    };
+  }
+
+  navigate("/completepayment", {
+    replace: true,
+    state: statusForm,
+  });
 
   return true;
 }
