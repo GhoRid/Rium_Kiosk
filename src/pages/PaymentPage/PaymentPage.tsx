@@ -10,13 +10,13 @@ import PrintSetting from "./components/PrintSetting";
 import ErrorMsg from "../../components/ErrorMsg";
 import BottomButtons from "../../components/BottomButtons";
 import { useLocation, useNavigate } from "react-router";
-import CardModal from "./components/CardModal";
 import { formatDateToYYMMDD } from "../../utils/formatDate";
 import { usePayment } from "../../hooks/usePayment";
 import { createPaymentBuffer } from "../../utils/paymentUtils/paymentUtils";
 import { makeSendData } from "../../utils/paymentUtils/vcatUtils";
 import { parseFullResponsePacket } from "../../utils/paymentUtils/formatResponse";
 import { handlePaymentCode } from "../../utils/handlePaymentCode";
+import PayAnimationModal from "./components/PayAnimationModal";
 
 type PaymentType = "credit" | "credit_fallback" | "credit_cancel";
 
@@ -157,7 +157,7 @@ const PaymentPage = () => {
 
         <BottomButtons submitName="결제하기" submit={handleSubmit} />
       </Container>
-      <CardModal
+      <PayAnimationModal
         isModalOpen={isModalOpen}
         setIsModalOpen={setIsModalOpen}
         price={price}
