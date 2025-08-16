@@ -24,14 +24,6 @@ const SinglePassPage = () => {
         return;
       }
 
-      // navigate("/payment", {
-      //   state: {
-      //     passType: "1회 이용권",
-      //     label: selectedPass.label,
-      //     time: selectedPass.time,
-      //     price: selectedPass.price,
-      //     seatType: "자유석",
-      //   },
       navigate("/select-seat", {
         state: {
           toPurchase: true,

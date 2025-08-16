@@ -72,15 +72,30 @@ const PeriodPassPage = () => {
       return;
     }
 
-    navigate("/payment", {
-      state: {
-        passType: "기간권",
-        seatType,
-        label,
-        time,
-        price,
-      },
-    });
+    if (seatType == "고정석") {
+      navigate("/select-seat", {
+        state: {
+          toPurchase: true,
+          passInformation: {
+            passType: "기간권",
+            label,
+            time,
+            price,
+            seatType,
+          },
+        },
+      });
+    } else {
+      navigate("/payment", {
+        state: {
+          passType: "기간권",
+          seatType,
+          label,
+          time,
+          price,
+        },
+      });
+    }
   };
 
   useEffect(() => {
