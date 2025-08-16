@@ -158,6 +158,7 @@ const PaymentPage = () => {
         <BottomButtons submitName="결제하기" submit={handleSubmit} />
       </Container>
       <PayAnimationModal
+        paymentMethod={paymentMethod}
         isModalOpen={isModalOpen}
         setIsModalOpen={setIsModalOpen}
         price={price}

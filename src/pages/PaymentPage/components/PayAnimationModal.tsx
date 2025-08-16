@@ -3,19 +3,31 @@ import { ReactComponent as CloseIcon } from "../../../assets/svgs/close.svg";
 import { colors } from "../../../colors";
 import CardAnimation from "./Animation/CardAnimation";
 import BarCodeAnimation from "./Animation/BarCodeAnimation";
+import SPayAnimation from "./Animation/SPayAnimation";
 
 type PayAnimationModalProps = {
+  paymentMethod: string | null;
   isModalOpen: boolean;
   setIsModalOpen: (isModalOpen: boolean) => void;
   price: number;
 };
 
 const PayAnimationModal = ({
+  paymentMethod,
   isModalOpen,
   setIsModalOpen,
   price,
 }: PayAnimationModalProps) => {
   if (!isModalOpen) return null;
+  let ment = "";
+
+  if (paymentMethod === "카드") {
+    ment = "카드를\n투입구에 넣어주세요";
+  } else if (paymentMethod === "삼성페이") {
+    ment = "삼성페이를 실행 후\n리더기에 가까이 대주세요.";
+  } else if (paymentMethod === "간편결제") {
+    ment = "바코드를 바코드 리더기에\n인식해 주세요.";
+  }
 
   return (
     <ModalOverlay>
@@ -25,11 +37,11 @@ const PayAnimationModal = ({
         </CLoseIconBox>
 
         <ContentBox>
-          <ContentText>{"카드를\n투입구에 넣어주세요"}</ContentText>
+          <ContentText>{ment}</ContentText>
         </ContentBox>
-
-        {/* <CardAnimation /> */}
-        <BarCodeAnimation />
+        {paymentMethod === "카드" && <CardAnimation />}
+        {paymentMethod === "삼성페이" && <SPayAnimation />}
+        {paymentMethod === "간편결제" && <BarCodeAnimation />}
 
         <PriceBox>
           <PriceText>결제 금액 ₩ {price.toLocaleString()}</PriceText>
