@@ -137,7 +137,7 @@ const Wrap = styled.div`
 
 const Canvas = styled.div<{ $bg?: string }>`
   position: relative;
-  width: 100%;
+  width: 880px;
   height: 950px;
   background: ${({ $bg }) =>
     $bg ? `url(${$bg}) center / contain no-repeat` : "transparent"};
