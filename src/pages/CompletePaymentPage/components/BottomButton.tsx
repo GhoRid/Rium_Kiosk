@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { useNavigate } from "react-router";
 import { colors } from "../../../colors";
+import { clearUserId } from "../../../utils/tokens";
 
 type BottomButtonProps = {
   submitName: string;
@@ -10,9 +11,14 @@ type BottomButtonProps = {
 const BottomButton = ({ submitName = "확인", submit }: BottomButtonProps) => {
   const navigate = useNavigate();
 
+  const handleLogout = () => {
+    clearUserId();
+    navigate("/home");
+  };
+
   return (
     <Container>
-      <BackButton onClick={() => navigate("/home")}>
+      <BackButton onClick={() => handleLogout()}>
         <Text>로그아웃</Text>
       </BackButton>
 
