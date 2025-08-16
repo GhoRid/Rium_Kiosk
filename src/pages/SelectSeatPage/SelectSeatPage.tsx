@@ -14,10 +14,13 @@ import {
   getInformationTicket,
 } from "../../apis/api/user";
 import { useUserId } from "../../hooks/useUserId";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 
 const SelectSeatPage = () => {
+  const location = useLocation();
   const navigate = useNavigate();
+  const { toPurchase, passInformation } = location.state || {};
+
   const [selectedSeat, setSelectedSeat] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -31,9 +34,12 @@ const SelectSeatPage = () => {
   const { data: myTicketResponse } = useQuery({
     queryKey: ["myTicket"],
     queryFn: () => getInformationTicket({ mobileNumber: userId! }),
+    enabled: !!userId,
   });
 
   const { isReservedTicket } = myTicketResponse?.data || {};
+
+  const isReserved = passInformation?.seatType === "고정석";
 
   const seatsState = response?.data || [];
 
@@ -57,7 +63,20 @@ const SelectSeatPage = () => {
 
   const handleNext = () => {
     if (selectedSeat) {
-      selectSeatMutatuion.mutate();
+      if (toPurchase) {
+        navigate("/payment", {
+          state: {
+            passType: passInformation.passType,
+            label: passInformation.label,
+            time: passInformation.time,
+            price: passInformation.price,
+            seatType: passInformation.seatType,
+            seatNumber: selectedSeat,
+          },
+        });
+      } else {
+        selectSeatMutatuion.mutate();
+      }
     } else {
       setError("좌석을 선택해주세요.");
     }
@@ -83,7 +102,7 @@ const SelectSeatPage = () => {
           selectedSeat={selectedSeat}
           onSelect={setSelectedSeat}
           seatsState={seatsState}
-          isReservedTicket={isReservedTicket}
+          isReservedTicket={isReservedTicket || isReserved}
         />
       </Content>
 

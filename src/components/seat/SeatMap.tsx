@@ -23,7 +23,7 @@ type SeatMapProps = {
   selectedSeat: number | null;
   onSelect: (selected: number | null) => void;
   seatsState: SeatState[]; // ✅ 타입 명시
-  isReservedTicket: boolean; // 예약 티켓 여부
+  isReservedTicket: boolean; // 고정석 여부
   usingSeatNumber?: number;
 };
 
@@ -77,10 +77,8 @@ const SeatMap: React.FC<SeatMapProps> = ({
   isReservedTicket,
   usingSeatNumber,
 }) => {
-  console.log(seatsState);
-
   const toggle = (id: number, disabled: boolean) => {
-    if (disabled) return; // 비활성화면 클릭 무시
+    if (disabled) return;
     onSelect(selectedSeat === id ? null : id);
   };
 
@@ -100,7 +98,7 @@ const SeatMap: React.FC<SeatMapProps> = ({
           const live = seatsStateList?.find(
             (v) => v.seatId === s.id || v.seatNumber === s.label
           );
-          // 사용 중이면 비활성화
+
           const isDisabled =
             !!live?.isUsing || isReservedTicket == !live?.isReservedSeat;
 

@@ -4,25 +4,40 @@ import GoToHomeButton from "../../components/GoToHomeButton";
 import Header from "../../components/Header";
 import PaymentInfo from "./components/PaymentInfo";
 import PaymentMethod from "./components/PaymentMethod";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import PaymentOptionSelector from "./components/PaymentOptionSelector";
 import PrintSetting from "./components/PrintSetting";
 import ErrorMsg from "../../components/ErrorMsg";
 import BottomButtons from "../../components/BottomButtons";
-import { useLocation } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import CardModal from "./components/CardModal";
 import { formatDateToYYMMDD } from "../../utils/formatDate";
 import { usePayment } from "../../hooks/usePayment";
 import { createPaymentBuffer } from "../../utils/paymentUtils/paymentUtils";
 import { makeSendData } from "../../utils/paymentUtils/vcatUtils";
 import { parseFullResponsePacket } from "../../utils/paymentUtils/formatResponse";
+import { handlePaymentSuccess } from "../../utils/handlePaymentSuccess";
 
 type PaymentType = "credit" | "credit_fallback" | "credit_cancel";
 
 const PaymentPage = () => {
   const location = useLocation();
-  const { passType, label, price: dd, time, seatType } = location.state || {};
-  const price = 100;
+  const {
+    passType,
+    label,
+    price: dd,
+    time,
+    seatType,
+    seatNumber,
+  } = location.state || {};
+  const price = 10;
+  console.log(
+    `PaymentPage - passType: ${passType}, label: ${label}, price: ${price}, time: ${time}, seatType: ${seatType}, seatNumber: ${seatNumber}`
+  );
+
+  const navigate = useNavigate();
+  const didProceedRef = useRef(false);
+
   const [paymentMethod, setPaymentMethod] = useState<string | null>(null);
   const [installment, setInstallment] = useState<string>("일시불");
   const [selectedInstallmentOption, setSelectedInstallmentOption] =
@@ -37,17 +52,29 @@ const PaymentPage = () => {
 
   const [paymentType, setPaymentType] = useState<PaymentType>("credit");
   const [newdate, setNewdate] = useState(formatDateToYYMMDD(new Date()));
-  const [form, setForm] = useState({
+
+  useEffect(() => {
+    if (paymentMethod === "카드") {
+      setPaymentType("credit");
+    } else if (paymentMethod === "삼성페이") {
+      setPaymentType("credit");
+    } else if (paymentMethod === "간편결제") {
+      // 카카오페이로 변경
+      setPaymentType("credit");
+    }
+  }, [paymentMethod]);
+
+  const form = {
     money: String(price),
     tax: "",
     bongsa: "",
-    halbu: "",
+    halbu: String(selectedInstallmentOption),
     catid: "2393300001",
     myunse: "",
     agreenum: "",
     agreedate: newdate,
     cashno: "",
-  });
+  };
 
   const paymentMutation = usePayment();
 
@@ -70,20 +97,31 @@ const PaymentPage = () => {
     ? parseFullResponsePacket(paymentMutation.data)
     : null;
 
-  const totalSize = parsedPacket?.totalSize || "";
-  const vcat = parsedPacket?.vcat || "";
   const recvCode = parsedPacket?.recvCode || "";
-  const recvDataSize = parsedPacket?.recvDataSize || "";
   const parsedRecvData = parsedPacket?.recvData || null;
-  console.log("parsedRecvData:", parsedRecvData);
 
-  if (
-    recvCode === "1000" &&
-    parsedRecvData &&
-    parsedRecvData["응답코드"] === "0000"
-  ) {
-    console.log("결제 성공, 넘어가면 됨:");
-  }
+  useEffect(() => {
+    if (!recvCode || !parsedRecvData) return;
+    if (didProceedRef.current) return;
+
+    const respCode = parsedRecvData["응답코드"];
+
+    const run = async () => {
+      const processed = await handlePaymentSuccess({
+        recvCode,
+        respCode,
+        passType,
+        seatType,
+        parsed: parsedRecvData,
+      });
+
+      if (processed) {
+        didProceedRef.current = true; // 중복 방지
+      }
+    };
+
+    run();
+  }, [recvCode, parsedRecvData, navigate]);
 
   return (
     <>

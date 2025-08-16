@@ -1,18 +1,19 @@
 import { appInstance } from "..";
 
-// 시간권 구매
-export const purchaseTicketTime = async (data: any) => {
-  return await appInstance.post("/purchase/ticket/time", data);
-};
-
-// 기간권 구매
+// passtype에 따른 티켓 구매
 export const purchaseTicketPeriod = async (data: any) => {
-  return await appInstance.post("/purchase/ticket/period", data);
-};
+  const { passtype, requestBody } = data;
+  let endPoint = "";
 
-// 일일권 구매
-export const purchaseTicketDay = async (data: any) => {
-  return await appInstance.post("/purchase/ticket/day", data);
+  if (passtype === "1회 이용권") {
+    endPoint = "day";
+  } else if (passtype === "기간권") {
+    endPoint = "period";
+  } else if (passtype === "시간권") {
+    endPoint = "time";
+  }
+
+  return await appInstance.post(`/purchase/ticket/${endPoint}`, requestBody);
 };
 
 // 시간권 연장

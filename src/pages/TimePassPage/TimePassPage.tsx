@@ -14,11 +14,11 @@ const TimePassPage = () => {
   const [error, setError] = useState<string | null>(null);
 
   const seatList = [
-    { label: "10시간", price: 25000 },
-    { label: "30시간", price: 50000 },
-    { label: "50시간", price: 100000 },
-    { label: "100시간", price: 160000 },
-    { label: "200시간", price: 280000 },
+    { label: "10시간", time: 10, price: 25000 },
+    { label: "30시간", time: 30, price: 50000 },
+    { label: "50시간", time: 50, price: 100000 },
+    { label: "100시간", time: 100, price: 160000 },
+    { label: "200시간", time: 200, price: 280000 },
   ];
 
   const handleNext = () => {
@@ -38,6 +38,8 @@ const TimePassPage = () => {
         passType: "시간권",
         label: selected.label,
         price: selected.price,
+        time: selected.time,
+        seatType: "자유석",
       },
     });
   };

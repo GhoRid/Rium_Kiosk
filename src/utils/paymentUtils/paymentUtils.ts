@@ -25,7 +25,14 @@ export const createPaymentBuffer = (
   // ✅ 기본값 처리
   const tax = form.tax && form.tax.trim() !== "" ? form.tax : "0";
   const bongsa = form.bongsa && form.bongsa.trim() !== "" ? form.bongsa : "0";
-  const halbu = form.halbu && form.halbu.trim() !== "" ? form.halbu : "00";
+  const halbu =
+    form.halbu && form.halbu.trim() !== ""
+      ? form.halbu === "0"
+        ? "00"
+        : form.halbu.length === 1
+        ? "0" + form.halbu
+        : form.halbu
+      : "00";
 
   switch (paymentType) {
     case "credit":

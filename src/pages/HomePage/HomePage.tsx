@@ -11,7 +11,11 @@ import LogoutButton from "./components/LogoutButton";
 import { useUserId } from "../../hooks/useUserId";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { getPlaceInformation } from "../../apis/api/kioskAuth";
-import { checkPresentTicket, checkUsing, disableTicket } from "../../apis/api/user";
+import {
+  checkPresentTicket,
+  checkUsing,
+  disableTicket,
+} from "../../apis/api/user";
 import { clearUserId } from "../../utils/tokens";
 import { useNavigate } from "react-router";
 
@@ -52,8 +56,6 @@ const HomePage = () => {
 
   const { isUsing, seatNumber } = checkUsingData?.data || {};
   const { isPresent } = checkPresentTicketData?.data || {};
-
-  console.log("isUsing:", checkUsingData);
 
   const disableTicketMutation = useMutation({
     mutationKey: ["disableTicket", userId],

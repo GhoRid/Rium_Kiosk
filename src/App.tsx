@@ -40,6 +40,9 @@ function App() {
             <Route path="/changeseat" element={<ChangeSeatPage />} />
             <Route path="/completepayment" element={<CompletePaymentPage />} />
             <Route path="/completecheckin" element={<CompleteCheckInPage />} />
+
+            {/* 라우트 예외 처리 */}
+            <Route path="*" element={<HomePage />} />
           </Route>
         </Route>
       </Routes>

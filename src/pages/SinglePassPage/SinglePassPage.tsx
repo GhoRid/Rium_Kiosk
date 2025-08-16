@@ -24,12 +24,24 @@ const SinglePassPage = () => {
         return;
       }
 
-      navigate("/payment", {
+      // navigate("/payment", {
+      //   state: {
+      //     passType: "1회 이용권",
+      //     label: selectedPass.label,
+      //     time: selectedPass.time,
+      //     price: selectedPass.price,
+      //     seatType: "자유석",
+      //   },
+      navigate("/select-seat", {
         state: {
-          passType: "1회 이용권",
-          label: selectedPass.label,
-          time: selectedPass.time,
-          price: selectedPass.price,
+          toPurchase: true,
+          passInformation: {
+            passType: "1회 이용권",
+            label: selectedPass.label,
+            time: selectedPass.time,
+            price: selectedPass.price,
+            seatType: "자유석",
+          },
         },
       });
     } else {
