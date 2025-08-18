@@ -12,12 +12,17 @@ import Header from "../../components/Header";
 import { useMutation } from "@tanstack/react-query";
 import {
   checkMembership,
+  resetPassword,
   sendSmsCode,
   verifySmsCode,
 } from "../../apis/api/user";
+import { useNavigate } from "react-router";
+import CustomModal from "../../components/CustomModal";
 
 const ResetPasswordPage = () => {
   type FieldName = "name" | "phone" | "birth" | "code" | "newPassword";
+
+  const navigate = useNavigate();
 
   const [activeField, setActiveField] = useState<FieldName>("name");
   const [name, setName] = useState("");
@@ -25,11 +30,14 @@ const ResetPasswordPage = () => {
   const [birth, setBirth] = useState(""); // YYYYMMDD (숫자만)
   const [code, setCode] = useState(""); // 인증번호
   const [isCodeVerified, setIsCodeVerified] = useState(false);
+  const [isPresentUser, setIsPresentUser] = useState(false);
 
   const [newPassword, setNewPassword] = useState("");
 
   const [submitted, setSubmitted] = useState(false);
   const [errors, setErrors] = useState<Partial<Record<FieldName, string>>>({});
+
+  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
 
   const validateName = (v: string) =>
     v.trim() ? undefined : "이름을 입력해주세요.";
@@ -72,11 +80,11 @@ const ResetPasswordPage = () => {
     setSubmitted(true);
     const v = validateAll();
     setErrors(v);
-    if (Object.keys(v).length === 0 && isCodeVerified) {
+    if (isCodeVerified && submitted == false) {
       checkMembershipMutation.mutate();
       // api 로직 추가
-    } else {
-      // console.log("FAILED", v);
+    } else if (submitted) {
+      resetPasswordMutation.mutate();
     }
   };
 
@@ -102,6 +110,11 @@ const ResetPasswordPage = () => {
     const next = digitsOnly(v).slice(0, 6);
     setCode(next);
     // if (submitted) setFieldError("code", validateCode(next));
+  };
+
+  const onChangeNewPassword = (v: string) => {
+    const next = v.slice(0, 4);
+    setNewPassword(next);
   };
 
   const sendCodeMutation = useMutation({
@@ -142,9 +155,29 @@ const ResetPasswordPage = () => {
         mobileNumber: digitsOnly(phone),
         birth: digitsOnly(birth),
       }),
-    onSuccess: () => {},
+    onSuccess: () => {
+      setIsPresentUser(true);
+    },
     onError: (e: any) => {
       setFieldError("birth", e?.message || "회원 정보 확인에 실패했습니다.");
+    },
+  });
+
+  const resetPasswordMutation = useMutation({
+    mutationKey: ["resetPassword", digitsOnly(phone), newPassword],
+    mutationFn: () =>
+      resetPassword({
+        mobileNumber: digitsOnly(phone),
+        newPassword,
+      }),
+    onSuccess: () => {
+      setIsModalVisible(true);
+    },
+    onError: (e: any) => {
+      setFieldError(
+        "newPassword",
+        e?.message || "비밀번호 재설정에 실패했습니다."
+      );
     },
   });
 
@@ -158,7 +191,6 @@ const ResetPasswordPage = () => {
     [code, verifyCodeMutation.isPending]
   );
 
-  console.log(checkMembershipMutation.data);
   const InputFiledList = useMemo(
     () => [
       {
@@ -220,40 +252,53 @@ const ResetPasswordPage = () => {
   );
 
   return (
-    <Container>
-      <GoToHomeButton />
-      <Header title="비밀번호 재설정" />
-      <Content>
-        {InputFiledList.map((field) => (
-          <InputFiled
-            key={field.name}
-            activeField={activeField}
-            setActiveField={setActiveField}
-            name={field.name}
-            placeholder={field.placeholder}
-            value={field.value}
-            setValue={field.setValue}
-            rightSlot={field.rightSlot}
-          />
-        ))}
-      </Content>
-      {checkMembershipMutation.data && (
-        <InputFiled
-          key={"newPassword"}
-          activeField={activeField}
-          setActiveField={setActiveField}
-          name={"newPassword"}
-          placeholder={"비밀번호 재설정 (4자리)"}
-          value={newPassword}
-          setValue={setNewPassword}
-        />
-      )}
+    <>
+      <Container>
+        <GoToHomeButton />
+        <Header title="비밀번호 재설정" />
+        <Content>
+          {InputFiledList.map((field) => (
+            <InputFiled
+              key={field.name}
+              activeField={activeField}
+              setActiveField={setActiveField}
+              name={field.name}
+              placeholder={field.placeholder}
+              value={field.value}
+              setValue={field.setValue}
+              rightSlot={field.rightSlot}
+            />
+          ))}
+          {isPresentUser && (
+            <InputFiled
+              key={"newPassword"}
+              activeField={activeField}
+              setActiveField={setActiveField}
+              name={"newPassword"}
+              placeholder={"비밀번호 재설정 (4자리)"}
+              value={newPassword}
+              setValue={onChangeNewPassword}
+            />
+          )}
+        </Content>
 
-      {Object.keys(errors).length > 0 && (
-        <ErrorMsg>정보를 다시 입력해주세요.</ErrorMsg>
-      )}
-      <BottomButtons submitName="가입 정보 확인" submit={handleSubmit} />
-    </Container>
+        {Object.keys(errors).length > 0 && (
+          <ErrorMsg>정보를 다시 입력해주세요.</ErrorMsg>
+        )}
+        <BottomButtons submitName="가입 정보 확인" submit={handleSubmit} />
+      </Container>
+      <CustomModal
+        isModalOpen={isModalVisible}
+        setIsModalOpen={setIsModalVisible}
+        modalContent="비밀번호가 변경되었습니다."
+        submitText="홈으로"
+        submitAction={() => {
+          setIsModalVisible(false);
+          navigate("/home");
+        }}
+        isCloseIconVisible={false}
+      />
+    </>
   );
 };
 

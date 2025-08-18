@@ -19,7 +19,7 @@ const PassInfo = ({
   ticketType,
   isUsing,
 }: PassInfoProps) => {
-  const hasTicket = !!ticketName;
+  const hasTicket = ticketName !== "이용권 없음";
 
   return (
     <Wrapper>

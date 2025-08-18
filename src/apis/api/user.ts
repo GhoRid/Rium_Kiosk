@@ -5,6 +5,10 @@ export const registerUser = async (data: any) => {
   return await appInstance.post("/register", data);
 };
 
+export const resetPassword = async (data: any) => {
+  return await appInstance.post("/reset/password", data);
+};
+
 // 사용자 유효성 확인
 export const validUser = async (params: any) => {
   return await appInstance.get("/valid/user", { params });

@@ -7,6 +7,7 @@ type FieldName = "name" | "phone" | "birth" | "code" | "newPassword";
 type Props = {
   activeField: FieldName;
   setActiveField: (f: FieldName) => void;
+
   name: FieldName;
   placeholder: string;
   rightSlot?: ReactNode;
@@ -39,7 +40,13 @@ const InputFiled = ({
             onChange={(e) => setValue(e.target.value)}
             placeholder={placeholder}
             type={
-              name === "birth" ? "text" : name === "phone" ? "text" : "text"
+              name === "birth"
+                ? "text"
+                : name === "phone"
+                ? "text"
+                : name === "newPassword"
+                ? "password"
+                : "text"
             }
             inputMode={isNumeric ? "numeric" : undefined}
             autoComplete="off"
