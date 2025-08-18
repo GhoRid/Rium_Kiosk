@@ -15,6 +15,11 @@ const Legend = () => {
       </LegendItem>
 
       <LegendItem>
+        <Swatch style={{ background: "#A90003" }} />
+        <Text>내 좌석</Text>
+      </LegendItem>
+
+      <LegendItem>
         <Swatch style={{ background: "#3b3f45" }} />
         <Text>이용 불가</Text>
       </LegendItem>

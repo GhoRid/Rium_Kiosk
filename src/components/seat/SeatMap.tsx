@@ -108,7 +108,7 @@ const SeatMap: React.FC<SeatMapProps> = ({
             <SeatBtn
               key={s.id}
               style={{ left: `${s.x}%`, top: `${s.y}%` }}
-              $isUsingSeat={usingSeatNumber === s.id}
+              $isUsingSeat={usingSeatNumber == s.id}
               $reservedIsAvailable={reservedIsAvailable}
               $selected={selectedSeat === s.id}
               $disabled={isDisabled}
@@ -173,8 +173,8 @@ const SeatBtn = styled.button<{
 
   color: ${({ $selected }) => ($selected ? colors.app_black : "#e9edf3")};
 
-  border: ${({ $disabled, $selected }) =>
-    $disabled || $selected
+  border: ${({ $isUsingSeat, $disabled, $selected }) =>
+    $disabled || $selected || $isUsingSeat
       ? "2px solid transparent"
       : `2px solid ${colors.app_white}`};
 

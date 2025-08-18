@@ -26,15 +26,6 @@ const ChangeSeatPage = () => {
 
   const userId = useUserId();
 
-  // const { data: myseatResponse } = useQuery({
-  //   queryKey: ["mySeats"],
-  //   queryFn: () => getInformationMyseat({ mobileNumber: userId! }),
-  // });
-
-  // console.log(myseatResponse);
-
-  // const { seatNumber } = myseatResponse?.data || {};
-
   const { data: myTicketResponse } = useQuery({
     queryKey: ["myTicket"],
     queryFn: () => getInformationTicket({ mobileNumber: userId! }),
