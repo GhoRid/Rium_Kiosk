@@ -29,3 +29,9 @@ export const extendTicketPeriod = async (data: any) => {
 export const changeSeat = async (data: any) => {
   return await appInstance.post("/change/seat", data);
 };
+
+export const reissueTicket = async (data: any) => {
+  return await appInstance.get("/reissue/token", {
+    params: data,
+  });
+};

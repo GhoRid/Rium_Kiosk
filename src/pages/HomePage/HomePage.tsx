@@ -18,6 +18,8 @@ import {
 } from "../../apis/api/user";
 import { clearUserId } from "../../utils/tokens";
 import { useNavigate } from "react-router";
+import { reissueTicket } from "../../apis/api/pass";
+import { postQR } from "../../apis/api/receipt";
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -48,6 +50,12 @@ const HomePage = () => {
     enabled: !!userId,
   });
 
+  const { data: reissueTicketData } = useQuery({
+    queryKey: ["reissueTicket", userId],
+    queryFn: () => reissueTicket({ mobileNumber: userId }),
+    enabled: !!userId,
+  });
+
   const { data: checkPresentTicketData } = useQuery({
     queryKey: ["checkPresentTicket", userId],
     queryFn: () => checkPresentTicket({ mobileNumber: userId }),
@@ -56,6 +64,12 @@ const HomePage = () => {
 
   const { isUsing, seatNumber } = checkUsingData?.data || {};
   const isPresent = checkPresentTicketData?.data || {};
+  const ticketToken = reissueTicketData?.data || "";
+
+  const qrMutation = useMutation({
+    mutationKey: ["qrCode", userId],
+    mutationFn: () => postQR({ token: ticketToken, size: 10 }),
+  });
 
   const disableTicketMutation = useMutation({
     mutationKey: ["disableTicket", userId],
@@ -85,7 +99,6 @@ const HomePage = () => {
       return;
     }
 
-    console.log("isPresent", isPresent);
     if (isPresent) {
       setModalContent({
         content: "이미 이용권이 있습니다.",
@@ -128,7 +141,7 @@ const HomePage = () => {
     }
   };
 
-  const hanleCheckIn = () => {
+  const handleCheckIn = () => {
     if (!userId) {
       navigate("/login");
       return;
@@ -180,6 +193,15 @@ const HomePage = () => {
     }
   };
 
+  const handleReissueTicket = () => {
+    if (!userId) {
+      navigate("/login");
+      return;
+    }
+
+    qrMutation.mutate();
+  };
+
   const {
     placeName,
     placeMobileNumber,
@@ -212,8 +234,9 @@ const HomePage = () => {
             setIsModalOpen={setIsModalOpen}
             handleBuyTicket={handleBuyTicket}
             handleLogout={handleLogout}
-            hanleCheckIn={hanleCheckIn}
+            handleCheckIn={handleCheckIn}
             handleChangeSeat={handleChangeSeat}
+            handleReissueTicket={handleReissueTicket}
           />
         </ContentContainer>
         {/* 하단 배너 */}

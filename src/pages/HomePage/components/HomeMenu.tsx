@@ -13,16 +13,18 @@ type HomeMenuProps = {
   setIsModalOpen: (isModalOpen: boolean) => void;
   handleBuyTicket: () => void;
   handleLogout: () => void;
-  hanleCheckIn: () => void;
+  handleCheckIn: () => void;
   handleChangeSeat: () => void;
+  handleReissueTicket: () => void;
 };
 
 const HomeMenu = ({
   setIsModalOpen,
   handleBuyTicket,
   handleLogout,
-  hanleCheckIn,
+  handleCheckIn,
   handleChangeSeat,
+  handleReissueTicket,
 }: HomeMenuProps) => {
   const navigate = useNavigate();
 
@@ -53,33 +55,9 @@ const HomeMenu = ({
     {
       name: "입실하기",
       icon: <Enter />,
-      action: () => hanleCheckIn(),
+      action: () => handleCheckIn(),
     },
   ];
-
-  const receiptData = {
-    company: "투리버스",
-    ceo: "이헌재",
-    company_num: "220-81-155770",
-    tel: "010-1234-1234",
-    address: "광주광역시 북구 신안고운하이플러스 상가동",
-    cardCompany: "현대카드",
-    catId: "23922****1",
-    cardNum: "4854-8076-****-730*",
-    date: "25/08/16 13:57:52",
-    transactionAmount: 100,
-    vat: 0,
-    total: 100,
-    approvalNumber: "60996351",
-    merchantNumber: "106707835",
-    acquier: "현대카드",
-    installment: false,
-  };
-
-  const receiptMutation = useMutation({
-    mutationKey: ["receipt"],
-    mutationFn: () => postreceipt(receiptData as any),
-  });
 
   return (
     <MenuContainer>
@@ -101,7 +79,7 @@ const HomeMenu = ({
         ))}
       </ActionBox>
 
-      <ReprintBox onClick={() => receiptMutation.mutate()}>
+      <ReprintBox onClick={() => handleReissueTicket()}>
         <Label>출입증 재발행</Label>
       </ReprintBox>
     </MenuContainer>
