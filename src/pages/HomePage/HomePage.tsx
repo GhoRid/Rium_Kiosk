@@ -55,7 +55,7 @@ const HomePage = () => {
   });
 
   const { isUsing, seatNumber } = checkUsingData?.data || {};
-  const { isPresent } = checkPresentTicketData?.data || {};
+  const isPresent = checkPresentTicketData?.data || {};
 
   const disableTicketMutation = useMutation({
     mutationKey: ["disableTicket", userId],
@@ -84,6 +84,8 @@ const HomePage = () => {
       navigate("/login");
       return;
     }
+
+    console.log("isPresent", isPresent);
     if (isPresent) {
       setModalContent({
         content: "이미 이용권이 있습니다.",
@@ -132,7 +134,17 @@ const HomePage = () => {
       return;
     }
 
-    if (isUsing) {
+    if (!isPresent) {
+      setModalContent({
+        content: "이용권이 없습니다.",
+        submitText: "확인",
+        submitAction: () => {
+          setIsModalOpen(false);
+        },
+        isCloseIconVisible: true,
+      });
+      setIsModalOpen(true);
+    } else if (isUsing) {
       setModalContent({
         content: "좌석을 이용중입니다.",
         submitText: "확인",
@@ -142,8 +154,7 @@ const HomePage = () => {
         isCloseIconVisible: true,
       });
       setIsModalOpen(true);
-    }
-    if (!isUsing) {
+    } else if (!isUsing) {
       navigate("/select-seat");
     }
   };

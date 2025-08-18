@@ -21,11 +21,13 @@ export function usePaymentMutations() {
   const receiptMutation = useMutation({
     mutationKey: ["receipt"],
     mutationFn: (body: ReceiptData) => postreceipt(body),
+    retry: 1,
   });
 
   const qrMutation = useMutation({
     mutationKey: ["qr"],
     mutationFn: (data: QRData) => postQR(data),
+    retry: 1,
   });
 
   const purchaseTicketMutation = useMutation({
@@ -37,6 +39,7 @@ export function usePaymentMutations() {
       passtype: string;
       requestBody: PurchaseTicketData;
     }) => purchaseTicket({ passtype, requestBody }),
+    retry: 1,
   });
 
   return { receiptMutation, qrMutation, purchaseTicketMutation };

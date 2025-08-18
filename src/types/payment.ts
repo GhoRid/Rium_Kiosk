@@ -23,7 +23,7 @@ export type QRData = {
 };
 
 export type PurchaseTicketData = {
-  phoneNumber: string;
+  mobileNumber: string;
   remainTime: number;
   seatId?: number;
   periodTicketType?: number;

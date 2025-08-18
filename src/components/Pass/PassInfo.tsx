@@ -19,7 +19,7 @@ const PassInfo = ({
   ticketType,
   isUsing,
 }: PassInfoProps) => {
-  const hasTicket = !!expirationDate;
+  const hasTicket = !!ticketName;
 
   return (
     <Wrapper>
@@ -32,7 +32,7 @@ const PassInfo = ({
               <PassHeader>
                 <PassName>{ticketName}</PassName>
                 <PassPeriod>
-                  {formatIsoToTwoLinesRaw(expirationDate)} 까지
+                  {/* {formatIsoToTwoLinesRaw(expirationDate)} 까지 */}
                 </PassPeriod>
               </PassHeader>
               <PassContent>
