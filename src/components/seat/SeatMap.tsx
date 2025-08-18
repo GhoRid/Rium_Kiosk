@@ -99,8 +99,12 @@ const SeatMap: React.FC<SeatMapProps> = ({
             (v) => v.seatId === s.id || v.seatNumber === s.label
           );
 
+          const isUsingMySeat = usingSeatNumber == s.id;
+
           const isDisabled =
-            !!live?.isUsing || isReservedTicket == !live?.isReservedSeat;
+            !!live?.isUsing ||
+            isReservedTicket == !live?.isReservedSeat ||
+            isUsingMySeat;
 
           const reservedIsAvailable = !!live?.isReservedSeat && !live?.isUsing;
 
@@ -108,7 +112,7 @@ const SeatMap: React.FC<SeatMapProps> = ({
             <SeatBtn
               key={s.id}
               style={{ left: `${s.x}%`, top: `${s.y}%` }}
-              $isUsingSeat={usingSeatNumber == s.id}
+              $isUsingSeat={isUsingMySeat}
               $reservedIsAvailable={reservedIsAvailable}
               $selected={selectedSeat === s.id}
               $disabled={isDisabled}
