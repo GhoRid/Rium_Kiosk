@@ -2,6 +2,7 @@ import { app, BrowserWindow } from "electron";
 import path from "path";
 import { fileURLToPath, pathToFileURL } from "url";
 import isDev from "electron-is-dev";
+import { exec } from "child_process";
 
 // __dirname 정의 (ESM 호환용)
 const __filename = fileURLToPath(import.meta.url);
@@ -16,8 +17,8 @@ function createWindow() {
     width: 1100,
     height: 1920,
     // useContentSize: true,
-    resizable: false, // ✅ 크기 조절 불가
-    fullscreenable: false, // ✅ 최대화 불가
+    // kiosk: true, // ✅ 키오스크 모드 활성화
+    // fullscreen: true, // ✅ 전체 화면 모드 활성화
     maximizable: false, // ✅ 최대화 버튼 비활성화
     webPreferences: {
       nodeIntegration: true,
@@ -52,6 +53,7 @@ app.on("ready", createWindow);
 // 애플리케이션 활성화 시 창이 없으면 새로 생성
 app.on("activate", () => {
   if (mainWindow === null) createWindow();
+  exec("C:\\Program Files\\Common Files\\Microsoft Shared\\ink\\TabTip.exe");
 });
 
 // 모든 창이 닫히면 애플리케이션 종료 (macOS 제외)
