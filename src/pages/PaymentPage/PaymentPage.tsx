@@ -32,7 +32,17 @@ const PaymentPage = () => {
   const price = 10;
 
   const userId = useMemo(() => getUserId(), []);
-  const approvedAt = useMemo(() => new Date().toISOString(), []);
+  // const approvedAt = useMemo(() => new Date().toISOString(), []);
+  const approvedAt = useMemo(() => {
+    const d = new Date();
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth() + 1).padStart(2, "0");
+    const dd = String(d.getDate()).padStart(2, "0");
+    const hh = String(d.getHours()).padStart(2, "0");
+    const min = String(d.getMinutes()).padStart(2, "0");
+
+    return `${yyyy}-${mm}-${dd} ${hh}:${min}`;
+  }, []);
 
   const [paymentMethod, setPaymentMethod] = useState<string | null>(null);
   const [installment, setInstallment] = useState<string>("일시불");
