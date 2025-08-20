@@ -199,23 +199,7 @@ const PaymentPage = () => {
         setIsModalOpen(false);
       }
     })();
-  }, [
-    isSuccess,
-    payData,
-    approvedAt,
-    label,
-    navigate,
-    passType,
-    printPass,
-    printReceipt,
-    purchaseTicketMutation,
-    qrMutation,
-    receiptMutation,
-    seatNumber,
-    seatType,
-    time,
-    userId,
-  ]);
+  }, [isSuccess, payData]);
 
   return (
     <Container>
