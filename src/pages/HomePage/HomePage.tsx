@@ -203,7 +203,7 @@ const HomePage = () => {
 
     if (!!ticketToken) {
       qrMutation.mutate();
-    } else {
+    } else if (!isUsing) {
       setModalContent({
         content: "좌석을 이용중이 아닙니다.",
         submitText: "확인",
