@@ -4,15 +4,12 @@ import { fileURLToPath, pathToFileURL } from "url";
 import isDev from "electron-is-dev";
 import { exec } from "child_process";
 
-// __dirname 정의 (ESM 호환용)
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 let mainWindow;
 
 function createWindow() {
-  // const { width, height } = screen.getPrimaryDisplay().workAreaSize;
-
   mainWindow = new BrowserWindow({
     width: 1100,
     height: 1920,
@@ -35,10 +32,9 @@ function createWindow() {
       : pathToFileURL(path.join(__dirname, "../build/index.html")).toString()
   );
 
-  // 개발자 도구 열기 (개발 모드에서만)
+  // 개발자 도구 열기
   if (isDev) mainWindow.webContents.openDevTools({ mode: "detach" });
 
-  // mainWindow.setResizable(true); // 창 크기 조절 가능
   // 창 닫기 이벤트 핸들러
   mainWindow.on("closed", () => {
     mainWindow = null;

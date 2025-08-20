@@ -36,11 +36,17 @@
     "dist:win": "electron-builder --win"
   },
   "build": {
-  "win": {
-    "target": "nsis",
-    "arch": ["ia32"]
-  }
-},
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "ia32"
+          ]
+        }
+      ]
+    }
+  },
   "eslintConfig": {
     "extends": [
       "react-app",

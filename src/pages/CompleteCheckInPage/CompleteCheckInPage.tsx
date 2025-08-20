@@ -1,9 +1,7 @@
 import styled from "styled-components";
 import { colors } from "../../colors";
-import GoToHomeButton from "../../components/GoToHomeButton";
 import Header from "../../components/Header";
 import { useLocation, useNavigate } from "react-router";
-import FreeSeatForm from "../../components/completeForm/FreeSeatForm";
 import BottomButton from "../CompletePaymentPage/components/BottomButton";
 import CompleteCheckInForm from "./components/CompleteCheckInForm";
 import { clearUserId } from "../../utils/tokens";

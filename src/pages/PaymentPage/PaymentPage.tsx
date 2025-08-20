@@ -20,6 +20,7 @@ import { parseFullResponsePacket } from "../../utils/paymentUtils/formatResponse
 import { getUserId } from "../../utils/tokens";
 
 import { useNVCatPayment, usePaymentMutations } from "../../hooks/usePayment";
+import { paymentResponseUtils } from "../../utils/paymentUtils/paymentResponseUtils";
 
 type PaymentType = "credit" | "credit_fallback" | "credit_cancel";
 
@@ -80,6 +81,20 @@ const PaymentPage = () => {
   };
 
   useEffect(() => {
+    if (!paymentMutation.isError) return;
+
+    const err = paymentMutation.error as any;
+    const msg =
+      err?.response?.data?.message ||
+      err?.response?.data?.error ||
+      err?.message ||
+      "결제 요청에 실패했습니다.";
+
+    setError(msg);
+    setIsModalOpen(false);
+  }, [paymentMutation.isError]);
+
+  useEffect(() => {
     if (!paymentMutation.isSuccess) return;
 
     const parsedPacket = parseFullResponsePacket(paymentMutation.data);
@@ -88,8 +103,15 @@ const PaymentPage = () => {
     const { recvCode, recvData } = parsedPacket;
     const respCode = recvData?.["응답코드"] ?? "";
 
-    if (recvCode !== "0000" || respCode !== "0000") {
-      setError("결제가 실패했습니다.");
+    // ✅ 결제 응답 검증: 성공이면 true, 실패면 throw
+    try {
+      paymentResponseUtils({
+        nvcatRecvCode: recvCode,
+        responseCode: respCode,
+      });
+    } catch (err: any) {
+      console.error("결제 오류:", err);
+      setError(err?.message ? err : "결제 처리 중 오류가 발생했습니다.");
       setIsModalOpen(false);
       return;
     }
@@ -135,15 +157,20 @@ const PaymentPage = () => {
           requestBody,
         });
 
-        if (printReceipt) {
-          await receiptMutation.mutateAsync(payment);
-        }
+        try {
+          if (printReceipt) {
+            await receiptMutation.mutateAsync(payment);
+          }
 
-        if (printPass) {
-          await qrMutation.mutateAsync({
-            token: purchaseRes?.data,
-            size: 10,
-          });
+          if (printPass) {
+            await qrMutation.mutateAsync({
+              token: purchaseRes?.data,
+              size: 10,
+            });
+          }
+        } catch (err: any) {
+          console.error("출력 실패:", err);
+          setError(err?.message ?? "출력 중 오류가 발생했습니다.");
         }
 
         let statusForm: Record<string, unknown> = {};
