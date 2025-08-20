@@ -14,9 +14,9 @@ function createWindow() {
     width: 1100,
     height: 1920,
     // useContentSize: true,
-    kiosk: true, // ✅ 키오스크 모드 활성화
-    fullscreen: true, // ✅ 전체 화면 모드 활성화
-    maximizable: false, // ✅ 최대화 버튼 비활성화
+    // kiosk: true, // ✅ 키오스크 모드 활성화
+    // fullscreen: true, // ✅ 전체 화면 모드 활성화
+    // maximizable: false, // ✅ 최대화 버튼 비활성화
     webPreferences: {
       nodeIntegration: true,
       enableRemoteModule: true,

@@ -63,6 +63,7 @@ const HomePage = () => {
 
   const { isUsing, seatNumber } = checkUsingData?.data || {};
   const isPresent = checkPresentTicketData?.data || {};
+  console.log(isPresent);
 
   const ticketToken = reissueTicketMutation?.data?.data || "";
 
@@ -147,7 +148,7 @@ const HomePage = () => {
       return;
     }
 
-    if (isPresent) {
+    if (!isPresent) {
       setModalContent({
         content: "이용권이 없습니다.",
         submitText: "확인",
