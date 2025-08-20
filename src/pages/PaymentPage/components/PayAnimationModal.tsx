@@ -1,4 +1,4 @@
-import styled, { keyframes } from "styled-components";
+import styled from "styled-components";
 import { ReactComponent as CloseIcon } from "../../../assets/svgs/close.svg";
 import { colors } from "../../../colors";
 import CardAnimation from "./Animation/CardAnimation";

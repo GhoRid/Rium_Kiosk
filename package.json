@@ -32,10 +32,18 @@
     "eject": "react-scripts eject",
     "start": "concurrently \"cross-env NODE_ENV=development BROWSER=none yarn react-start\" \"wait-on http://localhost:3000 && electron .\"",
     "build": "yarn react-build && electron-builder",
-    "build:win": "yarn react-build && electron-builder --win --ia32",
+    "build:win": "yarn react-build && electron-builder --win",
+    "build:mac": "yarn react-build && electron-builder --mac dmg zip",
     "dist:win": "electron-builder --win"
   },
   "build": {
+    "mac": {
+      "target": [
+        "dmg",
+        "zip"
+      ],
+      "category": "public.app-category.utilities"
+    },
     "win": {
       "target": [
         {
@@ -43,8 +51,19 @@
           "arch": [
             "ia32"
           ]
+        },
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
         }
       ]
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": true,
+      "allowToChangeInstallationDirectory": false
     }
   },
   "eslintConfig": {

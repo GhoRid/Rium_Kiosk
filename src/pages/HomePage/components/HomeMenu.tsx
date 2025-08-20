@@ -6,11 +6,8 @@ import { ReactComponent as Enter } from "../../../assets/svgs/enter.svg";
 import { ReactComponent as Exit } from "../../../assets/svgs/exit.svg";
 import { colors } from "../../../colors";
 import { useNavigate } from "react-router";
-import { useMutation } from "@tanstack/react-query";
-import { postreceipt } from "../../../apis/api/receipt";
 
 type HomeMenuProps = {
-  setIsModalOpen: (isModalOpen: boolean) => void;
   handleBuyTicket: () => void;
   handleLogout: () => void;
   handleCheckIn: () => void;
@@ -19,7 +16,6 @@ type HomeMenuProps = {
 };
 
 const HomeMenu = ({
-  setIsModalOpen,
   handleBuyTicket,
   handleLogout,
   handleCheckIn,

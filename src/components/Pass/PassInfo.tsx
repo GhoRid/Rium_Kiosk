@@ -31,9 +31,11 @@ const PassInfo = ({
             <PassTextBox>
               <PassHeader>
                 <PassName>{ticketName}</PassName>
-                <PassPeriod>
-                  {/* {formatIsoToTwoLinesRaw(expirationDate)} 까지 */}
-                </PassPeriod>
+                {expirationDate && (
+                  <PassPeriod>
+                    {formatIsoToTwoLinesRaw(expirationDate)} 까지
+                  </PassPeriod>
+                )}
               </PassHeader>
               <PassContent>
                 {seatNumber ? `${seatNumber} 번 좌석` : "미 이용중"}
@@ -41,7 +43,15 @@ const PassInfo = ({
               <PassContent>{remainTime} 남음</PassContent>
             </PassTextBox>
 
-            {isUsing && <Button>연장하기</Button>}
+            {isUsing && (
+              <Button
+                onClick={() => {
+                  console.log("이용권 연장하기 클릭");
+                }}
+              >
+                연장하기
+              </Button>
+            )}
           </>
         ) : (
           <BoxCenter>

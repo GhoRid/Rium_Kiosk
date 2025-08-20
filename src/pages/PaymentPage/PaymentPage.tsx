@@ -10,7 +10,7 @@ import ErrorMsg from "../../components/ErrorMsg";
 import BottomButtons from "../../components/BottomButtons";
 import PayAnimationModal from "./components/PayAnimationModal";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 
 import { formatDateToYYMMDD } from "../../utils/formatDate";
@@ -30,8 +30,9 @@ const PaymentPage = () => {
 
   const { passType, label, time, seatType, seatNumber } = location.state || {};
   const price = 10;
-  const userId = getUserId();
-  const approvedAt = new Date().toISOString();
+
+  const userId = useMemo(() => getUserId(), []);
+  const approvedAt = useMemo(() => new Date().toISOString(), []);
 
   const [paymentMethod, setPaymentMethod] = useState<string | null>(null);
   const [installment, setInstallment] = useState<string>("일시불");
@@ -80,10 +81,17 @@ const PaymentPage = () => {
     paymentMutation.mutate(encodeURI(vcatPacket));
   };
 
-  useEffect(() => {
-    if (!paymentMutation.isError) return;
+  const {
+    isError,
+    error: payError,
+    isSuccess,
+    data: payData,
+  } = paymentMutation;
 
-    const err = paymentMutation.error as any;
+  useEffect(() => {
+    if (!isError) return;
+
+    const err = payError as any;
     const msg =
       err?.response?.data?.message ||
       err?.response?.data?.error ||
@@ -92,18 +100,17 @@ const PaymentPage = () => {
 
     setError(msg);
     setIsModalOpen(false);
-  }, [paymentMutation.isError]);
+  }, [isError, payError]);
 
   useEffect(() => {
-    if (!paymentMutation.isSuccess) return;
+    if (!isSuccess) return;
 
-    const parsedPacket = parseFullResponsePacket(paymentMutation.data);
+    const parsedPacket = parseFullResponsePacket(payData);
     if (!parsedPacket) return;
 
     const { recvCode, recvData } = parsedPacket;
     const respCode = recvData?.["응답코드"] ?? "";
 
-    // ✅ 결제 응답 검증: 성공이면 true, 실패면 throw
     try {
       paymentResponseUtils({
         nvcatRecvCode: recvCode,
@@ -111,7 +118,11 @@ const PaymentPage = () => {
       });
     } catch (err: any) {
       console.error("결제 오류:", err);
-      setError(err?.message ? err : "결제 처리 중 오류가 발생했습니다.");
+      setError(
+        typeof err?.message === "string"
+          ? err.message
+          : "결제 처리 중 오류가 발생했습니다."
+      );
       setIsModalOpen(false);
       return;
     }
@@ -188,7 +199,23 @@ const PaymentPage = () => {
         setIsModalOpen(false);
       }
     })();
-  }, [paymentMutation.isSuccess]);
+  }, [
+    isSuccess,
+    payData,
+    approvedAt,
+    label,
+    navigate,
+    passType,
+    printPass,
+    printReceipt,
+    purchaseTicketMutation,
+    qrMutation,
+    receiptMutation,
+    seatNumber,
+    seatType,
+    time,
+    userId,
+  ]);
 
   return (
     <Container>

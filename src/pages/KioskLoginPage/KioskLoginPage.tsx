@@ -3,7 +3,7 @@ import { colors } from "../../colors";
 import { useMutation } from "@tanstack/react-query";
 import { loginKiosk } from "../../apis/api/kioskAuth";
 import Input from "./components/Input";
-import { use, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { saveTokens } from "../../utils/tokens";
 import { useNavigate } from "react-router";
 

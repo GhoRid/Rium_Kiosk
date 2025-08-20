@@ -244,7 +244,6 @@ const HomePage = () => {
 
           {/* 메뉴 버튼 */}
           <HomeMenu
-            setIsModalOpen={setIsModalOpen}
             handleBuyTicket={handleBuyTicket}
             handleLogout={handleLogout}
             handleCheckIn={handleCheckIn}

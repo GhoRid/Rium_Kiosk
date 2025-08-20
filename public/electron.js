@@ -22,6 +22,7 @@ function createWindow() {
       enableRemoteModule: true,
       contextIsolation: false,
       devTools: isDev,
+      icon: path.join("./favicon.ico"),
     },
   });
 
