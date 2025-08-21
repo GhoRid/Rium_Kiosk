@@ -31,6 +31,8 @@ const PaymentPage = () => {
   const { passType, label, time, seatType, seatNumber } = location.state || {};
   const price = 10;
 
+  const passTicketVisible = !!seatNumber;
+
   const userId = useMemo(() => getUserId(), []);
   // const approvedAt = useMemo(() => new Date().toISOString(), []);
   const approvedAt = useMemo(() => {
@@ -232,6 +234,7 @@ const PaymentPage = () => {
         />
 
         <PrintSetting
+          passTicketVisible={passTicketVisible}
           printReceipt={printReceipt}
           setPrintReceipt={setPrintReceipt}
           printPass={printPass}

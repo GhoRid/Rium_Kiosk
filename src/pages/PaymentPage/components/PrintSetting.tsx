@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { colors } from "../../../colors";
 
 type PrintSettingProps = {
+  passTicketVisible: boolean;
   printReceipt: boolean;
   setPrintReceipt: (value: boolean) => void;
   printPass: boolean;
@@ -9,6 +10,7 @@ type PrintSettingProps = {
 };
 
 const PrintSetting = ({
+  passTicketVisible,
   printReceipt,
   setPrintReceipt,
   printPass,
@@ -29,15 +31,17 @@ const PrintSetting = ({
           <OptionLabel>영수증 출력</OptionLabel>
         </Option>
 
-        <Option>
-          <RadioButton
-            onClick={() => setPrintPass(!printPass)}
-            aria-label="출입증 출력 설정"
-          >
-            <RadioButtonIsOn $isSelected={printPass} />
-          </RadioButton>
-          <OptionLabel>출입증 출력</OptionLabel>
-        </Option>
+        {passTicketVisible && (
+          <Option>
+            <RadioButton
+              onClick={() => setPrintPass(!printPass)}
+              aria-label="출입증 출력 설정"
+            >
+              <RadioButtonIsOn $isSelected={printPass} />
+            </RadioButton>
+            <OptionLabel>출입증 출력</OptionLabel>
+          </Option>
+        )}
       </OptionRow>
     </Wrapper>
   );
