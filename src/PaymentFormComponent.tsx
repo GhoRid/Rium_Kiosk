@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { createPaymentBuffer } from "./utils/paymentUtils/paymentUtils";
+import { createPaymentBuffer } from "./utils/paymentUtils/nvcatPaymentUtils";
 import { useNVCatPayment } from "./hooks/usePayment";
 import { formatDateToYYMMDD } from "./utils/formatDate";
 import { makeSendData } from "./utils/paymentUtils/vcatUtils";

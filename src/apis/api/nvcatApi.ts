@@ -1,6 +1,6 @@
 import { nvcatInstance } from "..";
 
-export const sendPayment = async (sendbuf: string) => {
+export const nvcatApi = async (sendbuf: string) => {
   try {
     const { data } = await nvcatInstance.post("/", sendbuf);
     return data;

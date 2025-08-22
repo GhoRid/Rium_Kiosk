@@ -9,20 +9,21 @@ import PrintSetting from "./components/PrintSetting";
 import ErrorMsg from "../../components/ErrorMsg";
 import BottomButtons from "../../components/BottomButtons";
 import PayAnimationModal from "./components/PayAnimationModal";
-
 import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
-
 import { formatDateToYYMMDD } from "../../utils/formatDate";
-import { createPaymentBuffer } from "../../utils/paymentUtils/paymentUtils";
+import { createPaymentBuffer } from "../../utils/paymentUtils/nvcatPaymentUtils";
 import { makeSendData } from "../../utils/paymentUtils/vcatUtils";
 import { parseFullResponsePacket } from "../../utils/paymentUtils/formatResponse";
 import { getUserId } from "../../utils/tokens";
-
 import { useNVCatPayment, usePaymentMutations } from "../../hooks/usePayment";
-import { paymentResponseUtils } from "../../utils/paymentUtils/paymentResponseUtils";
+import { nvcatPaymentResponseUtils } from "../../utils/paymentUtils/nvcatPaymentResponseUtils";
 
-type PaymentType = "credit" | "credit_fallback" | "credit_cancel";
+type PaymentType =
+  | "credit"
+  | "credit_fallback"
+  | "credit_cancel"
+  | "kakao_money";
 
 const PaymentPage = () => {
   const location = useLocation();
@@ -124,7 +125,7 @@ const PaymentPage = () => {
     const respCode = recvData?.["응답코드"] ?? "";
 
     try {
-      paymentResponseUtils({
+      nvcatPaymentResponseUtils({
         nvcatRecvCode: recvCode,
         responseCode: respCode,
       });

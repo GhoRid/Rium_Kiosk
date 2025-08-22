@@ -1,4 +1,4 @@
-import { sendPayment } from "../apis/api/paymentApi";
+import { nvcatApi } from "../apis/api/nvcatApi";
 import { useMutation, UseMutationResult } from "@tanstack/react-query";
 import { PurchaseTicketData, QRData, ReceiptData } from "../types/payment";
 import { postQR, postreceipt } from "../apis/api/receipt";
@@ -6,10 +6,9 @@ import { purchaseTicket } from "../apis/api/pass";
 
 export const useNVCatPayment = () => {
   return useMutation({
-    mutationFn: (sendbuf: string) => sendPayment(sendbuf),
+    mutationFn: async (sendbuf: string) => await nvcatApi(sendbuf),
     onSuccess: (data) => {
       console.log("결제 응답:", data);
-      // alert("결제가 성공적으로 처리되었습니다.");
     },
     onError: (error) => {
       console.error("결제 요청 실패:", error);
@@ -17,6 +16,7 @@ export const useNVCatPayment = () => {
     },
   });
 };
+
 export function usePaymentMutations() {
   const receiptMutation = useMutation({
     mutationKey: ["receipt"],

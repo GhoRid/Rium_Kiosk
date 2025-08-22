@@ -12,7 +12,11 @@ type PaymentForm = {
   agreedate?: string;
 };
 
-type PaymentType = "credit" | "credit_fallback" | "credit_cancel";
+type PaymentType =
+  | "credit"
+  | "credit_fallback"
+  | "credit_cancel"
+  | "kakao_money";
 
 /**
  * 결제 전송 문자열 생성 함수
@@ -21,8 +25,6 @@ export const createPaymentBuffer = (
   paymentType: PaymentType,
   form: PaymentForm
 ): string => {
-  console.log("form", form);
-  // ✅ 기본값 처리
   const tax = form.tax && form.tax.trim() !== "" ? form.tax : "0";
   const bongsa = form.bongsa && form.bongsa.trim() !== "" ? form.bongsa : "0";
   const halbu =
@@ -143,6 +145,55 @@ export const createPaymentBuffer = (
         FS +
         FS +
         "" +
+        FS +
+        H7
+      );
+
+    case "kakao_money":
+      return (
+        "NICEVCATB" +
+        H7 +
+        "0300" +
+        FS +
+        "10" +
+        FS +
+        "L" +
+        FS +
+        form.money +
+        FS +
+        form.tax +
+        FS +
+        form.bongsa +
+        FS +
+        form.halbu +
+        FS +
+        "" +
+        FS +
+        "" +
+        FS +
+        form.catid +
+        FS +
+        FS +
+        FS +
+        "" +
+        FS +
+        "" +
+        FS +
+        FS +
+        FS +
+        FS +
+        "" +
+        FS +
+        "MONY         " +
+        FS +
+        "KKE" +
+        FS +
+        "" +
+        FS +
+        FS +
+        FS +
+        "KKE000001004" +
+        FS +
         FS +
         H7
       );
