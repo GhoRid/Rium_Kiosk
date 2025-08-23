@@ -70,11 +70,6 @@ export const useRunPaymentFlow = (args: RunnerArgs) => {
     setFallbackPacket(encodeURI(vcatPacket));
   };
 
-  useEffect(() => {
-    if (!triggerPacket) return;
-    paymentMutation.mutate(triggerPacket);
-  }, [triggerPacket, paymentMutation]);
-
   const {
     isError,
     error: payError,
