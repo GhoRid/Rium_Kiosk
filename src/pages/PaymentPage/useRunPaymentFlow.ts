@@ -53,14 +53,13 @@ export const useRunPaymentFlow = (args: RunnerArgs) => {
   const { receiptMutation, qrMutation, purchaseTicketMutation } =
     useAppPaymentMutations();
 
-  const [triggerPacket, setTriggerPacket] = useState<string | null>(null);
   const [fallbackPacket, setFallbackPacket] = useState<string | null>(null);
 
   const start = () => {
     setIsModalOpen(true);
     const paymentData = createPaymentBuffer(paymentType, form);
     const vcatPacket = makeSendData(paymentData);
-    setTriggerPacket(encodeURI(vcatPacket));
+    paymentMutation.mutate(encodeURI(vcatPacket));
   };
 
   const creditFallBack = () => {
@@ -78,7 +77,6 @@ export const useRunPaymentFlow = (args: RunnerArgs) => {
   } = paymentMutation;
 
   useEffect(() => {
-    if (!triggerPacket) return;
     if (!isError) return;
 
     const err = payError as any;
@@ -93,7 +91,6 @@ export const useRunPaymentFlow = (args: RunnerArgs) => {
   }, [isError, payError, setIsModalOpen]);
 
   useEffect(() => {
-    if (!triggerPacket) return;
     if (!isSuccess) return;
 
     const parsedPacket = parseFullResponsePacket(payData);
