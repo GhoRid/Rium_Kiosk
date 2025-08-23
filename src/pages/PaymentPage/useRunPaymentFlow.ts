@@ -76,6 +76,9 @@ export const useRunPaymentFlow = (args: RunnerArgs) => {
     data: payData,
   } = paymentMutation;
 
+  // console.log("isSuccess:", isSuccess);
+  // console.log("payData:", payData);
+
   useEffect(() => {
     if (!isError) return;
 
@@ -154,48 +157,48 @@ export const useRunPaymentFlow = (args: RunnerArgs) => {
       payment,
     };
 
-    (async () => {
-      try {
-        const purchaseRes = await purchaseTicketMutation.mutateAsync({
-          passtype: passType,
-          requestBody,
-        });
+    // (async () => {
+    //   try {
+    //     const purchaseRes = await purchaseTicketMutation.mutateAsync({
+    //       passtype: passType,
+    //       requestBody,
+    //     });
 
-        try {
-          if (printReceipt) {
-            await receiptMutation.mutateAsync(payment);
-          }
+    //     try {
+    //       if (printReceipt) {
+    //         await receiptMutation.mutateAsync(payment);
+    //       }
 
-          if (printPass) {
-            await qrMutation.mutateAsync({
-              token: purchaseRes?.data,
-              size: 10,
-            });
-          }
-        } catch (err: any) {
-          throw new Error(
-            typeof err === "string"
-              ? err
-              : "영수증 또는 QR 코드 출력에 실패했습니다."
-          );
-        }
+    //       if (printPass) {
+    //         await qrMutation.mutateAsync({
+    //           token: purchaseRes?.data,
+    //           size: 10,
+    //         });
+    //       }
+    //     } catch (err: any) {
+    //       throw new Error(
+    //         typeof err === "string"
+    //           ? err
+    //           : "영수증 또는 QR 코드 출력에 실패했습니다."
+    //       );
+    //     }
 
-        const approvedAt = formatIsoToTwoLinesRaw(new Date().toISOString());
-        let statusForm: Record<string, unknown> = {};
-        if (passType === "1회 이용권") {
-          statusForm = { resultType: passType, seatNumber, approvedAt };
-        } else if (passType === "기간권" && seatType === "고정석") {
-          statusForm = { resultType: "고정석", seatNumber, passType, label };
-        } else if (passType === "시간권") {
-          statusForm = { resultType: "자유석", passType, label };
-        }
+    //     const approvedAt = formatIsoToTwoLinesRaw(new Date().toISOString());
+    //     let statusForm: Record<string, unknown> = {};
+    //     if (passType === "1회 이용권") {
+    //       statusForm = { resultType: passType, seatNumber, approvedAt };
+    //     } else if (passType === "기간권" && seatType === "고정석") {
+    //       statusForm = { resultType: "고정석", seatNumber, passType, label };
+    //     } else if (passType === "시간권") {
+    //       statusForm = { resultType: "자유석", passType, label };
+    //     }
 
-        navigate("/completepayment", { replace: true, state: statusForm });
-      } catch (err) {
-        setIsModalOpen(false);
-        throw new Error(typeof err === "string" ? err : "알 수 없는 에러 발생");
-      }
-    })();
+    //     navigate("/completepayment", { replace: true, state: statusForm });
+    //   } catch (err) {
+    //     setIsModalOpen(false);
+    //     throw new Error(typeof err === "string" ? err : "알 수 없는 에러 발생");
+    //   }
+    // })();
   }, [isSuccess, payData]);
 
   return { start };
