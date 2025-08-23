@@ -22,10 +22,10 @@ type RunnerArgs = {
   paymentType: PaymentType;
   setIsModalOpen: (b: boolean) => void;
   userId: string | null;
-  time: number;
   seatNumber: number;
   seatType: string;
   passType: string;
+  ticketId: number;
   label: string;
   navigate: NavigateFunction;
   printReceipt: boolean;
@@ -39,10 +39,10 @@ export const useRunPaymentFlow = (args: RunnerArgs) => {
     paymentType,
     setIsModalOpen,
     userId,
-    time,
     seatNumber,
     seatType,
     passType,
+    ticketId,
     label,
     navigate,
     printReceipt,
@@ -148,19 +148,14 @@ export const useRunPaymentFlow = (args: RunnerArgs) => {
 
     const requestBody = {
       mobileNumber: userId!,
-      remainTime: time!,
-      ...(typeof seatNumber === "number" && seatNumber > 0
-        ? { seatId: seatNumber }
-        : {}),
-      ...(seatType === "고정석" ? { periodTicketType: 1 } : {}),
-      ...(seatType === "자유석" ? { periodTicketType: 2 } : {}),
+      ticketId: ticketId,
+      seatNumber: seatNumber ? seatNumber : null,
       payment,
     };
 
     (async () => {
       try {
         const purchaseRes = await purchaseTicketMutation.mutateAsync({
-          passtype: passType,
           requestBody,
         });
 

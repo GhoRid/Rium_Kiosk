@@ -116,7 +116,7 @@ const SeatMap: React.FC<SeatMapProps> = ({
               $reservedIsAvailable={reservedIsAvailable}
               $selected={selectedSeat === s.id}
               $disabled={isDisabled}
-              disabled={isDisabled} // 네이티브 disabled도 설정
+              disabled={isDisabled}
               type="button"
               onClick={() => toggle(s.id, isDisabled)}
               aria-checked={selectedSeat === s.id}

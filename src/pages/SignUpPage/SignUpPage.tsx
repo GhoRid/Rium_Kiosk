@@ -126,10 +126,9 @@ const SignUpPage = () => {
       registerUser({
         mobileNumber: digitsOnly(phone),
         password: pin,
-        placeId: 1,
         name: name,
         birth: birth,
-        sighUpPath: route,
+        // sighUpPath: route,
       });
     },
     onSuccess: (res) => {

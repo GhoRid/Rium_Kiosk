@@ -13,15 +13,6 @@ import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { getUserId } from "../../utils/tokens";
 import { useRunPaymentFlow } from "./useRunPaymentFlow";
-import { createPaymentBuffer } from "../../utils/paymentUtils/nvcatPaymentUtils";
-import { makeSendData } from "../../utils/paymentUtils/vcatUtils";
-import {
-  useAppPaymentMutations,
-  useNVCatPayment,
-} from "../../hooks/usePayment";
-import { parseFullResponsePacket } from "../../utils/paymentUtils/formatResponse";
-import { nvcatPaymentResponseUtils } from "../../utils/paymentUtils/nvcatPaymentResponseUtils";
-import { formatIsoToTwoLinesRaw } from "../../utils/formatDate";
 
 type PaymentType =
   | "credit"
@@ -33,7 +24,10 @@ const PaymentPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const { passType, label, time, seatType, seatNumber } = location.state || {};
+  console.log(location.state);
+
+  const { passType, label, seatType, seatNumber, ticketId } =
+    location.state || {};
   const price = 10;
 
   const passTicketVisible = !!seatNumber;
@@ -73,11 +67,11 @@ const PaymentPage = () => {
     paymentType,
     setIsModalOpen,
     userId,
-    time,
     seatNumber,
     seatType,
     passType,
     label,
+    ticketId,
     navigate,
     printReceipt,
     printPass,

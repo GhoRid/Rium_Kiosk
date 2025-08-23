@@ -32,13 +32,8 @@ export function useAppPaymentMutations() {
 
   const purchaseTicketMutation = useMutation({
     mutationKey: ["purchaseTicket"],
-    mutationFn: ({
-      passtype,
-      requestBody,
-    }: {
-      passtype: string;
-      requestBody: PurchaseTicketData;
-    }) => purchaseTicket({ passtype, requestBody }),
+    mutationFn: ({ requestBody }: { requestBody: PurchaseTicketData }) =>
+      purchaseTicket({ requestBody }),
     retry: 1,
   });
 

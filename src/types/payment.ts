@@ -24,8 +24,6 @@ export type QRData = {
 
 export type PurchaseTicketData = {
   mobileNumber: string;
-  remainTime: number;
+  ticketId: number;
   seatId?: number;
-  periodTicketType?: number;
-  payment: ReceiptData;
 };

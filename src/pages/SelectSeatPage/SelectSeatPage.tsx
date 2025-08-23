@@ -9,7 +9,6 @@ import SeatMap from "../../components/seat/SeatMap";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   enableTicket,
-  // getInformationMyseat,
   getInformationSeat,
   getInformationTicket,
 } from "../../apis/api/user";

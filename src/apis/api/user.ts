@@ -19,6 +19,10 @@ export const validToken = async (params: any) => {
   return await appInstance.get("/valid/token", { params });
 };
 
+export const getUserData = async (params: any) => {
+  return await appInstance.get("/get/userdata", { params });
+};
+
 // SMS 인증 코드 검증
 export const verifySmsCode = async (params: any) => {
   return await appInstance.get("/sms/verify/code", { params });

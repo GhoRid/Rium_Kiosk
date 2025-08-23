@@ -2,22 +2,34 @@ import styled from "styled-components";
 import { colors } from "../../colors";
 import Header from "../../components/Header";
 import GoToHomeButton from "../../components/GoToHomeButton";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import ErrorMsg from "../../components/ErrorMsg";
 import OptionCard from "./components/OptionCard";
 import BottomButtons from "../../components/BottomButtons";
 import { useNavigate } from "react-router";
+import { useQuery } from "@tanstack/react-query";
+import { getTicketList } from "../../apis/api/pass";
 
 type SeatOption = {
   label: string;
-  time: number; // 주 단위
-  seatType: string; // "고정석" | "자유석"
+  time: number;
+  seatType: "고정석" | "자유석";
   price: number;
+  ticketId: number;
 };
 
 type SeatGroup = {
-  type: string; // "고정석" | "자유석"
+  type: "고정석" | "자유석";
   options: SeatOption[];
+};
+
+type TicketRow = {
+  ticketId: number;
+  ticketName: string;
+  ticketType: number;
+  time: number;
+  price: number;
+  period: number | null;
 };
 
 const PeriodPassPage = () => {
@@ -26,24 +38,54 @@ const PeriodPassPage = () => {
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const SeatList: SeatGroup[] = [
-    {
-      type: "고정석",
-      options: [
-        { label: "2주 고정석", time: 2, seatType: "고정석", price: 150000 },
-        { label: "4주 고정석", time: 4, seatType: "고정석", price: 250000 },
-        { label: "8주 고정석", time: 8, seatType: "고정석", price: 450000 },
-      ],
-    },
-    {
-      type: "자유석",
-      options: [
-        { label: "2주 자유석", time: 2, seatType: "자유석", price: 100000 },
-        { label: "4주 자유석", time: 4, seatType: "자유석", price: 200000 },
-        { label: "8주 자유석", time: 8, seatType: "자유석", price: 380000 },
-      ],
-    },
-  ];
+  const { data: fixedSeatData, isLoading: fixedSeatIsLodaing } = useQuery({
+    queryKey: ["passList", "고정석"],
+    queryFn: () =>
+      getTicketList({
+        ticketType: 2,
+      }),
+  });
+
+  const { data: freeSeatData, isLoading: freeSeatIsLodaing } = useQuery({
+    queryKey: ["passList", "자유석"],
+    queryFn: () =>
+      getTicketList({
+        ticketType: 4,
+      }),
+  });
+
+  const toLabel = (name: string) => name.replace(/^기간권\s*/g, "").trim();
+
+  const mapToOptions = (
+    rows: TicketRow[] | undefined,
+    seatType: "고정석" | "자유석"
+  ): SeatOption[] => {
+    if (!rows || !Array.isArray(rows)) return [];
+    return rows.map((r) => ({
+      label: toLabel(r.ticketName),
+      time: r.time,
+      seatType,
+      price: r.price,
+      ticketId: r.ticketId,
+    }));
+  };
+
+  const SeatList: SeatGroup[] = useMemo(() => {
+    const fixedRows = (fixedSeatData?.data ?? []) as TicketRow[];
+    const freeRows = (freeSeatData?.data ?? []) as TicketRow[];
+
+    const fixedOptions = mapToOptions(fixedRows, "고정석");
+    const freeOptions = mapToOptions(freeRows, "자유석");
+
+    const groups: SeatGroup[] = [];
+    if (fixedOptions.length)
+      groups.push({ type: "고정석", options: fixedOptions });
+    if (freeOptions.length)
+      groups.push({ type: "자유석", options: freeOptions });
+    return groups;
+  }, [fixedSeatData, freeSeatData]);
+
+  const isLoading = fixedSeatIsLodaing || freeSeatIsLodaing;
 
   const handleNext = () => {
     if (!selectedOption) {
@@ -51,19 +93,20 @@ const PeriodPassPage = () => {
       return;
     }
 
-    let seatType: string | null = null;
+    let seatType: "고정석" | "자유석" | null = null;
     let label: string | null = null;
     let time: number | null = null;
     let price: number | null = null;
+    let ticketId: number | null = null;
 
     for (const seat of SeatList) {
-      const opt = seat.options.find((o) => o.label === selectedOption);
-      if (opt) {
+      const selectedPass = seat.options.find((o) => o.label === selectedOption);
+      if (selectedPass) {
         seatType = seat.type;
-        label = opt.label;
-        time = opt.time;
-        price = opt.price;
-        break;
+        label = selectedPass.label;
+        time = selectedPass.time;
+        price = selectedPass.price;
+        ticketId = selectedPass.ticketId;
       }
     }
 
@@ -72,7 +115,7 @@ const PeriodPassPage = () => {
       return;
     }
 
-    if (seatType == "고정석") {
+    if (seatType === "고정석") {
       navigate("/select-seat", {
         state: {
           toPurchase: true,
@@ -82,6 +125,7 @@ const PeriodPassPage = () => {
             time,
             price,
             seatType,
+            ticketId,
           },
         },
       });
@@ -93,6 +137,7 @@ const PeriodPassPage = () => {
           label,
           time,
           price,
+          ticketId,
         },
       });
     }
@@ -108,28 +153,39 @@ const PeriodPassPage = () => {
       <Header title="기간권" />
 
       <Content>
-        <List>
-          {SeatList.map((seat) => (
-            <div key={seat.type}>
-              <MessageBox>
-                <Message>{seat.type}</Message>
-              </MessageBox>
-              <CardList>
-                {seat.options.map((option) => (
-                  <OptionCard
-                    key={option.label}
-                    label={option.label}
-                    price={option.price}
-                    width={240}
-                    height={200}
-                    selectedOption={selectedOption}
-                    selectOption={setSelectedOption}
-                  />
-                ))}
-              </CardList>
-            </div>
-          ))}
-        </List>
+        {isLoading ? (
+          <MessageBox>
+            <Message>불러오는 중…</Message>
+          </MessageBox>
+        ) : SeatList.length === 0 ? (
+          <MessageBox>
+            <Message>표시할 이용권이 없습니다.</Message>
+          </MessageBox>
+        ) : (
+          <List>
+            {SeatList.map((seat) => (
+              <div key={seat.type}>
+                <MessageBox>
+                  <Message>{seat.type}</Message>
+                </MessageBox>
+
+                <CardList>
+                  {seat.options.map((option) => (
+                    <OptionCard
+                      key={option.label}
+                      label={option.label}
+                      price={option.price}
+                      width={240}
+                      height={200}
+                      selectedOption={selectedOption}
+                      selectOption={setSelectedOption}
+                    />
+                  ))}
+                </CardList>
+              </div>
+            ))}
+          </List>
+        )}
       </Content>
 
       {!!error && <ErrorMsg>{error}</ErrorMsg>}
