@@ -81,9 +81,6 @@ export const useRunPaymentFlow = (args: RunnerArgs) => {
     data: payData,
   } = paymentMutation;
 
-  // console.log("payError", payError);
-  console.log("ticketId", ticketId);
-
   useEffect(() => {
     if (!isError) return;
     const err = payError as any;
@@ -107,27 +104,49 @@ export const useRunPaymentFlow = (args: RunnerArgs) => {
     const { recvCode, recvData } = parsedPacket;
     const respCode = recvData?.["응답코드"] ?? "";
 
-    try {
-      nvcatPaymentResponseUtils({
-        nvcatRecvCode: recvCode,
-        responseCode: respCode,
-        form: form,
-        paymentMutation,
-        setPaymentType,
-        setError,
-      });
-    } catch (err: any) {
-      if (err === "fallback" || !!fallbackPacket) {
-        creditFallBack();
-        return;
-      } else {
-        setIsModalOpen(false);
-        console.error("결제 오류:", err);
-        setError(
-          typeof err === "string" ? err : "결제 처리 중 오류가 발생했습니다."
-        );
-      }
+    const result = nvcatPaymentResponseUtils({
+      nvcatRecvCode: recvCode,
+      responseCode: respCode,
+      form,
+      paymentMutation,
+      setPaymentType,
+      setError,
+    });
+
+    // 폴백 요청이면 폴백 결제 시작
+    if (result === "fallback") {
+      creditFallBack();
+      return;
     }
+
+    // 에러 객체면 UI에만 에러 표시하고 흐름 종료
+    if (result instanceof Error) {
+      setIsModalOpen(false);
+      setError(result.message || "결제 처리 중 오류가 발생했습니다.");
+      return;
+    }
+
+    // try {
+    //   nvcatPaymentResponseUtils({
+    //     nvcatRecvCode: recvCode,
+    //     responseCode: respCode,
+    //     form: form,
+    //     paymentMutation,
+    //     setPaymentType,
+    //     setError,
+    //   });
+    // } catch (err: any) {
+    //   if (err === "fallback" || !!fallbackPacket) {
+    //     creditFallBack();
+    //     return;
+    //   } else {
+    //     setIsModalOpen(false);
+    //     console.error("결제 오류:", err);
+    //     setError(
+    //       typeof err === "string" ? err : "결제 처리 중 오류가 발생했습니다."
+    //     );
+    //   }
+    // }
 
     const toNum = (v?: string) => (v && v.trim() !== "" ? Number(v) : 0);
 

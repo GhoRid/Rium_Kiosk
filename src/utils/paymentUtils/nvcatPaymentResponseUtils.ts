@@ -33,32 +33,30 @@ export function nvcatPaymentResponseUtils({
 
   switch (nvcatRecvCode) {
     case "0000":
-      return;
+      return { kind: "ok" };
+
     case "0001":
       paymentMutation.mutate(makeVcatPacketencode("RESTART"));
-      return new Error(getUserMessage(nvcatRecvCode));
+      return { kind: "error", message: getUserMessage(nvcatRecvCode) };
 
     case "0005":
     case "0006":
       paymentMutation.mutate(makeVcatPacketencode("READER_RESET"));
-      return new Error(getUserMessage(nvcatRecvCode));
+      return { kind: "error", message: getUserMessage(nvcatRecvCode) };
 
     case "0007":
-      return;
-
-    case "0015":
-      console.log("포트 오픈 에러");
-      throw new Error(getUserMessage(nvcatRecvCode));
+      return { kind: "ok" };
 
     case "0008":
       // fallback 요청
-      return "fallback";
+      return { kind: "fallback" };
 
     case "0027":
       paymentMutation.mutate(makeVcatPacketencode("NVCATSHUTDOWN"));
       paymentMutation.mutate(makeVcatPacketencode("RESTART"));
-      return new Error(getUserMessage(nvcatRecvCode));
+      return { kind: "error", message: getUserMessage(nvcatRecvCode) };
+
     default:
-      return new Error(getUserMessage(nvcatRecvCode));
+      return { kind: "error", message: getUserMessage(nvcatRecvCode) };
   }
 }

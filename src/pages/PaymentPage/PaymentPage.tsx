@@ -24,7 +24,7 @@ const PaymentPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  console.log(location.state);
+  // console.log(location.state);
 
   const { passType, label, seatType, seatNumber, ticketId } =
     location.state || {};
