@@ -63,7 +63,6 @@ const HomePage = () => {
 
   const { isUsing, seatNumber } = checkUsingData?.data || {};
   const isPresent = checkPresentTicketData?.data || {};
-  console.log(isPresent);
 
   const ticketToken = reissueTicketMutation?.data?.data || "";
 

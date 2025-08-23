@@ -11,13 +11,8 @@ import BottomButtons from "../../components/BottomButtons";
 import PayAnimationModal from "./components/PayAnimationModal";
 import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
-import { formatDateToYYMMDD } from "../../utils/formatDate";
-import { createPaymentBuffer } from "../../utils/paymentUtils/nvcatPaymentUtils";
-import { makeSendData } from "../../utils/paymentUtils/vcatUtils";
-import { parseFullResponsePacket } from "../../utils/paymentUtils/formatResponse";
 import { getUserId } from "../../utils/tokens";
-import { useNVCatPayment, usePaymentMutations } from "../../hooks/usePayment";
-import { nvcatPaymentResponseUtils } from "../../utils/paymentUtils/nvcatPaymentResponseUtils";
+import { useRunPaymentFlow } from "./useRunPaymentFlow";
 
 type PaymentType =
   | "credit"
@@ -35,17 +30,6 @@ const PaymentPage = () => {
   const passTicketVisible = !!seatNumber;
 
   const userId = useMemo(() => getUserId(), []);
-  // const approvedAt = useMemo(() => new Date().toISOString(), []);
-  const approvedAt = useMemo(() => {
-    const d = new Date();
-    const yyyy = d.getFullYear();
-    const mm = String(d.getMonth() + 1).padStart(2, "0");
-    const dd = String(d.getDate()).padStart(2, "0");
-    const hh = String(d.getHours()).padStart(2, "0");
-    const min = String(d.getMinutes()).padStart(2, "0");
-
-    return `${yyyy}-${mm}-${dd} ${hh}:${min}`;
-  }, []);
 
   const [paymentMethod, setPaymentMethod] = useState<string | null>(null);
   const [installment, setInstallment] = useState<string>("일시불");
@@ -56,11 +40,6 @@ const PaymentPage = () => {
   const [error, setError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [paymentType, setPaymentType] = useState<PaymentType>("credit");
-  const [newdate, setNewdate] = useState(formatDateToYYMMDD(new Date()));
-
-  const paymentMutation = useNVCatPayment();
-  const { receiptMutation, qrMutation, purchaseTicketMutation } =
-    usePaymentMutations();
 
   useEffect(() => {
     if (["카드", "삼성페이", "간편결제"].includes(paymentMethod ?? "")) {
@@ -76,143 +55,178 @@ const PaymentPage = () => {
     catid: "2393300001",
     myunse: "",
     agreenum: "",
-    agreedate: newdate,
+    agreedate: "",
     cashno: "",
   };
 
-  const handleSubmit = () => {
+  const { start } = useRunPaymentFlow({
+    form,
+    paymentType,
+    setIsModalOpen,
+    userId,
+    time,
+    seatNumber,
+    seatType,
+    passType,
+    label,
+    navigate,
+    printReceipt,
+    printPass,
+    setPaymentType,
+  });
+
+  // 새로운 로직
+  const handlePayments = () => {
     if (!paymentMethod) {
       setError("결제 수단을 선택해주세요.");
       return;
     }
 
-    setIsModalOpen(true);
-    setNewdate(formatDateToYYMMDD(new Date()));
-
-    const paymentData = createPaymentBuffer(paymentType, form);
-    const vcatPacket = makeSendData(paymentData);
-    paymentMutation.mutate(encodeURI(vcatPacket));
-  };
-
-  const {
-    isError,
-    error: payError,
-    isSuccess,
-    data: payData,
-  } = paymentMutation;
-
-  useEffect(() => {
-    if (!isError) return;
-
-    const err = payError as any;
-    const msg =
-      err?.response?.data?.message ||
-      err?.response?.data?.error ||
-      err?.message ||
-      "결제 요청에 실패했습니다.";
-
-    setError(msg);
-    setIsModalOpen(false);
-  }, [isError, payError]);
-
-  useEffect(() => {
-    if (!isSuccess) return;
-
-    const parsedPacket = parseFullResponsePacket(payData);
-    if (!parsedPacket) return;
-
-    const { recvCode, recvData } = parsedPacket;
-    const respCode = recvData?.["응답코드"] ?? "";
-
     try {
-      nvcatPaymentResponseUtils({
-        nvcatRecvCode: recvCode,
-        responseCode: respCode,
-      });
-    } catch (err: any) {
-      console.error("결제 오류:", err);
+      start();
+    } catch (err) {
+      console.error("결제 처리 중 오류:", err);
       setError(
-        typeof err?.message === "string"
-          ? err.message
-          : "결제 처리 중 오류가 발생했습니다."
+        typeof err === "string" ? err : "결제 처리 중 오류가 발생했습니다."
       );
       setIsModalOpen(false);
-      return;
     }
+  };
 
-    const toNum = (v?: string) => (v && v.trim() !== "" ? Number(v) : 0);
+  // const handleSubmit = () => {
+  //   if (!paymentMethod) {
+  //     setError("결제 수단을 선택해주세요.");
+  //     return;
+  //   }
+  //   setIsModalOpen(true);
 
-    const payment = {
-      company: "투리버스",
-      ceo: "이헌재",
-      company_num: "123-45-67890",
-      tel: "010-1234-5678",
-      address: "서울특별시 강남구 테헤란로 123",
-      cardCompany: recvData?.["매입사명"] ?? "",
-      catId: recvData?.["CATID"] ?? recvData?.["승인CATID"] ?? "",
-      cardNum: recvData?.["카드BIN"] ?? "",
-      date: recvData?.["승인일시"] ?? "",
-      transactionAmount: toNum(
-        recvData?.["승인금액"] ?? recvData?.["거래금액"]
-      ),
-      vat: toNum(recvData?.["부가세"]),
-      total: toNum(recvData?.["실승인금액"]),
-      approvalNumber: recvData?.["승인번호"] ?? "",
-      merchantNumber: recvData?.["가맹점번호"] ?? "",
-      acquier: recvData?.["발급사명"] ?? "",
-      installment: (recvData?.["할부개월"] ?? "00") !== "00",
-    };
+  //   const paymentData = createPaymentBuffer(paymentType, form);
+  //   const vcatPacket = makeSendData(paymentData);
+  //   paymentMutation.mutate(encodeURI(vcatPacket));
+  // };
 
-    const requestBody = {
-      mobileNumber: userId!,
-      remainTime: time!,
-      ...(typeof seatNumber === "number" && seatNumber > 0
-        ? { seatId: seatNumber }
-        : {}),
-      ...(seatType === "고정석" ? { periodTicketType: 1 } : {}),
-      ...(seatType === "자유석" ? { periodTicketType: 2 } : {}),
-      payment,
-    };
+  // const {
+  //   isError,
+  //   error: payError,
+  //   isSuccess,
+  //   data: payData,
+  // } = paymentMutation;
 
-    (async () => {
-      try {
-        const purchaseRes = await purchaseTicketMutation.mutateAsync({
-          passtype: passType,
-          requestBody,
-        });
+  // useEffect(() => {
+  //   if (!isError) return;
 
-        try {
-          if (printReceipt) {
-            await receiptMutation.mutateAsync(payment);
-          }
+  //   const err = payError as any;
+  //   const msg =
+  //     err?.response?.data?.message ||
+  //     err?.response?.data?.error ||
+  //     err?.message ||
+  //     "결제 요청에 실패했습니다.";
 
-          if (printPass) {
-            await qrMutation.mutateAsync({
-              token: purchaseRes?.data,
-              size: 10,
-            });
-          }
-        } catch (err: any) {
-          console.error("출력 실패:", err);
-          setError(err?.message ?? "출력 중 오류가 발생했습니다.");
-        }
+  //   setError(msg);
+  //   setIsModalOpen(false);
+  // }, [isError, payError]);
 
-        let statusForm: Record<string, unknown> = {};
-        if (passType === "1회 이용권") {
-          statusForm = { resultType: passType, seatNumber, approvedAt };
-        } else if (passType === "기간권" && seatType === "고정석") {
-          statusForm = { resultType: "고정석", seatNumber, passType, label };
-        } else if (passType === "시간권") {
-          statusForm = { resultType: "자유석", passType, label };
-        }
+  // useEffect(() => {
+  //   if (!isSuccess) return;
 
-        navigate("/completepayment", { replace: true, state: statusForm });
-      } catch (err) {
-        setError("티켓 발급에 실패했습니다.");
-        setIsModalOpen(false);
-      }
-    })();
-  }, [isSuccess, payData]);
+  //   //결제 응답 파싱
+  //   const parsedPacket = parseFullResponsePacket(payData);
+  //   if (!parsedPacket) return;
+  //   const { recvCode, recvData } = parsedPacket;
+  //   const respCode = recvData?.["응답코드"] ?? "";
+
+  //   //응답 코드에 따른 처리
+  //   try {
+  //     nvcatPaymentResponseUtils({
+  //       nvcatRecvCode: recvCode,
+  //       responseCode: respCode,
+  //       form: form,
+  //     });
+  //   } catch (err: any) {
+  //     console.error("결제 오류:", err);
+  //     setError(
+  //       typeof err?.message === "string"
+  //         ? err.message
+  //         : "결제 처리 중 오류가 발생했습니다."
+  //     );
+  //     setIsModalOpen(false);
+  //     return;
+  //   }
+
+  //   // 결제 성공 시 데이터 처리
+  //   const toNum = (v?: string) => (v && v.trim() !== "" ? Number(v) : 0);
+
+  //   const payment = {
+  //     company: "투리버스",
+  //     ceo: "이헌재",
+  //     company_num: "123-45-67890",
+  //     tel: "010-1234-5678",
+  //     address: "서울특별시 강남구 테헤란로 123",
+  //     cardCompany: recvData?.["매입사명"] ?? "",
+  //     catId: recvData?.["CATID"] ?? recvData?.["승인CATID"] ?? "",
+  //     cardNum: recvData?.["카드BIN"] ?? "",
+  //     date: recvData?.["승인일시"] ?? "",
+  //     transactionAmount: toNum(
+  //       recvData?.["승인금액"] ?? recvData?.["거래금액"]
+  //     ),
+  //     vat: toNum(recvData?.["부가세"]),
+  //     total: toNum(recvData?.["실승인금액"]),
+  //     approvalNumber: recvData?.["승인번호"] ?? "",
+  //     merchantNumber: recvData?.["가맹점번호"] ?? "",
+  //     acquier: recvData?.["발급사명"] ?? "",
+  //     installment: (recvData?.["할부개월"] ?? "00") !== "00",
+  //   };
+
+  //   const requestBody = {
+  //     mobileNumber: userId!,
+  //     remainTime: time!,
+  //     ...(typeof seatNumber === "number" && seatNumber > 0
+  //       ? { seatId: seatNumber }
+  //       : {}),
+  //     ...(seatType === "고정석" ? { periodTicketType: 1 } : {}),
+  //     ...(seatType === "자유석" ? { periodTicketType: 2 } : {}),
+  //     payment,
+  //   };
+
+  //   (async () => {
+  //     try {
+  //       const purchaseRes = await purchaseTicketMutation.mutateAsync({
+  //         passtype: passType,
+  //         requestBody,
+  //       });
+
+  //       try {
+  //         if (printReceipt) {
+  //           await receiptMutation.mutateAsync(payment);
+  //         }
+
+  //         if (printPass) {
+  //           await qrMutation.mutateAsync({
+  //             token: purchaseRes?.data,
+  //             size: 10,
+  //           });
+  //         }
+  //       } catch (err: any) {
+  //         setError(err?.message ?? "출력 중 오류가 발생했습니다.");
+  //       }
+
+  //       const approvedAt = formatIsoToTwoLinesRaw(new Date().toISOString());
+  //       let statusForm: Record<string, unknown> = {};
+  //       if (passType === "1회 이용권") {
+  //         statusForm = { resultType: passType, seatNumber, approvedAt };
+  //       } else if (passType === "기간권" && seatType === "고정석") {
+  //         statusForm = { resultType: "고정석", seatNumber, passType, label };
+  //       } else if (passType === "시간권") {
+  //         statusForm = { resultType: "자유석", passType, label };
+  //       }
+
+  //       navigate("/completepayment", { replace: true, state: statusForm });
+  //     } catch (err) {
+  //       setError("티켓 발급에 실패했습니다.");
+  //       setIsModalOpen(false);
+  //     }
+  //   })();
+  // }, [isSuccess, payData]);
 
   return (
     <Container>
@@ -245,7 +259,7 @@ const PaymentPage = () => {
 
       {!!error && <ErrorMsg>{error}</ErrorMsg>}
 
-      <BottomButtons submitName="결제하기" submit={handleSubmit} />
+      <BottomButtons submitName="결제하기" submit={handlePayments} />
 
       <PayAnimationModal
         paymentMethod={paymentMethod}
