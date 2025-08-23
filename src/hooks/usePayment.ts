@@ -6,7 +6,7 @@ import { purchaseTicket } from "../apis/api/pass";
 
 export const useNVCatPayment = () => {
   return useMutation({
-    mutationFn: async (sendbuf: string) => await nvcatApi(sendbuf),
+    mutationFn: (sendbuf: string) => nvcatApi(sendbuf),
     onSuccess: (data) => {
       console.log("결제 응답:", data);
     },
