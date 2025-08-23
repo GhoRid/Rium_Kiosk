@@ -185,63 +185,67 @@ export const useRunPaymentFlow = (args: RunnerArgs) => {
         }
 
         navigate("/completepayment", { replace: true, state: statusForm });
-      } catch (err) {
-        try {
-          isCompensatingRef.current = true;
-
-          const getApprRaw = await paymentMutation.mutateAsync(
-            encodeURI(makeSendData(nvcatUtils("GET_APPR")))
-          );
-          const getApprParsed = parseFullResponsePacket(getApprRaw);
-          if (!getApprParsed || getApprParsed.recvCode !== "0000") {
-            throw new Error("승인내역 조회 실패");
-          }
-
-          const apprNo = getApprParsed.recvData?.["승인번호"] ?? "";
-          const apprAt = getApprParsed.recvData?.["승인일시"] ?? "";
-          const amountStr =
-            getApprParsed.recvData?.["승인금액"] ??
-            getApprParsed.recvData?.["거래금액"] ??
-            form.money;
-
-          let agreedate = "";
-          if (apprAt && apprAt.length >= 8) {
-            const ymd = apprAt.slice(0, 8);
-            agreedate = ymd.slice(2);
-          }
-
-          const cancelForm = {
-            ...form,
-            money: amountStr,
-            agreenum: apprNo,
-            agreedate,
-          };
-
-          const cancelBuf = encodeURI(
-            makeSendData(createPaymentBuffer("credit_cancel", cancelForm))
-          );
-          const cancelRaw = await paymentMutation.mutateAsync(cancelBuf);
-          const cancelParsed = parseFullResponsePacket(cancelRaw);
-
-          if (!cancelParsed || cancelParsed.recvCode !== "0000") {
-            throw new Error("결제 취소 실패");
-          }
-
-          setIsModalOpen(false);
-          throw new Error(
-            "서버 저장 실패로 결제 승인을 취소했습니다. 다시 시도해주세요."
-          );
-        } catch (compErr: any) {
-          setIsModalOpen(false);
-          throw new Error(
-            typeof compErr === "string"
-              ? compErr
-              : "서버 저장 실패 후 결제 취소까지 실패했습니다. 관리자에게 문의하세요."
-          );
-        } finally {
-          isCompensatingRef.current = false;
-        }
+      } finally {
+        return;
       }
+
+      // catch (err) {
+      //   try {
+      //     isCompensatingRef.current = true;
+
+      //     const getApprRaw = await paymentMutation.mutateAsync(
+      //       encodeURI(makeSendData(nvcatUtils("GET_APPR")))
+      //     );
+      //     const getApprParsed = parseFullResponsePacket(getApprRaw);
+      //     if (!getApprParsed || getApprParsed.recvCode !== "0000") {
+      //       throw new Error("승인내역 조회 실패");
+      //     }
+
+      //     const apprNo = getApprParsed.recvData?.["승인번호"] ?? "";
+      //     const apprAt = getApprParsed.recvData?.["승인일시"] ?? "";
+      //     const amountStr =
+      //       getApprParsed.recvData?.["승인금액"] ??
+      //       getApprParsed.recvData?.["거래금액"] ??
+      //       form.money;
+
+      //     let agreedate = "";
+      //     if (apprAt && apprAt.length >= 8) {
+      //       const ymd = apprAt.slice(0, 8);
+      //       agreedate = ymd.slice(2);
+      //     }
+
+      //     const cancelForm = {
+      //       ...form,
+      //       money: amountStr,
+      //       agreenum: apprNo,
+      //       agreedate,
+      //     };
+
+      //     const cancelBuf = encodeURI(
+      //       makeSendData(createPaymentBuffer("credit_cancel", cancelForm))
+      //     );
+      //     const cancelRaw = await paymentMutation.mutateAsync(cancelBuf);
+      //     const cancelParsed = parseFullResponsePacket(cancelRaw);
+
+      //     if (!cancelParsed || cancelParsed.recvCode !== "0000") {
+      //       throw new Error("결제 취소 실패");
+      //     }
+
+      //     setIsModalOpen(false);
+      //     throw new Error(
+      //       "서버 저장 실패로 결제 승인을 취소했습니다. 다시 시도해주세요."
+      //     );
+      //   } catch (compErr: any) {
+      //     setIsModalOpen(false);
+      //     throw new Error(
+      //       typeof compErr === "string"
+      //         ? compErr
+      //         : "서버 저장 실패 후 결제 취소까지 실패했습니다. 관리자에게 문의하세요."
+      //     );
+      //   } finally {
+      //     isCompensatingRef.current = false;
+      //   }
+      // }
     })();
   }, [isSuccess, payData]);
 

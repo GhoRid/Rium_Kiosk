@@ -41,6 +41,9 @@ export function nvcatPaymentResponseUtils({
       paymentMutation.mutate(makeVcatPacketencode("READER_RESET"));
       return new Error(getUserMessage(nvcatRecvCode));
 
+    case "0007":
+      return;
+
     case "0008":
       // fallback 요청
       return "fallback";
