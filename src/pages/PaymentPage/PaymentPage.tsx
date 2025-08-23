@@ -76,6 +76,7 @@ const PaymentPage = () => {
     printReceipt,
     printPass,
     setPaymentType,
+    setError,
   });
 
   const handlePayments = () => {

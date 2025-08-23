@@ -14,6 +14,7 @@ type nvcatPaymentResponseUtilsProps = {
   form: any;
   paymentMutation: any;
   setPaymentType: (type: PaymentType) => void;
+  setError: (error: string | null) => void;
 };
 
 type nvcatUtils = "RESTART" | "NVCATSHUTDOWN" | "READER_RESET" | "GET_APPR";
@@ -24,6 +25,7 @@ export function nvcatPaymentResponseUtils({
   form,
   paymentMutation,
   setPaymentType,
+  setError,
 }: nvcatPaymentResponseUtilsProps): any {
   const makeVcatPacketencode = (utilFunction: nvcatUtils) => {
     return encodeURI(makeSendData(nvcatUtils(utilFunction)));
@@ -43,6 +45,10 @@ export function nvcatPaymentResponseUtils({
 
     case "0007":
       return;
+
+    case "0015":
+      console.log("포트 오픈 에러");
+      throw new Error(getUserMessage(nvcatRecvCode));
 
     case "0008":
       // fallback 요청

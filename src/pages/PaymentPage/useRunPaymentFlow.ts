@@ -31,6 +31,7 @@ type RunnerArgs = {
   printReceipt: boolean;
   printPass: boolean;
   setPaymentType: (type: PaymentType) => void;
+  setError: (error: string | null) => void;
 };
 
 export const useRunPaymentFlow = (args: RunnerArgs) => {
@@ -48,6 +49,7 @@ export const useRunPaymentFlow = (args: RunnerArgs) => {
     printReceipt,
     printPass,
     setPaymentType,
+    setError,
   } = args;
 
   const paymentMutation = useNVCatPayment();
@@ -91,7 +93,7 @@ export const useRunPaymentFlow = (args: RunnerArgs) => {
       err?.message ||
       "결제 요청에 실패했습니다.";
     setIsModalOpen(false);
-    throw new Error(msg);
+    setError(msg);
   }, [isError, payError, setIsModalOpen]);
 
   useEffect(() => {
@@ -112,6 +114,7 @@ export const useRunPaymentFlow = (args: RunnerArgs) => {
         form: form,
         paymentMutation,
         setPaymentType,
+        setError,
       });
     } catch (err: any) {
       if (err === "fallback" || !!fallbackPacket) {
@@ -120,7 +123,7 @@ export const useRunPaymentFlow = (args: RunnerArgs) => {
       } else {
         setIsModalOpen(false);
         console.error("결제 오류:", err);
-        throw new Error(
+        setError(
           typeof err === "string" ? err : "결제 처리 중 오류가 발생했습니다."
         );
       }
@@ -170,7 +173,7 @@ export const useRunPaymentFlow = (args: RunnerArgs) => {
               size: 10,
             });
         } catch (err: any) {
-          throw new Error(
+          setError(
             typeof err === "string"
               ? err
               : "영수증 또는 QR 코드 출력에 실패했습니다."
