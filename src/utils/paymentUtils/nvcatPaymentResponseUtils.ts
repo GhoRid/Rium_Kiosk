@@ -1,5 +1,5 @@
 import { getUserMessage } from "./nvcatUserErrorMessage";
-import { nvcatUtils } from "./nvcatUtils";
+import { nvcatUtils as nvcatUtilFn } from "./nvcatUtils";
 import { makeSendData } from "./vcatUtils";
 
 type PaymentType =
@@ -8,16 +8,15 @@ type PaymentType =
   | "credit_cancel"
   | "kakao_money";
 
-type nvcatPaymentResponseUtilsProps = {
+type NvcatPaymentResponseUtilsProps = {
   nvcatRecvCode: string;
   responseCode: string;
   form: any;
   paymentMutation: any;
   setPaymentType: (type: PaymentType) => void;
-  setError: (error: string | null) => void;
 };
 
-type nvcatUtils = "RESTART" | "NVCATSHUTDOWN" | "READER_RESET" | "GET_APPR";
+type NvcatUtilsCmd = "RESTART" | "NVCATSHUTDOWN" | "READER_RESET" | "GET_APPR";
 
 export function nvcatPaymentResponseUtils({
   nvcatRecvCode,
@@ -25,38 +24,58 @@ export function nvcatPaymentResponseUtils({
   form,
   paymentMutation,
   setPaymentType,
-  setError,
-}: nvcatPaymentResponseUtilsProps): any {
-  const makeVcatPacketencode = (utilFunction: nvcatUtils) => {
-    return encodeURI(makeSendData(nvcatUtils(utilFunction)));
-  };
+}: NvcatPaymentResponseUtilsProps): void {
+  // 유틸은 "던지는" 정책: Error는 throw, 폴백은 throw "fallback"
+  const makeVcatPacketencode = (utilFunction: NvcatUtilsCmd) =>
+    encodeURI(makeSendData(nvcatUtilFn(utilFunction)));
 
   switch (nvcatRecvCode) {
     case "0000":
-      return { kind: "ok" };
+      // 정상
+      return;
 
     case "0001":
+      // 단말 재시작 필요
       paymentMutation.mutate(makeVcatPacketencode("RESTART"));
-      return { kind: "error", message: getUserMessage(nvcatRecvCode) };
+      throw Object.assign(new Error(getUserMessage(nvcatRecvCode)), {
+        code: nvcatRecvCode,
+      });
 
     case "0005":
     case "0006":
+      // 리더 리셋
       paymentMutation.mutate(makeVcatPacketencode("READER_RESET"));
-      return { kind: "error", message: getUserMessage(nvcatRecvCode) };
+      throw Object.assign(new Error(getUserMessage(nvcatRecvCode)), {
+        code: nvcatRecvCode,
+      });
 
     case "0007":
-      return { kind: "ok" };
+      // 사용자 취소 등 - 후속 처리 없이 종료
+      throw Object.assign(new Error(getUserMessage(nvcatRecvCode)), {
+        code: nvcatRecvCode,
+      });
+
+    case "0015":
+      console.log("15번 에러 발생");
+      throw Object.assign(new Error(getUserMessage(nvcatRecvCode)), {
+        code: nvcatRecvCode,
+      });
 
     case "0008":
-      // fallback 요청
-      return { kind: "fallback" };
+      // 폴백 요청
+      throw "fallback";
 
     case "0027":
+      // 앱 종료 후 재시작
       paymentMutation.mutate(makeVcatPacketencode("NVCATSHUTDOWN"));
       paymentMutation.mutate(makeVcatPacketencode("RESTART"));
-      return { kind: "error", message: getUserMessage(nvcatRecvCode) };
+      throw Object.assign(new Error(getUserMessage(nvcatRecvCode)), {
+        code: nvcatRecvCode,
+      });
 
     default:
-      return { kind: "error", message: getUserMessage(nvcatRecvCode) };
+      throw Object.assign(new Error(getUserMessage(nvcatRecvCode)), {
+        code: nvcatRecvCode,
+      });
   }
 }

@@ -56,8 +56,6 @@ export const useRunPaymentFlow = (args: RunnerArgs) => {
   const { receiptMutation, qrMutation, purchaseTicketMutation } =
     useAppPaymentMutations();
 
-  const [fallbackPacket, setFallbackPacket] = useState<string | null>(null);
-
   const isCompensatingRef = useRef(false);
 
   const start = () => {
@@ -71,7 +69,7 @@ export const useRunPaymentFlow = (args: RunnerArgs) => {
     setIsModalOpen(true);
     const paymentData = createPaymentBuffer("credit_fallback", form);
     const vcatPacket = makeSendData(paymentData);
-    setFallbackPacket(encodeURI(vcatPacket));
+    paymentMutation.mutate(encodeURI(vcatPacket));
   };
 
   const {
@@ -81,6 +79,7 @@ export const useRunPaymentFlow = (args: RunnerArgs) => {
     data: payData,
   } = paymentMutation;
 
+  // 1) 결제 요청 자체가 실패한 경우
   useEffect(() => {
     if (!isError) return;
     const err = payError as any;
@@ -91,11 +90,11 @@ export const useRunPaymentFlow = (args: RunnerArgs) => {
       "결제 요청에 실패했습니다.";
     setIsModalOpen(false);
     setError(msg);
-  }, [isError, payError, setIsModalOpen]);
+  }, [isError, payError, setIsModalOpen, setError]);
 
+  // 2) 단말 응답 수신 후 전체 플로우
   useEffect(() => {
     if (!isSuccess) return;
-
     if (isCompensatingRef.current) return;
 
     const parsedPacket = parseFullResponsePacket(payData);
@@ -104,50 +103,37 @@ export const useRunPaymentFlow = (args: RunnerArgs) => {
     const { recvCode, recvData } = parsedPacket;
     const respCode = recvData?.["응답코드"] ?? "";
 
-    const result = nvcatPaymentResponseUtils({
-      nvcatRecvCode: recvCode,
-      responseCode: respCode,
-      form,
-      paymentMutation,
-      setPaymentType,
-      setError,
-    });
+    // 2-1) NV-CAT 에러 처리: 유틸이 throw 하면 catch로 빠지고, 아래 로직은 실행되지 않음
+    try {
+      nvcatPaymentResponseUtils({
+        nvcatRecvCode: recvCode,
+        responseCode: respCode,
+        form: form,
+        paymentMutation,
+        setPaymentType,
+      });
+    } catch (err: any) {
+      // 에러/폴백이면 하단 로직 중단
+      console.log("catch에러 에러", err);
 
-    // 폴백 요청이면 폴백 결제 시작
-    if (result === "fallback") {
-      creditFallBack();
-      return;
-    }
+      if (err === "fallback") {
+        creditFallBack();
+        return;
+      }
 
-    // 에러 객체면 UI에만 에러 표시하고 흐름 종료
-    if (result instanceof Error) {
       setIsModalOpen(false);
-      setError(result.message || "결제 처리 중 오류가 발생했습니다.");
+      console.error("결제 오류:", err);
+      setError(
+        err instanceof Error
+          ? err.message
+          : typeof err === "string"
+          ? err
+          : "결제 처리 중 오류가 발생했습니다."
+      );
       return;
     }
 
-    // try {
-    //   nvcatPaymentResponseUtils({
-    //     nvcatRecvCode: recvCode,
-    //     responseCode: respCode,
-    //     form: form,
-    //     paymentMutation,
-    //     setPaymentType,
-    //     setError,
-    //   });
-    // } catch (err: any) {
-    //   if (err === "fallback" || !!fallbackPacket) {
-    //     creditFallBack();
-    //     return;
-    //   } else {
-    //     setIsModalOpen(false);
-    //     console.error("결제 오류:", err);
-    //     setError(
-    //       typeof err === "string" ? err : "결제 처리 중 오류가 발생했습니다."
-    //     );
-    //   }
-    // }
-
+    // 2-2) 정상 응답일 때만 후속 처리
     const toNum = (v?: string) => (v && v.trim() !== "" ? Number(v) : 0);
 
     const payment = {
@@ -179,98 +165,108 @@ export const useRunPaymentFlow = (args: RunnerArgs) => {
     };
 
     (async () => {
+      // 2-3) 서버 저장(구매 처리)만 별도 try/catch
+      let purchaseRes: any;
       try {
-        const purchaseRes = await purchaseTicketMutation.mutateAsync(
-          requestBody
-        );
+        purchaseRes = await purchaseTicketMutation.mutateAsync(requestBody);
+      } catch (e: any) {
+        // 서버 에러 시
+        const parsedMsg =
+          e?.response?.data?.message ||
+          e?.response?.data?.error ||
+          e?.message ||
+          "서버 저장(구매 처리) 중 오류가 발생했습니다.";
 
+        // (선택) 보상 트랜잭션: 승인 에러 발생 시 취소 시도
         try {
-          if (printReceipt) await receiptMutation.mutateAsync(payment);
-          if (printPass)
-            await qrMutation.mutateAsync({
-              token: purchaseRes?.data,
-              size: 10,
-            });
-        } catch (err: any) {
-          setError(
-            typeof err === "string"
-              ? err
-              : "영수증 또는 QR 코드 출력에 실패했습니다."
+          isCompensatingRef.current = true;
+
+          const getApprRaw = await paymentMutation.mutateAsync(
+            encodeURI(makeSendData(nvcatUtils("GET_APPR")))
           );
-        }
+          const getApprParsed = parseFullResponsePacket(getApprRaw);
 
-        const approvedAt = formatIsoToTwoLinesRaw(new Date().toISOString());
-        let statusForm: Record<string, unknown> = {};
-        if (passType === "1회 이용권") {
-          statusForm = { resultType: passType, seatNumber, approvedAt };
-        } else if (passType === "기간권" && seatType === "고정석") {
-          statusForm = { resultType: "고정석", seatNumber, passType, label };
-        } else if (passType === "시간권") {
-          statusForm = { resultType: "자유석", passType, label };
-        }
+          if (getApprParsed && getApprParsed.recvCode === "0000") {
+            const apprNo = getApprParsed.recvData?.["승인번호"] ?? "";
+            const apprAt = getApprParsed.recvData?.["승인일시"] ?? "";
+            const amountStr =
+              getApprParsed.recvData?.["승인금액"] ??
+              getApprParsed.recvData?.["거래금액"] ??
+              form.money;
 
-        navigate("/completepayment", { replace: true, state: statusForm });
-      } finally {
-        return;
+            let agreedate = "";
+            if (apprAt && apprAt.length >= 8) {
+              const ymd = apprAt.slice(0, 8);
+              agreedate = ymd.slice(2); // YYMMDD
+            }
+
+            const cancelForm = {
+              ...form,
+              money: amountStr,
+              agreenum: apprNo,
+              agreedate,
+            };
+
+            const cancelBuf = encodeURI(
+              makeSendData(createPaymentBuffer("credit_cancel", cancelForm))
+            );
+            const cancelRaw = await paymentMutation.mutateAsync(cancelBuf);
+            const cancelParsed = parseFullResponsePacket(cancelRaw);
+
+            if (!cancelParsed || cancelParsed.recvCode !== "0000") {
+              throw new Error("결제 취소 실패");
+            }
+
+            setIsModalOpen(false);
+            setError(
+              parsedMsg ||
+                "서버 저장 실패로 결제를 취소했습니다. 다시 시도해주세요."
+            );
+            return; // 🔚 영수증/QR/네비 진행 중단
+          } else {
+            // 승인내역 없음 또는 조회 실패
+            setIsModalOpen(false);
+            setError(parsedMsg);
+            return;
+          }
+        } catch (compErr: any) {
+          // 취소까지 실패
+          setIsModalOpen(false);
+          setError(
+            compErr?.message ||
+              "서버 저장 실패 후 결제 취소도 실패했습니다. 관리자에게 문의하세요."
+          );
+          return;
+        } finally {
+          isCompensatingRef.current = false;
+        }
       }
 
-      // catch (err) {
-      //   try {
-      //     isCompensatingRef.current = true;
+      // 2-4) 구매 처리 성공 시에만 출력/네비
+      try {
+        if (printReceipt) await receiptMutation.mutateAsync(payment);
+        if (printPass)
+          await qrMutation.mutateAsync({
+            token: purchaseRes?.data,
+            size: 10,
+          });
+      } catch (err: any) {
+        setError(err?.message || "영수증 또는 QR 코드 출력에 실패했습니다.");
+        // 출력 실패해도 결제/저장은 완료 상태. 필요하면 return; 으로 네비 중단 가능
+      }
 
-      //     const getApprRaw = await paymentMutation.mutateAsync(
-      //       encodeURI(makeSendData(nvcatUtils("GET_APPR")))
-      //     );
-      //     const getApprParsed = parseFullResponsePacket(getApprRaw);
-      //     if (!getApprParsed || getApprParsed.recvCode !== "0000") {
-      //       throw new Error("승인내역 조회 실패");
-      //     }
+      // 완료 페이지 이동
+      const approvedAt = formatIsoToTwoLinesRaw(new Date().toISOString());
+      let statusForm: Record<string, unknown> = {};
+      if (passType === "1회 이용권") {
+        statusForm = { resultType: passType, seatNumber, approvedAt };
+      } else if (passType === "기간권" && seatType === "고정석") {
+        statusForm = { resultType: "고정석", seatNumber, passType, label };
+      } else if (passType === "시간권") {
+        statusForm = { resultType: "자유석", passType, label };
+      }
 
-      //     const apprNo = getApprParsed.recvData?.["승인번호"] ?? "";
-      //     const apprAt = getApprParsed.recvData?.["승인일시"] ?? "";
-      //     const amountStr =
-      //       getApprParsed.recvData?.["승인금액"] ??
-      //       getApprParsed.recvData?.["거래금액"] ??
-      //       form.money;
-
-      //     let agreedate = "";
-      //     if (apprAt && apprAt.length >= 8) {
-      //       const ymd = apprAt.slice(0, 8);
-      //       agreedate = ymd.slice(2);
-      //     }
-
-      //     const cancelForm = {
-      //       ...form,
-      //       money: amountStr,
-      //       agreenum: apprNo,
-      //       agreedate,
-      //     };
-
-      //     const cancelBuf = encodeURI(
-      //       makeSendData(createPaymentBuffer("credit_cancel", cancelForm))
-      //     );
-      //     const cancelRaw = await paymentMutation.mutateAsync(cancelBuf);
-      //     const cancelParsed = parseFullResponsePacket(cancelRaw);
-
-      //     if (!cancelParsed || cancelParsed.recvCode !== "0000") {
-      //       throw new Error("결제 취소 실패");
-      //     }
-
-      //     setIsModalOpen(false);
-      //     throw new Error(
-      //       "서버 저장 실패로 결제 승인을 취소했습니다. 다시 시도해주세요."
-      //     );
-      //   } catch (compErr: any) {
-      //     setIsModalOpen(false);
-      //     throw new Error(
-      //       typeof compErr === "string"
-      //         ? compErr
-      //         : "서버 저장 실패 후 결제 취소까지 실패했습니다. 관리자에게 문의하세요."
-      //     );
-      //   } finally {
-      //     isCompensatingRef.current = false;
-      //   }
-      // }
+      navigate("/completepayment", { replace: true, state: statusForm });
     })();
   }, [isSuccess, payData]);
 
