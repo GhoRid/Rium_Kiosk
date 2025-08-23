@@ -79,6 +79,9 @@ export const useRunPaymentFlow = (args: RunnerArgs) => {
     data: payData,
   } = paymentMutation;
 
+  // console.log("payError", payError);
+  console.log("ticketId", ticketId);
+
   useEffect(() => {
     if (!isError) return;
     const err = payError as any;
@@ -149,15 +152,15 @@ export const useRunPaymentFlow = (args: RunnerArgs) => {
     const requestBody = {
       mobileNumber: userId!,
       ticketId: ticketId,
-      seatNumber: seatNumber ? seatNumber : null,
+      seatId: seatNumber,
       payment,
     };
 
     (async () => {
       try {
-        const purchaseRes = await purchaseTicketMutation.mutateAsync({
-          requestBody,
-        });
+        const purchaseRes = await purchaseTicketMutation.mutateAsync(
+          requestBody
+        );
 
         try {
           if (printReceipt) await receiptMutation.mutateAsync(payment);

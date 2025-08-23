@@ -71,6 +71,7 @@ const SelectSeatPage = () => {
             price: passInformation.price,
             seatNumber: selectedSeat,
             seatType: passInformation.seatType,
+            ticketId: passInformation.ticketId,
           },
         });
       } else {

@@ -32,8 +32,8 @@ export function useAppPaymentMutations() {
 
   const purchaseTicketMutation = useMutation({
     mutationKey: ["purchaseTicket"],
-    mutationFn: ({ requestBody }: { requestBody: PurchaseTicketData }) =>
-      purchaseTicket({ requestBody }),
+    mutationFn: (requestBody: PurchaseTicketData) =>
+      purchaseTicket(requestBody),
     retry: 1,
   });
 
