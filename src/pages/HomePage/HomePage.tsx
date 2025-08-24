@@ -90,11 +90,7 @@ const HomePage = () => {
   });
 
   const handleBuyTicket = () => {
-    if (!userId) {
-      navigate("/login");
-      return;
-    }
-
+    // 자동으로 login 페이지 이동
     if (isTicketPresent) {
       setModalContent({
         content: "이미 이용권이 있습니다.",
@@ -108,6 +104,36 @@ const HomePage = () => {
       return;
     } else {
       navigate("/select-pass");
+    }
+  };
+
+  const handlecheckextendpass = () => {
+    navigate("/checkextendpass");
+  };
+
+  const handleChangeSeat = () => {
+    if (!isTicketPresent) {
+      setModalContent({
+        content: "이용권이 없습니다.",
+        submitText: "확인",
+        submitAction: () => {
+          setIsModalOpen(false);
+        },
+        isCloseIconVisible: true,
+      });
+      setIsModalOpen(true);
+    } else if (isUsing) {
+      navigate("/changeseat");
+    } else {
+      setModalContent({
+        content: "좌석을 이용중이 아닙니다.",
+        submitText: "확인",
+        submitAction: () => {
+          setIsModalOpen(false);
+        },
+        isCloseIconVisible: true,
+      });
+      setIsModalOpen(true);
     }
   };
 
@@ -188,37 +214,6 @@ const HomePage = () => {
     }
   };
 
-  const handleChangeSeat = () => {
-    if (!userId) {
-      navigate("/login");
-      return;
-    }
-
-    if (!isTicketPresent) {
-      setModalContent({
-        content: "이용권이 없습니다.",
-        submitText: "확인",
-        submitAction: () => {
-          setIsModalOpen(false);
-        },
-        isCloseIconVisible: true,
-      });
-      setIsModalOpen(true);
-    } else if (isUsing) {
-      navigate("/changeseat");
-    } else {
-      setModalContent({
-        content: "좌석을 이용중이 아닙니다.",
-        submitText: "확인",
-        submitAction: () => {
-          setIsModalOpen(false);
-        },
-        isCloseIconVisible: true,
-      });
-      setIsModalOpen(true);
-    }
-  };
-
   const handleReissueTicket = () => {
     if (!userId) {
       navigate("/login");
@@ -271,9 +266,10 @@ const HomePage = () => {
           {/* 메뉴 버튼 */}
           <HomeMenu
             handleBuyTicket={handleBuyTicket}
+            handlecheckextendpass={handlecheckextendpass}
+            handleChangeSeat={handleChangeSeat}
             handleLogout={handleLogout}
             handleCheckIn={handleCheckIn}
-            handleChangeSeat={handleChangeSeat}
             handleReissueTicket={handleReissueTicket}
           />
         </ContentContainer>

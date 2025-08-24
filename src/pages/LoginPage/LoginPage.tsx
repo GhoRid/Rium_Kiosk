@@ -20,7 +20,6 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // 리다이렉트 목적지 계산
   const searchParams = new URLSearchParams(location.search);
   const redirectFromState = (location.state as any)?.from as string | undefined;
   const redirectFromQuery = searchParams.get("redirect") || undefined;
