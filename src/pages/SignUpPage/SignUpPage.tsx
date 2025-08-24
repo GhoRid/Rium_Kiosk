@@ -85,8 +85,29 @@ const SignUpPage = () => {
     digitsOnly(v).length === 6 ? undefined : "인증번호가 올바르지 않습니다.";
   const validatePin = (v: string) =>
     digitsOnly(v).length === 4 ? undefined : "비밀번호를 입력해주세요.";
-  const validateBirth = (v: string) =>
-    isValidYmd(v) ? undefined : "생년월일을 입력해주세요.";
+  const validateBirth = (v: string) => {
+    const s = v.replace(/\D/g, "");
+    if (s.length !== 8) return "생년월일을 8자리로 입력해주세요 (YYYYMMDD)";
+
+    const year = Number(s.slice(0, 4));
+    const month = Number(s.slice(4, 6));
+    const day = Number(s.slice(6, 8));
+
+    const now = new Date();
+    const currentYear = now.getFullYear();
+
+    if (year < 1900 || year > currentYear) return "올바른 연도를 입력해주세요";
+
+    if (month < 1 || month > 12) return "올바른 월을 입력해주세요 (01-12)";
+
+    const lastDay = new Date(year, month, 0).getDate();
+    if (day < 1 || day > lastDay) return "올바른 일을 입력해주세요";
+
+    const birthDate = new Date(year, month - 1, day);
+    if (birthDate > now) return "미래 날짜는 입력할 수 없습니다";
+
+    return undefined;
+  };
   const validateTerms = (arr: TermItem[]) =>
     arr.every((t) => !t.required || t.checked)
       ? undefined
@@ -318,7 +339,7 @@ const SignUpPage = () => {
 
             <div onMouseDown={() => openKeyboard("pin")}>
               <InputFileds
-                label="비밀번호 (৪자리)"
+                label="비밀번호 (4자리)"
                 value={pin}
                 onChange={onChangePin}
                 type="password"

@@ -9,7 +9,6 @@ import {
   useAppPaymentMutations,
   useNVCatPayment,
 } from "../../hooks/usePayment";
-import { nvcatUtils } from "../../utils/paymentUtils/nvcatUtils";
 
 type PaymentType =
   | "credit"
@@ -108,9 +107,7 @@ export const useRunPaymentFlow = (args: RunnerArgs) => {
       nvcatPaymentResponseUtils({
         nvcatRecvCode: recvCode,
         responseCode: respCode,
-        form: form,
         paymentMutation,
-        setPaymentType,
       });
     } catch (err: any) {
       // 에러/폴백이면 하단 로직 중단
@@ -137,11 +134,11 @@ export const useRunPaymentFlow = (args: RunnerArgs) => {
     const toNum = (v?: string) => (v && v.trim() !== "" ? Number(v) : 0);
 
     const payment = {
-      company: "투리버스",
+      company: "리움",
       ceo: "이헌재",
-      company_num: "123-45-67890",
+      company_num: "010-5391-2895",
       tel: "010-1234-5678",
-      address: "서울특별시 강남구 테헤란로 123",
+      address: "광주 북구 서하로 379 402",
       cardCompany: recvData?.["매입사명"] ?? "",
       catId: recvData?.["CATID"] ?? recvData?.["승인CATID"] ?? "",
       cardNum: recvData?.["카드BIN"] ?? "",
@@ -170,76 +167,7 @@ export const useRunPaymentFlow = (args: RunnerArgs) => {
       try {
         purchaseRes = await purchaseTicketMutation.mutateAsync(requestBody);
       } catch (e: any) {
-        // 서버 에러 시
-        const parsedMsg =
-          e?.response?.data?.message ||
-          e?.response?.data?.error ||
-          e?.message ||
-          "서버 저장(구매 처리) 중 오류가 발생했습니다.";
-
-        // (선택) 보상 트랜잭션: 승인 에러 발생 시 취소 시도
-        try {
-          isCompensatingRef.current = true;
-
-          const getApprRaw = await paymentMutation.mutateAsync(
-            encodeURI(makeSendData(nvcatUtils("GET_APPR")))
-          );
-          const getApprParsed = parseFullResponsePacket(getApprRaw);
-
-          if (getApprParsed && getApprParsed.recvCode === "0000") {
-            const apprNo = getApprParsed.recvData?.["승인번호"] ?? "";
-            const apprAt = getApprParsed.recvData?.["승인일시"] ?? "";
-            const amountStr =
-              getApprParsed.recvData?.["승인금액"] ??
-              getApprParsed.recvData?.["거래금액"] ??
-              form.money;
-
-            let agreedate = "";
-            if (apprAt && apprAt.length >= 8) {
-              const ymd = apprAt.slice(0, 8);
-              agreedate = ymd.slice(2); // YYMMDD
-            }
-
-            const cancelForm = {
-              ...form,
-              money: amountStr,
-              agreenum: apprNo,
-              agreedate,
-            };
-
-            const cancelBuf = encodeURI(
-              makeSendData(createPaymentBuffer("credit_cancel", cancelForm))
-            );
-            const cancelRaw = await paymentMutation.mutateAsync(cancelBuf);
-            const cancelParsed = parseFullResponsePacket(cancelRaw);
-
-            if (!cancelParsed || cancelParsed.recvCode !== "0000") {
-              throw new Error("결제 취소 실패");
-            }
-
-            setIsModalOpen(false);
-            setError(
-              parsedMsg ||
-                "서버 저장 실패로 결제를 취소했습니다. 다시 시도해주세요."
-            );
-            return; // 🔚 영수증/QR/네비 진행 중단
-          } else {
-            // 승인내역 없음 또는 조회 실패
-            setIsModalOpen(false);
-            setError(parsedMsg);
-            return;
-          }
-        } catch (compErr: any) {
-          // 취소까지 실패
-          setIsModalOpen(false);
-          setError(
-            compErr?.message ||
-              "서버 저장 실패 후 결제 취소도 실패했습니다. 관리자에게 문의하세요."
-          );
-          return;
-        } finally {
-          isCompensatingRef.current = false;
-        }
+        setError("서버에 문제가 생겼습니다. 관리자에게 문의하세요.");
       }
 
       // 2-4) 구매 처리 성공 시에만 출력/네비

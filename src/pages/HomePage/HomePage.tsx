@@ -11,12 +11,7 @@ import LogoutButton from "./components/LogoutButton";
 import { useUserId } from "../../hooks/useUserId";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { getPlaceInformation } from "../../apis/api/kioskAuth";
-import {
-  checkPresentTicket,
-  checkUsing,
-  disableTicket,
-  getUserData,
-} from "../../apis/api/user";
+import { disableTicket, getUserData } from "../../apis/api/user";
 import { clearUserId } from "../../utils/tokens";
 import { useNavigate } from "react-router";
 import { reissueTicket } from "../../apis/api/pass";

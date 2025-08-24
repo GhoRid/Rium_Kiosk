@@ -11,9 +11,7 @@ type PaymentType =
 type NvcatPaymentResponseUtilsProps = {
   nvcatRecvCode: string;
   responseCode: string;
-  form: any;
   paymentMutation: any;
-  setPaymentType: (type: PaymentType) => void;
 };
 
 type NvcatUtilsCmd = "RESTART" | "NVCATSHUTDOWN" | "READER_RESET" | "GET_APPR";
@@ -21,9 +19,7 @@ type NvcatUtilsCmd = "RESTART" | "NVCATSHUTDOWN" | "READER_RESET" | "GET_APPR";
 export function nvcatPaymentResponseUtils({
   nvcatRecvCode,
   responseCode,
-  form,
   paymentMutation,
-  setPaymentType,
 }: NvcatPaymentResponseUtilsProps): void {
   // 유틸은 "던지는" 정책: Error는 throw, 폴백은 throw "fallback"
   const makeVcatPacketencode = (utilFunction: NvcatUtilsCmd) =>

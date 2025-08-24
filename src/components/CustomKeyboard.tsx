@@ -70,7 +70,6 @@ const CustomKeyboard = ({
   const allowEN = allowedModes.includes("en");
   const allowNUM = allowedModes.includes("num");
   const someAlpha = allowKR || allowEN;
-  const heldKeyRef = useRef<string | null>(null);
 
   const firstAllowed: InputMode =
     initialMode && allowedModes.includes(initialMode)
@@ -153,9 +152,6 @@ const CustomKeyboard = ({
   const layout = getLayout();
 
   const onKeyPress = (key: string) => {
-    if (heldKeyRef.current === key) return;
-    heldKeyRef.current = key;
-
     switch (key) {
       case "{pre}":
         setText(text.slice(0, -1));
