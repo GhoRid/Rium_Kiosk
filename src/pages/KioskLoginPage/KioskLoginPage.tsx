@@ -99,6 +99,7 @@ const KioskLoginPage = () => {
           text={activeValue}
           setText={setActiveValue}
           setKeyboardVisible={setKeyboardVisible}
+          allowedModes={["num", "en"]}
         />
       )}
     </Container>

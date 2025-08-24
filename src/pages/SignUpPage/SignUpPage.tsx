@@ -14,6 +14,7 @@ import { useMutation } from "@tanstack/react-query";
 import { registerUser, sendSmsCode, verifySmsCode } from "../../apis/api/user";
 import SignUpSuccessModal from "./components/SignUpSuccessModal";
 import { useNavigate } from "react-router";
+import CustomKeyboard from "../../components/CustomKeyboard";
 
 const digitsOnly = (s: string) => s.replace(/\D/g, "");
 const fmtBirth = (v: string) => digitsOnly(v).slice(0, 8);
@@ -35,6 +36,8 @@ type Errors = Partial<{
   terms: string;
 }>;
 
+type ActiveField = "name" | "phone" | "cert" | "pin" | "birth" | null;
+
 const SignUpPage = () => {
   const navigate = useNavigate();
 
@@ -46,7 +49,6 @@ const SignUpPage = () => {
   const [pin, setPin] = useState("");
   const [birth, setBirth] = useState("");
   const [gender, setGender] = useState("M");
-  const [route, setRoute] = useState("가입 경로");
 
   const [terms, setTerms] = useState<TermItem[]>([
     {
@@ -68,6 +70,9 @@ const SignUpPage = () => {
 
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
+  const [keyboardVisible, setKeyboardVisible] = useState(false);
+  const [activeField, setActiveField] = useState<ActiveField>(null);
+
   const validateName = (v: string) =>
     v.trim() ? undefined : "이름을 입력해주세요.";
   const validatePhone = (v: string) => {
@@ -82,8 +87,6 @@ const SignUpPage = () => {
     digitsOnly(v).length === 4 ? undefined : "비밀번호를 입력해주세요.";
   const validateBirth = (v: string) =>
     isValidYmd(v) ? undefined : "생년월일을 입력해주세요.";
-  const validateRoute = (v: string) =>
-    v !== "가입 경로" ? undefined : "가입 경로를 선택해주세요.";
   const validateTerms = (arr: TermItem[]) =>
     arr.every((t) => !t.required || t.checked)
       ? undefined
@@ -128,14 +131,12 @@ const SignUpPage = () => {
         password: pin,
         name: name,
         birth: birth,
-        // sighUpPath: route,
       });
     },
-    onSuccess: (res) => {
+    onSuccess: () => {
       setIsModalOpen(true);
     },
     onError: (e: any) => {
-      // 실패 시 처리 로직
       console.error("회원가입 실패:", e);
     },
   });
@@ -162,8 +163,6 @@ const SignUpPage = () => {
     if (pi) e.pin = pi;
     const b = validateBirth(birth);
     if (b) e.birth = b;
-    const r = validateRoute(route);
-    if (r) e.route = r;
     const t = validateTerms(terms);
     if (t) e.terms = t;
     return e;
@@ -185,7 +184,6 @@ const SignUpPage = () => {
   const onChangePhone = (v: string) => {
     const d = digitsOnly(v).slice(0, 11);
     setPhone(d);
-
     if (isCodeVerified) setIsCodeVerified(false);
     if (submitted) setFieldError("phone", validatePhone(d));
   };
@@ -208,11 +206,6 @@ const SignUpPage = () => {
     if (submitted) setFieldError("birth", validateBirth(v));
   };
 
-  const onSelectRoute = (v: string) => {
-    setRoute(v);
-    if (submitted) setFieldError("route", validateRoute(v));
-  };
-
   const onChangeTerms: React.Dispatch<React.SetStateAction<TermItem[]>> = (
     updater
   ) => {
@@ -227,101 +220,133 @@ const SignUpPage = () => {
   const err = <K extends keyof Errors>(k: K) =>
     submitted ? errors[k] : undefined;
 
+  const openKeyboard = (f: ActiveField) => {
+    setActiveField(f);
+    setKeyboardVisible(true);
+  };
+
+  const kbdText =
+    activeField === "name"
+      ? name
+      : activeField === "phone"
+      ? phone
+      : activeField === "cert"
+      ? cert
+      : activeField === "pin"
+      ? pin
+      : activeField === "birth"
+      ? birth
+      : "";
+
+  const kbdSetter =
+    activeField === "name"
+      ? onChangeName
+      : activeField === "phone"
+      ? onChangePhone
+      : activeField === "cert"
+      ? onChangeCert
+      : activeField === "pin"
+      ? onChangePin
+      : activeField === "birth"
+      ? onChangeBirth
+      : (v: string) => {};
+
+  const kbdModes =
+    activeField === "name" ? (["kr", "en"] as const) : (["num"] as const);
+
   return (
     <>
       <Container>
         <GoToHomeButton />
         <Content>
           <Form>
-            <InputFileds
-              label="이름"
-              value={name}
-              onChange={onChangeName}
-              error={err("name")}
-            />
+            <div onMouseDown={() => openKeyboard("name")}>
+              <InputFileds
+                label="이름"
+                value={name}
+                onChange={onChangeName}
+                error={err("name")}
+              />
+            </div>
 
-            <InputFileds
-              label="휴대폰 번호"
-              value={formatPhoneNumber(phone)}
-              onChange={onChangePhone}
-              inputMode="numeric"
-              normalizer={(s) => digitsOnly(s).slice(0, 11)}
-              rightSlot={
-                <RightButton
-                  type="button"
-                  disabled={!canRequestCode}
-                  onClick={() => sendCodeMutation.mutate()}
-                >
-                  <RightButtonText>
-                    {sendCodeMutation.isPending ? "요청중..." : "인증 요청"}
-                  </RightButtonText>
-                </RightButton>
-              }
-              error={err("phone")}
-            />
+            <div onMouseDown={() => openKeyboard("phone")}>
+              <InputFileds
+                label="휴대폰 번호"
+                value={formatPhoneNumber(phone)}
+                onChange={onChangePhone}
+                inputMode="numeric"
+                normalizer={(s) => digitsOnly(s).slice(0, 11)}
+                rightSlot={
+                  <RightButton
+                    type="button"
+                    disabled={!canRequestCode}
+                    onClick={() => sendCodeMutation.mutate()}
+                  >
+                    <RightButtonText>
+                      {sendCodeMutation.isPending ? "요청중..." : "인증 요청"}
+                    </RightButtonText>
+                  </RightButton>
+                }
+                error={err("phone")}
+              />
+            </div>
 
-            <InputFileds
-              label={`인증번호${isCodeVerified ? " (인증 완료)" : ""}`}
-              value={cert}
-              onChange={onChangeCert}
-              inputMode="numeric"
-              rightSlot={
-                <RightButton
-                  type="button"
-                  disabled={!canVerifyCode || isCodeVerified}
-                  onClick={() => verifyCodeMutation.mutate()}
-                >
-                  <RightButtonText>
-                    {isCodeVerified
-                      ? "완료"
-                      : verifyCodeMutation.isPending
-                      ? "확인중..."
-                      : "인증하기"}
-                  </RightButtonText>
-                </RightButton>
-              }
-              error={err("cert")}
-            />
+            <div onMouseDown={() => openKeyboard("cert")}>
+              <InputFileds
+                label={`인증번호${isCodeVerified ? " (인증 완료)" : ""}`}
+                value={cert}
+                onChange={onChangeCert}
+                inputMode="numeric"
+                rightSlot={
+                  <RightButton
+                    type="button"
+                    disabled={!canVerifyCode || isCodeVerified}
+                    onClick={() => verifyCodeMutation.mutate()}
+                  >
+                    <RightButtonText>
+                      {isCodeVerified
+                        ? "완료"
+                        : verifyCodeMutation.isPending
+                        ? "확인중..."
+                        : "인증하기"}
+                    </RightButtonText>
+                  </RightButton>
+                }
+                error={err("cert")}
+              />
+            </div>
 
-            <InputFileds
-              label="비밀번호 (4자리)"
-              value={pin}
-              onChange={onChangePin}
-              type="password"
-              inputMode="numeric"
-              error={err("pin")}
-            />
+            <div onMouseDown={() => openKeyboard("pin")}>
+              <InputFileds
+                label="비밀번호 (৪자리)"
+                value={pin}
+                onChange={onChangePin}
+                type="password"
+                inputMode="numeric"
+                error={err("pin")}
+              />
+            </div>
 
-            <InputFileds
-              label="생년월일(YYYYMMDD)"
-              value={formatDateHyphen(birth)}
-              onChange={onChangeBirth}
-              inputMode="numeric"
-              normalizer={fmtBirth}
-              rightSlot={
-                <RadioGroup
-                  value={gender}
-                  onChange={setGender}
-                  options={[
-                    { label: "남", value: "M" },
-                    { label: "여", value: "F" },
-                  ]}
-                />
-              }
-              error={err("birth")}
-            />
-
-            <JoinPathAccordion
-              route={route}
-              setRoute={onSelectRoute}
-              paths={[
-                "포털 사이트 검색",
-                "네이버 플레이스",
-                "인스타그램",
-                "지인 추천",
-              ]}
-              error={err("route")}
-            />
+            <div onMouseDown={() => openKeyboard("birth")}>
+              <InputFileds
+                label="생년월일(YYYYMMDD)"
+                value={formatDateHyphen(birth)}
+                onChange={onChangeBirth}
+                inputMode="numeric"
+                normalizer={fmtBirth}
+                rightSlot={
+                  <RadioGroup
+                    value={gender}
+                    onChange={setGender}
+                    options={[
+                      { label: "남", value: "M" },
+                      { label: "여", value: "F" },
+                    ]}
+                  />
+                }
+                error={err("birth")}
+              />
+            </div>
           </Form>
 
           <ConsentList
@@ -332,7 +357,18 @@ const SignUpPage = () => {
 
           <BottomButtons submitName={"회원가입"} submit={handleSubmit} />
         </Content>
+
+        {keyboardVisible && activeField && (
+          <CustomKeyboard
+            text={kbdText}
+            setText={kbdSetter}
+            setKeyboardVisible={setKeyboardVisible}
+            allowedModes={[...kbdModes]}
+            initialMode={kbdModes[0]}
+          />
+        )}
       </Container>
+
       <SignUpSuccessModal
         isModalOpen={isModalOpen}
         setIsModalOpen={setIsModalOpen}
