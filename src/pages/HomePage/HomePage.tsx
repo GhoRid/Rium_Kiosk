@@ -296,6 +296,7 @@ const Container = styled.div`
   color: ${colors.app_white};
   display: flex;
   flex-direction: column;
+  align-items: center;
   height: 1920px;
   position: relative;
 `;

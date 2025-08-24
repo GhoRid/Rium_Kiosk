@@ -5,7 +5,6 @@ import { ReactComponent as ChangeSeat } from "../../../assets/svgs/change_seat.s
 import { ReactComponent as Enter } from "../../../assets/svgs/enter.svg";
 import { ReactComponent as Exit } from "../../../assets/svgs/exit.svg";
 import { colors } from "../../../colors";
-import { useNavigate } from "react-router";
 
 type HomeMenuProps = {
   handleBuyTicket: () => void;
@@ -24,8 +23,6 @@ const HomeMenu = ({
   handleCheckIn,
   handleReissueTicket,
 }: HomeMenuProps) => {
-  const navigate = useNavigate();
-
   const FeatureList = [
     {
       name: "이용권 구매",
