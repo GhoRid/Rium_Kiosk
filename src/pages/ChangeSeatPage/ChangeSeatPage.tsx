@@ -95,7 +95,7 @@ const ChangeSeatPage = () => {
       <CustomModal
         isModalOpen={isModalOpen}
         setIsModalOpen={setIsModalOpen}
-        modalContent={"12번 좌석으로\n자리 이동이 완료되었습니다."}
+        modalContent={`${selectedSeat}번 좌석으로\n자리 이동이 완료되었습니다.`}
         submitText="홈으로"
         submitAction={() => navigate("/home")}
       />
