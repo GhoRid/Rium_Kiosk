@@ -2,7 +2,7 @@ import styled from "styled-components";
 import HomeMenu from "./components/HomeMenu";
 import { colors } from "../../colors";
 import SeatInfo from "./components/SeatInfo";
-import DateInfo from "./components/DateInfo";
+import HeaderInfoBox from "./components/HeaderInfoBox";
 import HomeHeader from "./components/HomeHeader";
 import FooterCarousel from "./components/FooterCarousel";
 import CustomModal from "../../components/CustomModal";
@@ -90,7 +90,6 @@ const HomePage = () => {
   });
 
   const handleBuyTicket = () => {
-    // 자동으로 login 페이지 이동
     if (isTicketPresent) {
       setModalContent({
         content: "이미 이용권이 있습니다.",
@@ -246,9 +245,9 @@ const HomePage = () => {
 
   return (
     <>
+      <HeaderInfoBox userName={name} />
       <Container>
-        <DateInfo />
-        {userId && <LogoutButton />}
+        {/* {userId && <LogoutButton />} */}
         <ContentContainer>
           {/* 지점명/전화번호/로고 */}
           <HomeHeader
@@ -303,5 +302,5 @@ const Container = styled.div`
 
 const ContentContainer = styled.div`
   padding: 0 130px;
-  margin-top: 120px;
+  margin-top: 150px;
 `;
