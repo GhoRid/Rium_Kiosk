@@ -24,8 +24,6 @@ const PaymentPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // console.log(location.state);
-
   const { passType, label, seatType, seatNumber, ticketId } =
     location.state || {};
   const price = 10;
@@ -45,8 +43,11 @@ const PaymentPage = () => {
   const [paymentType, setPaymentType] = useState<PaymentType>("credit");
 
   useEffect(() => {
-    if (["카드", "삼성페이", "간편결제"].includes(paymentMethod ?? "")) {
+    if (["카드", "삼성페이"].includes(paymentMethod ?? "")) {
       setPaymentType("credit");
+    } else if (paymentMethod === "간편결제") {
+      setPaymentType("kakao_money");
+      setError("현재 간편결제는 지원하지 않습니다.");
     }
   }, [paymentMethod]);
 
@@ -75,13 +76,15 @@ const PaymentPage = () => {
     navigate,
     printReceipt,
     printPass,
-    setPaymentType,
     setError,
   });
 
   const handlePayments = () => {
     if (!paymentMethod) {
       setError("결제 수단을 선택해주세요.");
+      return;
+    }
+    if (paymentMethod === "간편결제") {
       return;
     }
 

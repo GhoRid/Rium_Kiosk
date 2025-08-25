@@ -29,7 +29,6 @@ type RunnerArgs = {
   navigate: NavigateFunction;
   printReceipt: boolean;
   printPass: boolean;
-  setPaymentType: (type: PaymentType) => void;
   setError: (error: string | null) => void;
 };
 
@@ -47,7 +46,6 @@ export const useRunPaymentFlow = (args: RunnerArgs) => {
     navigate,
     printReceipt,
     printPass,
-    setPaymentType,
     setError,
   } = args;
 
@@ -135,7 +133,7 @@ export const useRunPaymentFlow = (args: RunnerArgs) => {
 
     const payment = {
       company: "리움",
-      ceo: "이헌재",
+      ceo: "황상훈",
       company_num: "010-5391-2895",
       tel: "010-1234-5678",
       address: "광주 북구 서하로 379 402",
