@@ -5,7 +5,7 @@ type PriceState = {
   ticketId: string | null;
   usingCouponCode: string | null;
   setPrice: (price: number) => void;
-  setTicketId: (id: string) => void;
+  setTicketId: (id: string | null) => void; // <- null 허용 권장
   setUsingCouponCode: (code: string | null) => void;
 };
 
@@ -14,6 +14,9 @@ export const usePriceStore = create<PriceState>((set) => ({
   ticketId: null,
   usingCouponCode: null,
   setPrice: (price) => set({ price }),
-  setTicketId: (id) => set({ ticketId: id }),
+  setTicketId: (id) =>
+    set((state) =>
+      state.ticketId === id ? { ticketId: id } : { ticketId: id, price: null }
+    ),
   setUsingCouponCode: (code) => set({ usingCouponCode: code }),
 }));

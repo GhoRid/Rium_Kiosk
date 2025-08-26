@@ -46,17 +46,25 @@ const PaymentPage = () => {
 
   const discountedPrice = usePriceStore((state) => state.price);
   const usingCouponCode = usePriceStore((state) => state.usingCouponCode);
-  const setTicketId = usePriceStore((state) => state.setTicketId);
 
-  setTicketId(ticketId);
+  const setTicketId = usePriceStore((state) => state.setTicketId);
+  const storedTicketId = usePriceStore((state) => state.ticketId);
 
   useEffect(() => {
-    if (discountedPrice !== null && discountedPrice <= price) {
-      setFinalPrice(discountedPrice);
-      setLabelName(`${label} (쿠폰 적용)`);
-    }
-  }, [discountedPrice, price]);
+    if (storedTicketId === ticketId) {
+      setFinalPrice(price);
 
+      // 쿠폰이 적용된 가격이 유효하고, 원래 가격보다 작거나 같은 경우에만 적용
+      if (discountedPrice !== null && discountedPrice <= price) {
+        setFinalPrice(discountedPrice);
+        setLabelName(`${label} (쿠폰 적용)`);
+      }
+    } else {
+      setTicketId(ticketId);
+    }
+  }, [ticketId, setTicketId]);
+
+  // 결제 수단에 따라 paymentType 설정
   useEffect(() => {
     if (["카드", "삼성페이"].includes(paymentMethod ?? "")) {
       setPaymentType("credit");

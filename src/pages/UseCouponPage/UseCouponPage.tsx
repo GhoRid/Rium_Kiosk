@@ -48,12 +48,7 @@ const UseCouponPage = () => {
     },
   });
 
-  const {
-    isError,
-    error,
-    isSuccess,
-    data: couponData,
-  } = getCouponValidMutation;
+  const { isError, isSuccess } = getCouponValidMutation;
 
   const handleModalAction = () => {
     if (isSuccess) {
