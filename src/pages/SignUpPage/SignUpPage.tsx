@@ -281,7 +281,7 @@ const SignUpPage = () => {
         <GoToHomeButton />
         <Content>
           <Form>
-            <div onMouseDown={() => openKeyboard("name")}>
+            <div onPointerDown={() => openKeyboard("name")}>
               <InputFileds
                 label="이름"
                 value={name}
@@ -290,7 +290,7 @@ const SignUpPage = () => {
               />
             </div>
 
-            <div onMouseDown={() => openKeyboard("phone")}>
+            <div onPointerDown={() => openKeyboard("phone")}>
               <InputFileds
                 label="휴대폰 번호"
                 value={formatPhoneNumber(phone)}
@@ -312,7 +312,7 @@ const SignUpPage = () => {
               />
             </div>
 
-            <div onMouseDown={() => openKeyboard("cert")}>
+            <div onPointerDown={() => openKeyboard("cert")}>
               <InputFileds
                 label={`인증번호${isCodeVerified ? " (인증 완료)" : ""}`}
                 value={cert}
@@ -337,7 +337,7 @@ const SignUpPage = () => {
               />
             </div>
 
-            <div onMouseDown={() => openKeyboard("pin")}>
+            <div onPointerDown={() => openKeyboard("pin")}>
               <InputFileds
                 label="비밀번호 (4자리)"
                 value={pin}
@@ -348,7 +348,7 @@ const SignUpPage = () => {
               />
             </div>
 
-            <div onMouseDown={() => openKeyboard("birth")}>
+            <div onPointerDown={() => openKeyboard("birth")}>
               <InputFileds
                 label="생년월일(YYYYMMDD)"
                 value={formatDateHyphen(birth)}
