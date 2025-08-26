@@ -32,17 +32,18 @@ const PaymentPage = () => {
 
   const userId = useMemo(() => getUserId(), []);
 
-  const [paymentMethod, setPaymentMethod] = useState<string | null>(null);
-  const [installment, setInstallment] = useState<string>("일시불");
-  const [selectedInstallmentOption, setSelectedInstallmentOption] =
-    useState<number>(0);
-  const [printReceipt, setPrintReceipt] = useState<boolean>(true);
-  const [printPass, setPrintPass] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [paymentType, setPaymentType] = useState<PaymentType>("credit");
+  const [paymentMethod, setPaymentMethod] = useState<string | null>(null),
+    [paymentType, setPaymentType] = useState<PaymentType>("credit"),
+    [installment, setInstallment] = useState<string>("일시불"),
+    [selectedInstallmentOption, setSelectedInstallmentOption] =
+      useState<number>(0);
+
+  const [printPass, setPrintPass] = useState<boolean>(true),
+    [printReceipt, setPrintReceipt] = useState<boolean>(true);
   const [labelName, setLabelName] = useState<string>(label);
   const [finalPrice, setFinalPrice] = useState<number>(price);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
   const discountedPrice = usePriceStore((state) => state.price);
   const usingCouponCode = usePriceStore((state) => state.usingCouponCode);

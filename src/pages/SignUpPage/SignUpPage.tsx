@@ -29,11 +29,19 @@ type Errors = Partial<{
   phone: string;
   cert: string;
   pin: string;
+  pinConfirm: string;
   birth: string;
   route: string;
   terms: string;
 }>;
-type ActiveField = "name" | "phone" | "cert" | "pin" | "birth" | null;
+type ActiveField =
+  | "name"
+  | "phone"
+  | "cert"
+  | "pin"
+  | "pinConfirm"
+  | "birth"
+  | null;
 
 const SignUpPage = () => {
   const navigate = useNavigate();
@@ -42,6 +50,7 @@ const SignUpPage = () => {
     [phone, setPhone] = useState(""),
     [cert, setCert] = useState(""),
     [pin, setPin] = useState(""),
+    [pinConfirm, setPinConfirm] = useState(""),
     [birth, setBirth] = useState("");
   const [gender, setGender] = useState<string>("M");
   const [isCodeVerified, setIsCodeVerified] = useState(false);
@@ -94,6 +103,12 @@ const SignUpPage = () => {
     digitsOnly(v).length === 6 ? undefined : "인증번호가 올바르지 않습니다.";
   const vPin = (v: string) =>
     digitsOnly(v).length === 4 ? undefined : "비밀번호를 입력해주세요.";
+  const vPinConfirm = (v: string) => {
+    const d = digitsOnly(v);
+    if (d.length !== 4) return "비밀번호를 입력해주세요.";
+    if (d !== digitsOnly(pin)) return "비밀번호가 일치하지 않습니다.";
+    return undefined;
+  };
   const vBirth = (v: string) => {
     const s = digitsOnly(v);
     if (s.length !== 8) return "생년월일을 8자리로 입력해주세요 (YYYYMMDD)";
@@ -150,6 +165,9 @@ const SignUpPage = () => {
     true
   );
   const onChangePin = mk(setPin, "pin", vPin, (s) => digitsOnly(s).slice(0, 4));
+  const onChangePinConfirm = mk(setPinConfirm, "pinConfirm", vPinConfirm, (s) =>
+    digitsOnly(s).slice(0, 4)
+  );
   const onChangeBirth = mk(setBirth, "birth", vBirth);
 
   // Mutations
@@ -228,6 +246,8 @@ const SignUpPage = () => {
     if (c) e.cert = c;
     const pi = vPin(pin);
     if (pi) e.pin = pi;
+    const pic = vPinConfirm(pinConfirm);
+    if (pic) e.pinConfirm = pic;
     const b = vBirth(birth);
     if (b) e.birth = b;
     const t = vTerms(terms);
@@ -242,12 +262,13 @@ const SignUpPage = () => {
   };
 
   // 키보드 바인딩 맵
-  const fieldVals = { name, phone, cert, pin, birth } as const;
+  const fieldVals = { name, phone, cert, pin, pinConfirm, birth } as const;
   const fieldSetters = {
     name: onChangeName,
     phone: onChangePhone,
     cert: onChangeCert,
     pin: onChangePin,
+    pinConfirm: onChangePinConfirm,
     birth: onChangeBirth,
   } as const;
   const kbdText = activeField ? fieldVals[activeField] : "";
@@ -329,6 +350,16 @@ const SignUpPage = () => {
                 type="password"
                 inputMode="numeric"
                 error={err("pin")}
+              />
+            </div>
+            <div onPointerDown={open("pinConfirm")}>
+              <InputFileds
+                label="비밀번호 재입력 (4자리)"
+                value={pinConfirm}
+                onChange={onChangePinConfirm}
+                type="password"
+                inputMode="numeric"
+                error={err("pinConfirm")}
               />
             </div>
 
