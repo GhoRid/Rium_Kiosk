@@ -17,6 +17,8 @@ import KioskLoginPage from "./pages/KioskLoginPage/KioskLoginPage";
 import UserLoginLayout from "./components/layouts/UserLoginLayout";
 import CompleteCheckInPage from "./pages/CompleteCheckInPage/CompleteCheckInPage";
 import PaymentFormComponent from "./PaymentFormComponent";
+import RegisterCouponPage from "./pages/RegisterCouponPage/RegisterCouponPage";
+import UseCouponPage from "./pages/UseCouponPage/UseCouponPage";
 
 function App() {
   return (
@@ -34,6 +36,8 @@ function App() {
             <Route path="/singlepass" element={<SinglePassPage />} />
             <Route path="/periodpass" element={<PeriodPassPage />} />
             <Route path="/timepass" element={<TimePassPage />} />
+            <Route path="/usecoupon" element={<UseCouponPage />} />
+            <Route path="/registercoupon" element={<RegisterCouponPage />} />
             <Route path="/select-seat" element={<SelectSeatPage />} />
             <Route path="/payment" element={<PaymentPage />} />
             <Route path="/checkextendpass" element={<CheckExtendPassPage />} />

@@ -272,11 +272,11 @@ const CustomKeyboard = ({
   return (
     <Wrapper
       ref={wrapperRef}
-      dragging={dragging}
-      closing={closing}
-      mounting={mounting}
-      translateY={translateY}
-      panelH={panelH}
+      $dragging={dragging}
+      $closing={closing}
+      $mounting={mounting}
+      $translateY={translateY}
+      $panelH={panelH}
       onTransitionEnd={onTransitionEnd}
     >
       <DragHandle
@@ -304,11 +304,11 @@ const CustomKeyboard = ({
 };
 
 const Wrapper = styled.div<{
-  dragging: boolean;
-  closing: boolean;
-  mounting: boolean;
-  translateY: number;
-  panelH: number;
+  $dragging: boolean;
+  $closing: boolean;
+  $mounting: boolean;
+  $translateY: number;
+  $panelH: number;
 }>`
   position: absolute;
   width: 100%;
@@ -316,9 +316,9 @@ const Wrapper = styled.div<{
   z-index: 10;
   user-select: none;
   will-change: transform;
-  transform: translateY(${(p) => (p.mounting ? p.panelH : p.translateY)}px);
+  transform: translateY(${(p) => (p.$mounting ? p.$panelH : p.$translateY)}px);
   transition: ${(p) =>
-    p.dragging || p.mounting
+    p.$dragging || p.$mounting
       ? "none"
       : "transform 240ms cubic-bezier(0.22, 1, 0.36, 1)"};
 `;

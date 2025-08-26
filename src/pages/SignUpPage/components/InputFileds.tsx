@@ -8,7 +8,7 @@ export type InputFiledsProps = {
   onChange: (v: string) => void;
   placeholder?: string;
   type?: "text" | "password";
-  inputMode?: React.InputHTMLAttributes<HTMLInputElement>["inputMode"]; // ✅ 수정
+  inputMode?: React.InputHTMLAttributes<HTMLInputElement>["inputMode"];
   normalizer?: (raw: string) => string;
   rightSlot?: ReactNode;
   error?: string;

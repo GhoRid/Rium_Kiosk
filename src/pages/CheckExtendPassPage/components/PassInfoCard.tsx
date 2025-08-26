@@ -1,8 +1,8 @@
 import styled from "styled-components";
-import { colors } from "../../colors";
-import { formatIsoToTwoLinesRaw } from "../../utils/formatDate";
+import { colors } from "../../../colors";
+import { formatIsoToTwoLinesRaw } from "../../../utils/formatDate";
 
-type PassInfoProps = {
+type PassInfoCardProps = {
   expirationDate?: string;
   remainTime: string; // 예: "2시간 30분"
   seatNumber: string; // 예: "12"
@@ -11,14 +11,14 @@ type PassInfoProps = {
   isUsing: boolean;
 };
 
-const PassInfo = ({
+const PassInfoCard = ({
   expirationDate,
   remainTime,
   seatNumber,
   ticketName,
   ticketType,
   isUsing,
-}: PassInfoProps) => {
+}: PassInfoCardProps) => {
   const hasTicket = ticketName !== "이용권 없음";
 
   return (
@@ -63,7 +63,7 @@ const PassInfo = ({
   );
 };
 
-export default PassInfo;
+export default PassInfoCard;
 
 const Wrapper = styled.div`
   display: flex;

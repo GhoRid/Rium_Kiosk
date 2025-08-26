@@ -18,6 +18,7 @@ type PaymentType =
 
 type RunnerArgs = {
   form: any;
+  usingCouponCode: string | null;
   paymentType: PaymentType;
   setIsModalOpen: (b: boolean) => void;
   userId: string | null;
@@ -35,6 +36,7 @@ type RunnerArgs = {
 export const useRunPaymentFlow = (args: RunnerArgs) => {
   const {
     form,
+    usingCouponCode,
     paymentType,
     setIsModalOpen,
     userId,
@@ -50,8 +52,12 @@ export const useRunPaymentFlow = (args: RunnerArgs) => {
   } = args;
 
   const paymentMutation = useNVCatPayment();
-  const { receiptMutation, qrMutation, purchaseTicketMutation } =
-    useAppPaymentMutations();
+  const {
+    receiptMutation,
+    qrMutation,
+    purchaseTicketMutation,
+    sendUseCouponMutation,
+  } = useAppPaymentMutations();
 
   const isCompensatingRef = useRef(false);
 
@@ -164,6 +170,12 @@ export const useRunPaymentFlow = (args: RunnerArgs) => {
       let purchaseRes: any;
       try {
         purchaseRes = await purchaseTicketMutation.mutateAsync(requestBody);
+        if (usingCouponCode !== null) {
+          sendUseCouponMutation.mutate({
+            token: usingCouponCode!,
+            mobileNumber: userId!,
+          });
+        }
       } catch (e: any) {
         setError("서버에 문제가 생겼습니다. 관리자에게 문의하세요.");
       }

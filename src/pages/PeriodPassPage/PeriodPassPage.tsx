@@ -204,7 +204,7 @@ const Container = styled.div`
 `;
 
 const Content = styled.div`
-  padding-top: 480px;
+  padding-top: 350px;
   margin: 0 160px;
   width: calc(100% - 320px);
 `;
@@ -212,8 +212,7 @@ const Content = styled.div`
 const List = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 80px;
-  margin-bottom: 40px;
+  gap: 50px;
 `;
 
 const MessageBox = styled.div`

@@ -3,6 +3,7 @@ import { useMutation, UseMutationResult } from "@tanstack/react-query";
 import { PurchaseTicketData, QRData, ReceiptData } from "../types/payment";
 import { postQR, postreceipt } from "../apis/api/receipt";
 import { purchaseTicket } from "../apis/api/pass";
+import { sendUseCoupon } from "../apis/api/user";
 
 export const useNVCatPayment = () => {
   return useMutation({
@@ -37,5 +38,26 @@ export function useAppPaymentMutations() {
     retry: 1,
   });
 
-  return { receiptMutation, qrMutation, purchaseTicketMutation };
+  const sendUseCouponMutation = useMutation({
+    mutationKey: ["sendUseCoupon"],
+    mutationFn: ({
+      token,
+      mobileNumber,
+    }: {
+      token: string;
+      mobileNumber: string;
+    }) =>
+      sendUseCoupon({
+        token,
+        mobileNumber,
+      }),
+    retry: 1,
+  });
+
+  return {
+    receiptMutation,
+    qrMutation,
+    purchaseTicketMutation,
+    sendUseCouponMutation,
+  };
 }

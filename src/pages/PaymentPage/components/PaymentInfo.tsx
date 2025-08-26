@@ -7,12 +7,7 @@ type PaymentInfoProps = {
   price: number;
 };
 
-const PaymentInfo = ({
-  passType,
-  label,
-
-  price,
-}: PaymentInfoProps) => {
+const PaymentInfo = ({ passType, label, price }: PaymentInfoProps) => {
   return (
     <Wrapper>
       <InfoRow>

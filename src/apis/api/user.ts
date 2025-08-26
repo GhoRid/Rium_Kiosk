@@ -5,6 +5,7 @@ export const registerUser = async (data: any) => {
   return await appInstance.post("/register", data);
 };
 
+// 비밀번호 재설정
 export const resetPassword = async (data: any) => {
   return await appInstance.post("/reset/password", data);
 };
@@ -36,6 +37,16 @@ export const sendSmsCode = async (params: any) => {
 // 사용자 존재 여부 확인
 export const isPresentUser = async (params: any) => {
   return await appInstance.get("/ispresent/user", { params });
+};
+
+// 쿠폰 유효성 확인 및 금액 계산
+export const getCouponValid = async (params: any) => {
+  return await appInstance.get("/valid/coupon", { params });
+};
+
+// 쿠폰 사용
+export const sendUseCoupon = async (data: any) => {
+  return await appInstance.post("/use/coupon", data);
 };
 
 // 잔여 좌석 조회

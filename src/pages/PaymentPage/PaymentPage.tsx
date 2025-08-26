@@ -13,6 +13,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { getUserId } from "../../utils/tokens";
 import { useRunPaymentFlow } from "./useRunPaymentFlow";
+import { usePriceStore } from "../../stores/usePriceStore";
 
 type PaymentType =
   | "credit"
@@ -24,9 +25,8 @@ const PaymentPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const { passType, label, seatType, seatNumber, ticketId } =
+  const { price, passType, label, seatType, seatNumber, ticketId } =
     location.state || {};
-  const price = 10;
 
   const passTicketVisible = !!seatNumber;
 
@@ -41,6 +41,21 @@ const PaymentPage = () => {
   const [error, setError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [paymentType, setPaymentType] = useState<PaymentType>("credit");
+  const [finalPrice, setFinalPrice] = useState<number>(price);
+  const [labelName, setLabelName] = useState<string>(label);
+
+  const discountedPrice = usePriceStore((state) => state.price);
+  const usingCouponCode = usePriceStore((state) => state.usingCouponCode);
+  const setTicketId = usePriceStore((state) => state.setTicketId);
+
+  setTicketId(ticketId);
+
+  useEffect(() => {
+    if (discountedPrice !== null && discountedPrice <= price) {
+      setFinalPrice(discountedPrice);
+      setLabelName(`${label} (쿠폰 적용)`);
+    }
+  }, [discountedPrice, price]);
 
   useEffect(() => {
     if (["카드", "삼성페이"].includes(paymentMethod ?? "")) {
@@ -52,7 +67,7 @@ const PaymentPage = () => {
   }, [paymentMethod]);
 
   const form = {
-    money: String(price),
+    money: String(finalPrice),
     tax: "",
     bongsa: "",
     halbu: String(selectedInstallmentOption),
@@ -65,6 +80,7 @@ const PaymentPage = () => {
 
   const { start } = useRunPaymentFlow({
     form,
+    usingCouponCode,
     paymentType,
     setIsModalOpen,
     userId,
@@ -105,7 +121,7 @@ const PaymentPage = () => {
       <Header title="결제하기" />
 
       <Content>
-        <PaymentInfo passType={passType} label={label} price={price} />
+        <PaymentInfo passType={passType} label={labelName} price={finalPrice} />
 
         <PaymentMethod
           paymentMethod={paymentMethod}

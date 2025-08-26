@@ -3,7 +3,7 @@ import { colors } from "../../colors";
 import GoToHomeButton from "../../components/GoToHomeButton";
 import Header from "../../components/Header";
 import UserInfo from "../../components/Pass/UserInfo";
-import PassInfo from "../../components/Pass/PassInfo";
+import PassInfoCard from "./components/PassInfoCard";
 import { getUserId } from "../../utils/tokens";
 import { useQuery } from "@tanstack/react-query";
 import { getInformationTicket } from "../../apis/api/user";
@@ -39,7 +39,7 @@ const CheckExtendPassPage = () => {
       <Content>
         <UserInfo name={name} isUsing={isUsing} />
 
-        <PassInfo
+        <PassInfoCard
           expirationDate={expirationDate}
           remainTime={remainTime}
           seatNumber={seatNumber}

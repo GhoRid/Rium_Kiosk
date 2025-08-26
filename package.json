@@ -17,6 +17,7 @@
     "@types/react-dom": "^19.1.7",
     "axios": "^1.11.0",
     "electron-is-dev": "^3.0.1",
+    "electron-updater": "^6.6.2",
     "hangul-js": "^0.2.6",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
@@ -25,7 +26,8 @@
     "react-simple-keyboard": "^3.8.115",
     "styled-components": "^6.1.19",
     "typescript": "^4.9.5",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "zustand": "^5.0.8"
   },
   "scripts": {
     "react-start": "react-scripts start",
@@ -38,7 +40,8 @@
     "build:win32": "yarn react-build && electron-builder --win --ia32",
     "build:win64": "yarn react-build && electron-builder --win --x64",
     "build:mac": "yarn react-build && electron-builder --mac dmg zip",
-    "dist:win": "electron-builder --win"
+    "dist:win": "electron-builder --win",
+    "deploy": "electron-builder build --win --publish always"
   },
   "build": {
     "mac": {
@@ -94,5 +97,9 @@
     "electron": "^37.2.4",
     "electron-builder": "^26.0.12",
     "wait-on": "^8.0.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GhoRid/Rium_Kiosk.git"
   }
 }
