@@ -1,13 +1,11 @@
 import styled from "styled-components";
 import { colors } from "../../../colors";
 import React, { ReactNode } from "react";
-
-type FieldName = "name" | "phone" | "birth" | "code" | "newPassword";
+import { FieldName } from "../ResetPasswordPage";
 
 type Props = {
   activeField: FieldName;
   setActiveField: (f: FieldName) => void;
-
   name: FieldName;
   placeholder: string;
   rightSlot?: ReactNode;
