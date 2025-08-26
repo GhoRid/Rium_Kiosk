@@ -4,8 +4,8 @@ type PriceState = {
   price: number | null;
   ticketId: string | null;
   usingCouponCode: string | null;
-  setPrice: (price: number) => void;
-  setTicketId: (id: string | null) => void; // <- null 허용 권장
+  setPrice: (price: number | null) => void;
+  setTicketId: (id: string | null) => void;
   setUsingCouponCode: (code: string | null) => void;
 };
 

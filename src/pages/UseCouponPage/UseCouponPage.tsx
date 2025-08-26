@@ -14,6 +14,7 @@ import { useNavigate } from "react-router";
 
 const UseCouponPage = () => {
   const ticketId = usePriceStore((state) => state.ticketId);
+  console.log(ticketId, "ticketId");
   const setPrice = usePriceStore((state) => state.setPrice);
 
   const navigate = useNavigate();

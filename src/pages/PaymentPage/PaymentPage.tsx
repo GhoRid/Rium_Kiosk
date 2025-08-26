@@ -41,28 +41,35 @@ const PaymentPage = () => {
   const [error, setError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [paymentType, setPaymentType] = useState<PaymentType>("credit");
-  const [finalPrice, setFinalPrice] = useState<number>(price);
   const [labelName, setLabelName] = useState<string>(label);
+  const [finalPrice, setFinalPrice] = useState<number>(price);
 
   const discountedPrice = usePriceStore((state) => state.price);
   const usingCouponCode = usePriceStore((state) => state.usingCouponCode);
-
   const setTicketId = usePriceStore((state) => state.setTicketId);
-  const storedTicketId = usePriceStore((state) => state.ticketId);
+  const setPrice = usePriceStore((state) => state.setPrice);
+  const setUsingCouponCode = usePriceStore((state) => state.setUsingCouponCode);
 
+  // 페이지 언마운트 시 할인 가격, 사용중인 쿠폰 코드 초기화
   useEffect(() => {
-    if (storedTicketId === ticketId) {
-      setFinalPrice(price);
+    return () => {
+      setPrice(null);
+      setUsingCouponCode(null);
+    };
+  }, [setPrice, setUsingCouponCode, setTicketId]);
 
-      // 쿠폰이 적용된 가격이 유효하고, 원래 가격보다 작거나 같은 경우에만 적용
-      if (discountedPrice !== null && discountedPrice <= price) {
-        setFinalPrice(discountedPrice);
-        setLabelName(`${label} (쿠폰 적용)`);
-      }
-    } else {
-      setTicketId(ticketId);
-    }
+  // ticketId가 변경되면 store에 업데이트
+  useEffect(() => {
+    setTicketId(ticketId);
   }, [ticketId, setTicketId]);
+
+  // 할인 가격이 유효하면 finalPrice와 labelName 업데이트
+  useEffect(() => {
+    if (discountedPrice !== null && discountedPrice <= price) {
+      setFinalPrice(discountedPrice);
+      setLabelName(`${label} (쿠폰 적용)`);
+    }
+  }, [discountedPrice, price, label]);
 
   // 결제 수단에 따라 paymentType 설정
   useEffect(() => {
