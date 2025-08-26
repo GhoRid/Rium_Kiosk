@@ -143,10 +143,4 @@ const Title = styled.h2`
   text-align: center;
 `;
 
-const KeyboardWrap = styled.div`
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 1000;
-`;
+const KeyboardWrap = styled.div``;
