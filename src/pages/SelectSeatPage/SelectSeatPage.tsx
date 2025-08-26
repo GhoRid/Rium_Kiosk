@@ -25,8 +25,12 @@ const SelectSeatPage = () => {
 
   const userId = useUserId();
 
-  const { data: response, error: fetchError } = useQuery({
-    queryKey: ["seats"],
+  const {
+    data: response,
+    isLoading,
+    error: fetchError,
+  } = useQuery({
+    queryKey: ["seats", passInformation],
     queryFn: () => getInformationSeat(),
   });
 
@@ -98,12 +102,14 @@ const SelectSeatPage = () => {
           <Message>좌석을 선택해주세요</Message>
         </MessageBox>
 
-        <SeatMap
-          selectedSeat={selectedSeat}
-          onSelect={setSelectedSeat}
-          seatsState={seatsState}
-          isReservedTicket={isReservedTicket || isReserved}
-        />
+        {!isLoading && !fetchError && (
+          <SeatMap
+            selectedSeat={selectedSeat}
+            onSelect={setSelectedSeat}
+            seatsState={seatsState}
+            isReservedTicket={isReservedTicket || isReserved}
+          />
+        )}
       </Content>
 
       {!!error && <ErrorMsg>{error}</ErrorMsg>}

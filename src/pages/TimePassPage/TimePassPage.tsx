@@ -22,7 +22,7 @@ const TimePassPage = () => {
   const [error, setError] = useState<string | null>(null);
 
   const { data, isLoading } = useQuery({
-    queryKey: ["passList", "singlePass"],
+    queryKey: ["passList", "timePass"],
     queryFn: () =>
       getTicketList({
         ticketType: 1,
