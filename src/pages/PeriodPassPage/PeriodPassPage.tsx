@@ -35,7 +35,7 @@ type TicketRow = {
 const PeriodPassPage = () => {
   const navigate = useNavigate();
 
-  const [selectedOption, setSelectedOption] = useState<string | null>(null);
+  const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const { data: fixedSeatData, isLoading: fixedSeatIsLodaing } = useQuery({
@@ -100,7 +100,9 @@ const PeriodPassPage = () => {
     let ticketId: number | null = null;
 
     for (const seat of SeatList) {
-      const selectedPass = seat.options.find((o) => o.label === selectedOption);
+      const selectedPass = seat.options.find(
+        (o) => o.ticketId === selectedOption
+      );
       if (selectedPass) {
         seatType = seat.type;
         label = selectedPass.label;
@@ -172,8 +174,9 @@ const PeriodPassPage = () => {
                 <CardList>
                   {seat.options.map((option) => (
                     <OptionCard
-                      key={option.label}
+                      key={option.ticketId}
                       label={option.label}
+                      ticketId={option.ticketId}
                       price={option.price}
                       width={240}
                       height={200}

@@ -4,15 +4,17 @@ import { colors } from "../../../colors";
 type OptionCardProps = {
   label: string;
   price: number;
+  ticketId: number;
   width: number;
   height: number;
-  selectedOption: string | null;
-  selectOption: (option: string | null) => void;
+  selectedOption: number | null;
+  selectOption: (option: number | null) => void;
 };
 
 const OptionCard = ({
   label,
   price,
+  ticketId,
   width: WIDTH,
   height: HEIGHT,
   selectedOption,
@@ -20,14 +22,14 @@ const OptionCard = ({
 }: OptionCardProps) => {
   return (
     <Card
-      $isSelected={selectedOption === label}
+      $isSelected={selectedOption === ticketId}
       $width={WIDTH}
       $height={HEIGHT}
       onClick={() => {
-        if (selectedOption === label) {
+        if (selectedOption === ticketId) {
           selectOption(null);
         } else {
-          selectOption(label);
+          selectOption(ticketId);
         }
       }}
     >

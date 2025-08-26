@@ -7,7 +7,6 @@ import HomeHeader from "./components/HomeHeader";
 import FooterCarousel from "./components/FooterCarousel";
 import CustomModal from "../../components/CustomModal";
 import { useState } from "react";
-import LogoutButton from "./components/LogoutButton";
 import { useUserId } from "../../hooks/useUserId";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { getPlaceInformation } from "../../apis/api/kioskAuth";
@@ -103,14 +102,21 @@ const HomePage = () => {
       return;
     } else {
       navigate("/select-pass");
+      return;
     }
   };
 
   const handlecheckextendpass = () => {
     navigate("/checkextendpass");
+    return;
   };
 
   const handleChangeSeat = () => {
+    if (!userId) {
+      navigate("/login");
+      return;
+    }
+
     if (!isTicketPresent) {
       setModalContent({
         content: "이용권이 없습니다.",
@@ -121,8 +127,10 @@ const HomePage = () => {
         isCloseIconVisible: true,
       });
       setIsModalOpen(true);
+      return;
     } else if (isUsing) {
       navigate("/changeseat");
+      return;
     } else {
       setModalContent({
         content: "좌석을 이용중이 아닙니다.",
@@ -133,12 +141,14 @@ const HomePage = () => {
         isCloseIconVisible: true,
       });
       setIsModalOpen(true);
+      return;
     }
   };
 
   const handleLogout = () => {
     if (!userId) {
       navigate("/login");
+      return;
     }
 
     if (!isTicketPresent) {
@@ -151,6 +161,7 @@ const HomePage = () => {
         isCloseIconVisible: true,
       });
       setIsModalOpen(true);
+      return;
     } else if (!canExit) {
       setModalContent({
         content: `${ticketName}은 퇴실할 수 없습니다.`,
@@ -161,6 +172,7 @@ const HomePage = () => {
         isCloseIconVisible: true,
       });
       setIsModalOpen(true);
+      return;
     } else if (isUsing) {
       setModalContent({
         content: `${seatNumber}번 좌석\n퇴실하시겠습니까?`,
@@ -169,6 +181,7 @@ const HomePage = () => {
         isCloseIconVisible: true,
       });
       setIsModalOpen(true);
+      return;
     } else {
       setModalContent({
         content: "좌석 이용중이 아닙니다.",
@@ -179,6 +192,7 @@ const HomePage = () => {
         isCloseIconVisible: true,
       });
       setIsModalOpen(true);
+      return;
     }
   };
 
@@ -198,6 +212,7 @@ const HomePage = () => {
         isCloseIconVisible: true,
       });
       setIsModalOpen(true);
+      return;
     } else if (isUsing) {
       setModalContent({
         content: "좌석을 이용중입니다.",
@@ -208,8 +223,10 @@ const HomePage = () => {
         isCloseIconVisible: true,
       });
       setIsModalOpen(true);
+      return;
     } else if (!isUsing) {
       navigate("/select-seat");
+      return;
     }
   };
 
@@ -232,6 +249,7 @@ const HomePage = () => {
         isCloseIconVisible: true,
       });
       setIsModalOpen(true);
+      return;
     }
   };
 
@@ -247,7 +265,6 @@ const HomePage = () => {
     <>
       <HeaderInfoBox userName={name} />
       <Container>
-        {/* {userId && <LogoutButton />} */}
         <ContentContainer>
           {/* 지점명/전화번호/로고 */}
           <HomeHeader
