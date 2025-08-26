@@ -14,7 +14,6 @@ import { useNavigate } from "react-router";
 
 const UseCouponPage = () => {
   const ticketId = usePriceStore((state) => state.ticketId);
-  console.log(ticketId, "ticketId");
   const setPrice = usePriceStore((state) => state.setPrice);
 
   const navigate = useNavigate();
@@ -25,9 +24,8 @@ const UseCouponPage = () => {
 
   const getCouponValidMutation = useMutation({
     mutationKey: ["fetchUserData", couponCode],
-    mutationFn: () => getCouponValid({ token: couponCode, ticketId: ticketId }),
+    mutationFn: () => getCouponValid({ token: couponCode, ticketId }),
     onError: (error: any) => {
-      console.log("error", error);
       if (error.response?.status === 477) {
         setModalContent("유효하지 않은 쿠폰입니다.");
       } else if (error.response?.status === 479) {
@@ -41,9 +39,8 @@ const UseCouponPage = () => {
     },
     onSuccess: (data) => {
       const couponName = data.data.couponName;
-      const diecountedPrice = data.data.discountPrice;
-      console.log(diecountedPrice, "할인된 가격");
-      setPrice(diecountedPrice);
+      const discountedPrice = data.data.discountPrice;
+      setPrice(discountedPrice);
       setModalContent(`${couponName}\n쿠폰이 적용되었습니다`);
       setIsModalOpen(true);
     },
@@ -65,17 +62,25 @@ const UseCouponPage = () => {
     setCouponCode(formatted);
   };
 
-  //A13XA2
+  const closeKeyboardOnBackground = () => setKeyboardVisible(false);
+
+  const stop = (e: React.PointerEvent) => e.stopPropagation();
 
   return (
     <>
-      <Container>
+      <Container onPointerDown={closeKeyboardOnBackground}>
         <GoToHomeButton />
         <Header title="쿠폰 이용하기" />
 
         <Content>
           <Title>쿠폰 번호 입력</Title>
-          <div onMouseDown={() => setKeyboardVisible(true)}>
+
+          <div
+            onPointerDown={(e) => {
+              e.stopPropagation();
+              setKeyboardVisible(true);
+            }}
+          >
             <CodeInput
               placeholder="쿠폰 번호(6자리)"
               value={couponCode}
@@ -83,17 +88,21 @@ const UseCouponPage = () => {
             />
           </div>
         </Content>
+
         <BottomButtons
           submitName="확인"
           submit={() => getCouponValidMutation.mutate()}
         />
+
         {keyboardVisible && (
-          <CustomKeyboard
-            text={couponCode}
-            setText={handleCouponCode}
-            setKeyboardVisible={setKeyboardVisible}
-            allowedModes={["en", "num"]}
-          />
+          <KeyboardWrap onPointerDown={stop}>
+            <CustomKeyboard
+              text={couponCode}
+              setText={handleCouponCode}
+              setKeyboardVisible={setKeyboardVisible}
+              allowedModes={["en", "num"]}
+            />
+          </KeyboardWrap>
         )}
       </Container>
 
@@ -102,7 +111,7 @@ const UseCouponPage = () => {
         setIsModalOpen={setIsModalOpen}
         modalContent={modalContent}
         submitText="확인"
-        submitAction={() => handleModalAction()}
+        submitAction={handleModalAction}
       />
     </>
   );
@@ -132,4 +141,12 @@ const Title = styled.h2`
   font-size: 50px;
   font-weight: 700;
   text-align: center;
+`;
+
+const KeyboardWrap = styled.div`
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
 `;
