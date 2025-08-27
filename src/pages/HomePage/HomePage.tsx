@@ -263,8 +263,8 @@ const HomePage = () => {
 
   return (
     <>
-      <HeaderInfoBox userName={name} />
       <Container>
+        <HeaderInfoBox userName={name} />
         <ContentContainer>
           {/* 지점명/전화번호/로고 */}
           <HomeHeader
@@ -314,6 +314,7 @@ const Container = styled.div`
   flex-direction: column;
   align-items: center;
   height: 1920px;
+  width: 100%;
   position: relative;
 `;
 
