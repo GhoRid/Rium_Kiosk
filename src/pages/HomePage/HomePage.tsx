@@ -6,7 +6,7 @@ import HeaderInfoBox from "./components/HeaderInfoBox";
 import HomeHeader from "./components/HomeHeader";
 import FooterCarousel from "./components/FooterCarousel";
 import CustomModal from "../../components/CustomModal";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useUserId } from "../../hooks/useUserId";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { getPlaceInformation } from "../../apis/api/kioskAuth";
@@ -15,6 +15,7 @@ import { clearUserId } from "../../utils/tokens";
 import { useNavigate } from "react-router";
 import { reissueTicket } from "../../apis/api/pass";
 import { postQR } from "../../apis/api/receipt";
+import { useTicketStore } from "../../stores/useTicketStore";
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -33,13 +34,14 @@ const HomePage = () => {
   });
 
   const userId = useUserId();
+  const setUserHasTicket = useTicketStore((state) => state.setHasTicket);
 
   const { data: placeInfoData } = useQuery({
     queryKey: ["placeInformation"],
     queryFn: () => getPlaceInformation(),
   });
 
-  const { data: userData } = useQuery({
+  const { data: userData, isSuccess: getUserDataIsSuccess } = useQuery({
     queryKey: ["userInfo", userId],
     queryFn: () => getUserData({ mobileNumber: userId }),
     enabled: !!userId,
@@ -53,6 +55,12 @@ const HomePage = () => {
     seatNumber,
     ticket: isTicketPresent,
   } = userData?.data || {};
+
+  useEffect(() => {
+    if (getUserDataIsSuccess) {
+      setUserHasTicket(!!isTicketPresent);
+    }
+  }, [getUserDataIsSuccess]);
 
   const reissueTicketMutation = useMutation({
     mutationKey: ["reissueTicket", userId],
@@ -89,6 +97,11 @@ const HomePage = () => {
   });
 
   const handleBuyTicket = () => {
+    if (!userId) {
+      navigate("/login");
+      return;
+    }
+
     if (isTicketPresent) {
       setModalContent({
         content: "이미 이용권이 있습니다.",

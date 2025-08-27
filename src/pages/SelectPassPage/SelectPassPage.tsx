@@ -3,8 +3,18 @@ import { colors } from "../../colors";
 import GoToHomeButton from "../../components/GoToHomeButton";
 import Header from "../../components/Header";
 import MenuGrid from "./components/MenuGrid";
+import { useTicketStore } from "../../stores/useTicketStore";
+import { useEffect } from "react";
 
 const SelectPassPage = () => {
+  const userHasTicket = useTicketStore((state) => state.hasTicket);
+
+  useEffect(() => {
+    if (userHasTicket) {
+      window.location.href = "/";
+    }
+  }, [userHasTicket]);
+
   return (
     <Container>
       <GoToHomeButton />
