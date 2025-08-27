@@ -153,10 +153,10 @@ const SeatBtn = styled.button<{
   background: ${({ $isUsingSeat, $disabled, $selected }) =>
     $isUsingSeat
       ? "#A90003"
-      : $selected
-      ? colors.app_white
       : $disabled
       ? "#333"
+      : $selected
+      ? colors.app_white
       : "transparent"};
 
   color: ${({ $selected }) => ($selected ? colors.app_black : "#e9edf3")};
