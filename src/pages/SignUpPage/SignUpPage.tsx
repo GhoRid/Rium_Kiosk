@@ -216,16 +216,13 @@ const SignUpPage = () => {
       if (err.status === 409) {
         setModalContent({
           text: "이미 가입된 계정입니다.",
-          submitAction: () => {
-            setIsModalOpen(false);
-          },
+          submitAction: () => setIsModalOpen(false),
         });
       }
       setIsModalOpen(true);
     },
   });
 
-  // Derived
   const canRequestCode = useMemo(() => {
     const len = digitsOnly(phone).length;
     return (len === 10 || len === 11) && !sendCodeMutation.isPending;
@@ -235,7 +232,6 @@ const SignUpPage = () => {
     [cert, verifyCodeMutation.isPending]
   );
 
-  // Submit
   const validateAll = (): Errors => {
     const e: Errors = {};
     const n = vName(name);
@@ -277,6 +273,8 @@ const SignUpPage = () => {
     activeField === "name" ? (["kr", "en"] as const) : (["num"] as const);
   const err = <K extends keyof Errors>(k: K) =>
     submitted ? errors[k] : undefined;
+
+  console.log(modalContent);
 
   return (
     <>
@@ -422,7 +420,7 @@ const SignUpPage = () => {
         modalContent={modalContent.text}
         submitText="확인"
         isCloseIconVisible={false}
-        submitAction={() => modalContent.submitAction}
+        submitAction={modalContent.submitAction}
       />
     </>
   );
