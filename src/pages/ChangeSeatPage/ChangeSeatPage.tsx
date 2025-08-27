@@ -31,7 +31,8 @@ const ChangeSeatPage = () => {
     queryFn: () => getInformationTicket({ mobileNumber: userId! }),
   });
 
-  const { isReservedTicket, seatNumber } = myTicketResponse?.data || {};
+  const { isReservedTicket, seatNumber: mySeatNumber } =
+    myTicketResponse?.data || {};
 
   const { data: response, error: fetchError } = useQuery({
     queryKey: ["infoSeats"],
@@ -78,8 +79,7 @@ const ChangeSeatPage = () => {
             selectedSeat={selectedSeat}
             onSelect={setSelectedSeat}
             seatsState={seatsState}
-            usingSeatNumber={seatNumber}
-            isReservedTicket={isReservedTicket}
+            usingSeatNumber={mySeatNumber}
           />
         </Content>
 

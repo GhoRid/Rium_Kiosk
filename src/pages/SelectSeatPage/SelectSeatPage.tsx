@@ -107,7 +107,6 @@ const SelectSeatPage = () => {
             selectedSeat={selectedSeat}
             onSelect={setSelectedSeat}
             seatsState={seatsState}
-            isReservedTicket={isReservedTicket || isReserved}
           />
         )}
       </Content>

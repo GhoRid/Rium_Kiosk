@@ -65,6 +65,7 @@ const HomePage = () => {
   const reissueTicketMutation = useMutation({
     mutationKey: ["reissueTicket", userId],
     mutationFn: () => reissueTicket({ mobileNumber: userId }),
+    // 499 -> 티켓 없음
   });
 
   const qrMutation = useMutation({
@@ -247,22 +248,23 @@ const HomePage = () => {
     if (!userId) {
       navigate("/login");
       return;
-    }
-    reissueTicketMutation.mutate();
+    } else {
+      reissueTicketMutation.mutate();
 
-    if (!!ticketToken) {
-      qrMutation.mutate();
-    } else if (!isUsing) {
-      setModalContent({
-        content: "좌석을 이용중이 아닙니다.",
-        submitText: "확인",
-        submitAction: () => {
-          setIsModalOpen(false);
-        },
-        isCloseIconVisible: true,
-      });
-      setIsModalOpen(true);
-      return;
+      if (!!ticketToken) {
+        qrMutation.mutate();
+      } else if (!isUsing) {
+        setModalContent({
+          content: "좌석을 이용중이 아닙니다.",
+          submitText: "확인",
+          submitAction: () => {
+            setIsModalOpen(false);
+          },
+          isCloseIconVisible: true,
+        });
+        setIsModalOpen(true);
+        return;
+      }
     }
   };
 
