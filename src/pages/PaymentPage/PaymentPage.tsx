@@ -51,13 +51,16 @@ const PaymentPage = () => {
   const setPrice = usePriceStore((state) => state.setPrice);
   const setUsingCouponCode = usePriceStore((state) => state.setUsingCouponCode);
 
+  // console.log("usingCouponCode", usingCouponCode);
+  console.log("discountedPrice", discountedPrice);
+
   // 페이지 언마운트 시 할인 가격, 사용중인 쿠폰 코드 초기화
   useEffect(() => {
     return () => {
       setPrice(null);
       setUsingCouponCode(null);
     };
-  }, [setPrice, setUsingCouponCode, setTicketId]);
+  }, []);
 
   // ticketId가 변경되면 store에 업데이트
   useEffect(() => {
@@ -84,10 +87,10 @@ const PaymentPage = () => {
 
   const form = {
     money: String(finalPrice),
-    tax: "",
+    tax: String(Math.floor(finalPrice * 0.1)),
     bongsa: "",
     halbu: String(selectedInstallmentOption),
-    catid: "2393300001",
+    catid: "2723444001",
     myunse: "",
     agreenum: "",
     agreedate: "",
@@ -168,7 +171,7 @@ const PaymentPage = () => {
         paymentMethod={paymentMethod}
         isModalOpen={isModalOpen}
         setIsModalOpen={setIsModalOpen}
-        price={price}
+        price={finalPrice}
       />
     </Container>
   );

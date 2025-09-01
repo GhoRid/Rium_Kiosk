@@ -13,11 +13,11 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <StyleSheetManager target={document.head}>
-    <React.StrictMode>
-      <QueryClientProvider client={queryClient}>
-        <App />
-      </QueryClientProvider>
-    </React.StrictMode>
+    {/* <React.StrictMode> */}
+    <QueryClientProvider client={queryClient}>
+      <App />
+    </QueryClientProvider>
+    {/* </React.StrictMode> */}
   </StyleSheetManager>
 );
 

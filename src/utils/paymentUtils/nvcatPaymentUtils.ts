@@ -97,7 +97,7 @@ export const createPaymentBuffer = (
         FS +
         "" +
         FS +
-        (form.catid || "0") +
+        form.catid +
         FS +
         FS +
         FS +

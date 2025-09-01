@@ -15,6 +15,7 @@ import { useNavigate } from "react-router";
 const UseCouponPage = () => {
   const ticketId = usePriceStore((state) => state.ticketId);
   const setPrice = usePriceStore((state) => state.setPrice);
+  const setUsingCouponCode = usePriceStore((state) => state.setUsingCouponCode);
 
   const navigate = useNavigate();
   const [couponCode, setCouponCode] = useState<string>("");
@@ -41,6 +42,7 @@ const UseCouponPage = () => {
       const couponName = data.data.couponName;
       const discountedPrice = data.data.discountPrice;
       setPrice(discountedPrice);
+      setUsingCouponCode(couponCode);
       setModalContent(`${couponName}\n쿠폰이 적용되었습니다`);
       setIsModalOpen(true);
     },
@@ -100,6 +102,7 @@ const UseCouponPage = () => {
               text={couponCode}
               setText={handleCouponCode}
               setKeyboardVisible={setKeyboardVisible}
+              layoutNameProp="shift"
               allowedModes={["en", "num"]}
             />
           </KeyboardWrap>

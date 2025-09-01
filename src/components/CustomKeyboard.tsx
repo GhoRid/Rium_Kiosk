@@ -11,6 +11,7 @@ type CustomKeyboardProps = {
   text: string;
   setText: (text: string) => void;
   setKeyboardVisible: (visible: boolean) => void;
+  layoutNameProp?: "default" | "shift";
   allowedModes?: InputMode[];
   initialMode?: InputMode;
 };
@@ -63,6 +64,7 @@ const CustomKeyboard = ({
   text,
   setText,
   setKeyboardVisible,
+  layoutNameProp = "default",
   allowedModes = ["kr", "en", "num"],
   initialMode,
 }: CustomKeyboardProps) => {
@@ -76,7 +78,9 @@ const CustomKeyboard = ({
       ? initialMode
       : allowedModes[0] ?? "kr";
 
-  const [layoutName, setLayoutName] = useState<"default" | "shift">("default");
+  const [layoutName, setLayoutName] = useState<"default" | "shift">(
+    layoutNameProp
+  );
   const [mode, setMode] = useState<InputMode>(firstAllowed);
 
   const lastAlphaRef = useRef<InputMode>(allowKR ? "kr" : "en");
