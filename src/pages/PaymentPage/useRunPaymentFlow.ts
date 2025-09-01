@@ -51,6 +51,8 @@ export const useRunPaymentFlow = (args: RunnerArgs) => {
     setError,
   } = args;
 
+  console.log("printPass", printPass);
+
   const paymentMutation = useNVCatPayment();
   const {
     receiptMutation,
@@ -183,11 +185,13 @@ export const useRunPaymentFlow = (args: RunnerArgs) => {
       // 2-4) 구매 처리 성공 시에만 출력/네비
       try {
         if (printReceipt) await receiptMutation.mutateAsync(payment);
-        if (printPass) qrMutation.reset();
-        await qrMutation.mutateAsync({
-          token: purchaseRes?.data,
-          size: 10,
-        });
+        if (printPass) {
+          qrMutation.reset();
+          await qrMutation.mutateAsync({
+            token: purchaseRes?.data,
+            size: 10,
+          });
+        }
       } catch (err: any) {
         setError(err?.message || "영수증 또는 QR 코드 출력에 실패했습니다.");
         // 출력 실패해도 결제/저장은 완료 상태. 필요하면 return; 으로 네비 중단 가능
@@ -200,7 +204,7 @@ export const useRunPaymentFlow = (args: RunnerArgs) => {
         statusForm = { resultType: passType, seatNumber, approvedAt };
       } else if (passType === "기간권" && seatType === "고정석") {
         statusForm = { resultType: "고정석", seatNumber, passType, label };
-      } else if (passType === "시간권") {
+      } else if (passType === "시간권" || seatType === "자유석") {
         statusForm = { resultType: "자유석", passType, label };
       }
 

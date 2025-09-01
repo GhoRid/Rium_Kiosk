@@ -22,6 +22,11 @@ export function nvcatPaymentResponseUtils({
   paymentMutation,
 }: NvcatPaymentResponseUtilsProps): void {
   // 유틸은 "던지는" 정책: Error는 throw, 폴백은 throw "fallback"
+  if (responseCode === "8546") {
+    throw Object.assign(new Error("카드 잔액이 부족합니다."));
+  } else if (responseCode !== "0000") {
+    throw Object.assign(new Error("결제 오류가 발생했습니다."));
+  }
   const makeVcatPacketencode = (utilFunction: NvcatUtilsCmd) =>
     encodeURI(makeSendData(nvcatUtilFn(utilFunction)));
 

@@ -42,6 +42,7 @@ const MenuGrid = () => {
         }
       >
         <Label>쿠폰 이용하기</Label>
+        <Label>9월 모의고사 수험생 전용</Label>
         <IconBox>
           <CouponIcon />
         </IconBox>
@@ -60,7 +61,7 @@ const Container = styled.div`
 `;
 
 const Label = styled.span`
-  font-size: 50px;
+  font-size: 40px;
   font-weight: 500;
   line-height: 1.2;
   white-space: pre-line;

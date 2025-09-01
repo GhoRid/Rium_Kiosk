@@ -6,7 +6,6 @@ import PaymentInfo from "./components/PaymentInfo";
 import PaymentMethod from "./components/PaymentMethod";
 import PaymentOptionSelector from "./components/PaymentOptionSelector";
 import PrintSetting from "./components/PrintSetting";
-import ErrorMsg from "../../components/ErrorMsg";
 import BottomButtons from "../../components/BottomButtons";
 import PayAnimationModal from "./components/PayAnimationModal";
 import { useEffect, useMemo, useState } from "react";
@@ -38,7 +37,7 @@ const PaymentPage = () => {
     [selectedInstallmentOption, setSelectedInstallmentOption] =
       useState<number>(0);
 
-  const [printPass, setPrintPass] = useState<boolean>(true),
+  const [printPass, setPrintPass] = useState<boolean>(passTicketVisible), // 좌석이 있으면 기본값 true
     [printReceipt, setPrintReceipt] = useState<boolean>(true);
   const [labelName, setLabelName] = useState<string>(label);
   const [finalPrice, setFinalPrice] = useState<number>(price);
@@ -51,15 +50,11 @@ const PaymentPage = () => {
   const setPrice = usePriceStore((state) => state.setPrice);
   const setUsingCouponCode = usePriceStore((state) => state.setUsingCouponCode);
 
-  // console.log("usingCouponCode", usingCouponCode);
-  // console.log("discountedPrice", discountedPrice);
-
   // 페이지 언마운트 시 할인 가격, 사용중인 쿠폰 코드 초기화
   useEffect(() => {
     return () => {
       setPrice(null);
       setUsingCouponCode(null);
-      console.log("PaymentPage unmounted, store reset");
     };
   }, [setPrice, setUsingCouponCode]);
 
@@ -111,7 +106,7 @@ const PaymentPage = () => {
     ticketId,
     navigate,
     printReceipt,
-    printPass: passTicketVisible && printPass,
+    printPass: printPass,
     setError,
   });
 
@@ -164,7 +159,11 @@ const PaymentPage = () => {
         />
       </Content>
 
-      {!!error && <ErrorMsg>{error}</ErrorMsg>}
+      {!!error && (
+        <ErrorMsgBox>
+          <ErrorMsgText>{error}</ErrorMsgText>
+        </ErrorMsgBox>
+      )}
 
       <BottomButtons submitName="결제하기" submit={handlePayments} />
 
@@ -188,7 +187,21 @@ const Container = styled.div`
 `;
 
 const Content = styled.div`
-  padding-top: 280px;
+  padding-top: 200px;
   margin: 0 160px;
   width: calc(100% - 320px);
+`;
+
+const ErrorMsgBox = styled.div`
+  position: absolute;
+  bottom: 400px;
+  left: 50%;
+  transform: translateX(-50%);
+`;
+
+const ErrorMsgText = styled.p`
+  color: ${colors.red};
+  font-size: 50px;
+  white-space: pre-wrap;
+  text-align: center;
 `;

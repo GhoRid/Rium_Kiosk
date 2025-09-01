@@ -132,7 +132,7 @@ export default HeaderInfoBox;
 
 const LoggedInWrap = styled.div`
   margin: 50px 40px 0 40px;
-  height: 120px;
+  height: 200px;
   width: calc(100% - 80px);
   display: flex;
   align-items: stretch;
@@ -174,17 +174,17 @@ const GreetingBox = styled.div`
 `;
 
 const GreetTitle = styled.div`
-  font-size: 30px;
+  font-size: 40px;
   font-weight: 800;
 `;
 
 const GreetSub = styled.div`
-  font-size: 20px;
+  font-size: 30px;
 `;
 
 const Divider = styled.div`
   width: 1px;
-  height: 70px;
+  height: 130px;
   background: rgba(255, 255, 255, 0.7);
 `;
 
@@ -198,7 +198,7 @@ const DateTimeCol = styled.div`
 
 const LoggedOutWrap = styled.div`
   margin: 50px 70px 0 70px;
-  height: 120px;
+  height: 200px;
   width: calc(100% - 80px);
   display: flex;
   flex-direction: column;
@@ -208,12 +208,12 @@ const LoggedOutWrap = styled.div`
 `;
 
 const DateText = styled.span`
-  font-size: 24px;
+  font-size: 30px;
   color: ${colors.app_white};
 `;
 
 const TimeText = styled.span`
-  font-size: 30px;
+  font-size: 40px;
   font-weight: 700;
   color: ${colors.app_white};
 `;

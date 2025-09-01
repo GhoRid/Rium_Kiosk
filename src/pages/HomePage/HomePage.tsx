@@ -189,7 +189,7 @@ const HomePage = () => {
       return;
     } else if (isUsing) {
       setModalContent({
-        content: `${seatNumber}번 좌석\n퇴실하시겠습니까?`,
+        content: `${name}님\n\n${seatNumber}번 좌석\n퇴실하시겠습니까?`,
         submitText: "퇴실하기",
         submitAction: () => disableTicketMutation.mutate(),
         isCloseIconVisible: true,
@@ -335,5 +335,5 @@ const Container = styled.div`
 
 const ContentContainer = styled.div`
   padding: 0 130px;
-  margin-top: 150px;
+  margin-top: 100px;
 `;
