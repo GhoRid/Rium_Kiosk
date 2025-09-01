@@ -120,7 +120,7 @@ const PeriodPassPage = () => {
     if (seatType === "고정석") {
       navigate("/select-seat", {
         state: {
-          toPurchase: true,
+          from: "/selectpass",
           passInformation: {
             passType: "기간권",
             label,

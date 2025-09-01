@@ -52,7 +52,9 @@ const PaymentMethod = ({
           </Element>
         ))}
       </MethodRow>
-      <UseCouponBox onClick={() => navigate("/usecoupon")}>
+      <UseCouponBox
+        onClick={() => navigate("/usecoupon", { state: { from: "/payment" } })}
+      >
         <Label>쿠폰 사용</Label>
         <CouponIcon width={65} />
       </UseCouponBox>

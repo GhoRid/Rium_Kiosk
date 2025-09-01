@@ -40,7 +40,7 @@ const SinglePassPage = () => {
 
       navigate("/select-seat", {
         state: {
-          toPurchase: true,
+          from: "/selectpass",
           passInformation: {
             passType: "1회 이용권",
             label: `${selectedPass.time}시간`,

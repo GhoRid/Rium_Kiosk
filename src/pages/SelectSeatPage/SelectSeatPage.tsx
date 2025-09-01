@@ -14,11 +14,15 @@ import {
 } from "../../apis/api/user";
 import { useUserId } from "../../hooks/useUserId";
 import { useLocation, useNavigate } from "react-router";
+import { sendUseTicketCoupon } from "../../apis/api/pass";
+import { useAppPaymentMutations } from "../../hooks/usePayment";
 
 const SelectSeatPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { toPurchase, passInformation } = location.state || {};
+
+  // from : "/selectpass(좌석 선택)" | "/home(입실하기)" | "/usecoupon(쿠폰 사용)"
+  const { passInformation, couponData, from } = location.state || {};
 
   const [selectedSeat, setSelectedSeat] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -34,18 +38,53 @@ const SelectSeatPage = () => {
     queryFn: () => getInformationSeat(),
   });
 
-  const { data: myTicketResponse } = useQuery({
-    queryKey: ["myTicket"],
-    queryFn: () => getInformationTicket({ mobileNumber: userId! }),
-    enabled: !!userId,
+  const sendUseTicketCouponMutatuion = useMutation({
+    mutationFn: () =>
+      sendUseTicketCoupon({
+        mobileNumber: userId!,
+        seatId: selectedSeat!,
+        token: couponData!,
+      }),
+    onError: (error) => {
+      setError("다시 시도해주세요.");
+    },
   });
 
-  const { isReservedTicket } = myTicketResponse?.data || {};
+  const { qrMutation } = useAppPaymentMutations();
 
-  const isReserved = passInformation?.seatType === "고정석";
+  const {
+    isSuccess: sendUseTicketCouponIsSuccess,
+    data: sendUseTicketCouponData,
+  } = sendUseTicketCouponMutatuion;
+
+  console.log(sendUseTicketCouponData);
+
+  useEffect(() => {
+    if (sendUseTicketCouponIsSuccess) {
+      const qrCode = sendUseTicketCouponData.data;
+      qrMutation.mutate({
+        token: qrCode,
+        size: 10,
+      });
+      navigate("/completecheckin", {
+        state: {
+          selectedSeat: selectedSeat,
+        },
+      });
+    }
+  }, [sendUseTicketCouponIsSuccess]);
+
+  // const { data: myTicketResponse } = useQuery({
+  //   queryKey: ["myTicket"],
+  //   queryFn: () => getInformationTicket({ mobileNumber: userId! }),
+  //   enabled: !!userId,
+  // });
+  // const { isReservedTicket } = myTicketResponse?.data || {};
+  // const isReserved = passInformation?.seatType === "고정석";
 
   const seatsState = response?.data || [];
 
+  // 자리 선택 후 활성화 ( 입실 )
   const selectSeatMutatuion = useMutation({
     mutationFn: () =>
       enableTicket({
@@ -66,7 +105,7 @@ const SelectSeatPage = () => {
 
   const handleNext = () => {
     if (selectedSeat) {
-      if (toPurchase) {
+      if (from === "/selectpass") {
         navigate("/payment", {
           state: {
             passType: passInformation.passType,
@@ -78,6 +117,8 @@ const SelectSeatPage = () => {
             ticketId: passInformation.ticketId,
           },
         });
+      } else if (from === "/usecoupon") {
+        sendUseTicketCouponMutatuion.mutate();
       } else {
         selectSeatMutatuion.mutate();
       }

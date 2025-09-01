@@ -3,26 +3,41 @@ import { colors } from "../../colors";
 import GoToHomeButton from "../../components/GoToHomeButton";
 import Header from "../../components/Header";
 import CodeInput from "./components/CodeInput";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { getCouponValid } from "../../apis/api/user";
 import { usePriceStore } from "../../stores/usePriceStore";
 import BottomButtons from "../../components/BottomButtons";
 import CustomKeyboard from "../../components/CustomKeyboard";
 import CustomModal from "../../components/CustomModal";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
+import { validateTicketCoupon } from "../../apis/api/pass";
 
 const UseCouponPage = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from || null;
+
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false),
+    [modalContent, setModalContent] = useState<string>(""),
+    [modalSubmitText, setModalSubmitText] = useState<string>("확인");
+
+  const [couponCode, setCouponCode] = useState<string>("");
+  const [keyboardVisible, setKeyboardVisible] = useState<boolean>(false);
+
+  const handleCouponCode = (v: string) => {
+    const formatted = v.toUpperCase().slice(0, 6);
+    setCouponCode(formatted);
+  };
+
+  const closeKeyboardOnBackground = () => setKeyboardVisible(false);
+
+  const stop = (e: React.PointerEvent) => e.stopPropagation();
+
+  // From PaymentPage
   const ticketId = usePriceStore((state) => state.ticketId);
   const setPrice = usePriceStore((state) => state.setPrice);
   const setUsingCouponCode = usePriceStore((state) => state.setUsingCouponCode);
-  console.log("ticketId", ticketId);
-
-  const navigate = useNavigate();
-  const [couponCode, setCouponCode] = useState<string>("");
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [modalContent, setModalContent] = useState<string>("");
-  const [keyboardVisible, setKeyboardVisible] = useState<boolean>(false);
 
   const getCouponValidMutation = useMutation({
     mutationKey: ["fetchUserData", couponCode],
@@ -51,23 +66,57 @@ const UseCouponPage = () => {
 
   const { isError, isSuccess } = getCouponValidMutation;
 
-  const handleModalAction = () => {
-    if (isSuccess) {
-      setIsModalOpen(false);
-      navigate(-1);
-    } else if (isError) {
-      setIsModalOpen(false);
+  // From SelectPassPage
+  const validTicketCouponMutation = useMutation({
+    mutationKey: ["validTicketCoupon"],
+    mutationFn: () => validateTicketCoupon({ token: couponCode }),
+  });
+
+  const {
+    isError: validTicketCouponIsError,
+    isSuccess: validTicketCouponIsSuccess,
+    data,
+  } = validTicketCouponMutation;
+
+  useEffect(() => {
+    if (validTicketCouponIsSuccess) {
+      const { couponName, expirationDate, ticketName } = data?.data;
+      setModalContent(`${couponName}\n${ticketName}\n\n쿠폰이 적용되었습니다.`);
+      setModalSubmitText("이용하기");
+      setIsModalOpen(true);
+    } else if (validTicketCouponIsError) {
+      setModalContent("쿠폰을 사용할 수 없습니다.");
+      setIsModalOpen(true);
+    }
+  }, [validTicketCouponIsError, validTicketCouponIsSuccess]);
+
+  const handleSubmit = () => {
+    if (from == "/payment") {
+      getCouponValidMutation.mutate();
+    } else if (from == "/selectpass") {
+      validTicketCouponMutation.mutate();
     }
   };
 
-  const handleCouponCode = (v: string) => {
-    const formatted = v.toUpperCase().slice(0, 6);
-    setCouponCode(formatted);
+  const handleModalAction = () => {
+    if (from == "/payment") {
+      if (isSuccess) {
+        setIsModalOpen(false);
+        navigate(-1);
+      } else if (isError) {
+        setIsModalOpen(false);
+      }
+    } else if (from == "/selectpass") {
+      if (validTicketCouponIsSuccess) {
+        setIsModalOpen(false);
+        navigate("/select-seat", {
+          state: { couponData: couponCode, from: "/usecoupon" },
+        });
+      } else if (validTicketCouponIsError) {
+        setIsModalOpen(false);
+      }
+    }
   };
-
-  const closeKeyboardOnBackground = () => setKeyboardVisible(false);
-
-  const stop = (e: React.PointerEvent) => e.stopPropagation();
 
   return (
     <>
@@ -92,10 +141,7 @@ const UseCouponPage = () => {
           </div>
         </Content>
 
-        <BottomButtons
-          submitName="확인"
-          submit={() => getCouponValidMutation.mutate()}
-        />
+        <BottomButtons submitName="확인" submit={handleSubmit} />
 
         {keyboardVisible && (
           <KeyboardWrap onPointerDown={stop}>
@@ -114,7 +160,7 @@ const UseCouponPage = () => {
         isModalOpen={isModalOpen}
         setIsModalOpen={setIsModalOpen}
         modalContent={modalContent}
-        submitText="확인"
+        submitText={modalSubmitText}
         submitAction={handleModalAction}
       />
     </>

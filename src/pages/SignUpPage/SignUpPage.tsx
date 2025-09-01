@@ -74,7 +74,7 @@ const SignUpPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState({
     text: "",
-    submitAction: () => {},
+    submitAction: () => setIsModalOpen(false),
   });
   const [keyboardVisible, setKeyboardVisible] = useState(false);
   const [activeField, setActiveField] = useState<ActiveField>(null);
@@ -216,6 +216,11 @@ const SignUpPage = () => {
       if (err.status === 409) {
         setModalContent({
           text: "이미 가입된 계정입니다.",
+          submitAction: () => setIsModalOpen(false),
+        });
+      } else {
+        setModalContent({
+          text: "회원가입에 실패했습니다.",
           submitAction: () => setIsModalOpen(false),
         });
       }

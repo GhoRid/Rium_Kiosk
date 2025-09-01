@@ -31,3 +31,11 @@ export const reissueTicket = async (data: any) => {
     params: data,
   });
 };
+
+export const validateTicketCoupon = async (params: any) => {
+  return await appInstance.get("/valid/ticket/coupon", { params });
+};
+
+export const sendUseTicketCoupon = async (data: any) => {
+  return await appInstance.post("/use/ticket/coupon", data);
+};

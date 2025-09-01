@@ -32,7 +32,15 @@ const MenuGrid = () => {
           </IconBox>
         </TwoButton>
       </TwoButtonRow>
-      <CouponButton onClick={() => navigate("/usecoupon")}>
+      <CouponButton
+        onClick={() =>
+          navigate("/usecoupon", {
+            state: {
+              from: "/selectpass",
+            },
+          })
+        }
+      >
         <Label>쿠폰 이용하기</Label>
         <IconBox>
           <CouponIcon />

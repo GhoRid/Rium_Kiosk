@@ -239,7 +239,7 @@ const HomePage = () => {
       setIsModalOpen(true);
       return;
     } else if (!isUsing) {
-      navigate("/select-seat");
+      navigate("/select-seat", { state: { from: "/home" } });
       return;
     }
   };
