@@ -16,7 +16,9 @@ export const usePriceStore = create<PriceState>((set) => ({
   setPrice: (price) => set({ price }),
   setTicketId: (id) =>
     set((state) =>
-      state.ticketId === id ? { ticketId: id } : { ticketId: id, price: null }
+      state.ticketId === id
+        ? { ticketId: id }
+        : { ticketId: id, price: null, usingCouponCode: null }
     ),
   setUsingCouponCode: (code) => set({ usingCouponCode: code }),
 }));

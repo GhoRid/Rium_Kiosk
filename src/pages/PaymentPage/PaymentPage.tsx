@@ -51,7 +51,7 @@ const PaymentPage = () => {
   const setPrice = usePriceStore((state) => state.setPrice);
   const setUsingCouponCode = usePriceStore((state) => state.setUsingCouponCode);
 
-  // console.log("usingCouponCode", usingCouponCode);
+  console.log("usingCouponCode", usingCouponCode);
   console.log("discountedPrice", discountedPrice);
 
   // 페이지 언마운트 시 할인 가격, 사용중인 쿠폰 코드 초기화
@@ -59,8 +59,9 @@ const PaymentPage = () => {
     return () => {
       setPrice(null);
       setUsingCouponCode(null);
+      console.log("PaymentPage unmounted, store reset");
     };
-  }, []);
+  }, [setPrice, setUsingCouponCode]);
 
   // ticketId가 변경되면 store에 업데이트
   useEffect(() => {

@@ -7,6 +7,8 @@ import PassInfoCard from "./components/PassInfoCard";
 import { getUserId } from "../../utils/tokens";
 import { useQuery } from "@tanstack/react-query";
 import { getInformationTicket } from "../../apis/api/user";
+import { useState } from "react";
+import CustomModal from "../../components/CustomModal";
 
 const CheckExtendPassPage = () => {
   const userId = getUserId();
@@ -20,6 +22,8 @@ const CheckExtendPassPage = () => {
     queryFn: () => getInformationTicket({ mobileNumber: userId! }),
     enabled: !!userId,
   });
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const {
     name,
@@ -46,8 +50,17 @@ const CheckExtendPassPage = () => {
           ticketName={ticketName}
           ticketType={ticketType}
           isUsing={isUsing}
+          setIsModalOpen={setIsModalOpen}
         />
       </Content>
+      <CustomModal
+        isModalOpen={isModalOpen}
+        setIsModalOpen={setIsModalOpen}
+        submitText="확인"
+        submitAction={() => setIsModalOpen(false)}
+        isCloseIconVisible={false}
+        modalContent="현재 지원하지 않는 기능입니다."
+      />
     </Container>
   );
 };

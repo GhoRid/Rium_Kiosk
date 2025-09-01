@@ -9,6 +9,7 @@ type PassInfoCardProps = {
   ticketName: string; // 예: "4주 자유석" (없으면 빈 상태로 간주)
   ticketType: string; // 예: "기간권"
   isUsing: boolean;
+  setIsModalOpen: (isOpen: boolean) => void;
 };
 
 const PassInfoCard = ({
@@ -18,6 +19,7 @@ const PassInfoCard = ({
   ticketName,
   ticketType,
   isUsing,
+  setIsModalOpen,
 }: PassInfoCardProps) => {
   const hasTicket = ticketName !== "이용권 없음";
 
@@ -46,7 +48,7 @@ const PassInfoCard = ({
             {isUsing && (
               <Button
                 onClick={() => {
-                  console.log("이용권 연장하기 클릭");
+                  setIsModalOpen(true);
                 }}
               >
                 연장하기

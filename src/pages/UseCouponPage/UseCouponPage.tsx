@@ -16,6 +16,7 @@ const UseCouponPage = () => {
   const ticketId = usePriceStore((state) => state.ticketId);
   const setPrice = usePriceStore((state) => state.setPrice);
   const setUsingCouponCode = usePriceStore((state) => state.setUsingCouponCode);
+  console.log("ticketId", ticketId);
 
   const navigate = useNavigate();
   const [couponCode, setCouponCode] = useState<string>("");
