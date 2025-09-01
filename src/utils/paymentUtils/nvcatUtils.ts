@@ -1,7 +1,7 @@
 import { H7 } from "./constants";
 
-type nvcatUtils = "RESTART" | "NVCATSHUTDOWN" | "READER_RESET" | "GET_APPR";
+type nvcatUtilsType = "RESTART" | "NVCATSHUTDOWN" | "READER_RESET" | "GET_APPR";
 
-export const nvcatUtils = (utilFunction: nvcatUtils): string => {
+export const nvcatUtils = (utilFunction: nvcatUtilsType): string => {
   return utilFunction + H7;
 };

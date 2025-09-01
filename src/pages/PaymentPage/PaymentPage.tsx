@@ -111,7 +111,7 @@ const PaymentPage = () => {
     ticketId,
     navigate,
     printReceipt,
-    printPass,
+    printPass: passTicketVisible && printPass,
     setError,
   });
 

@@ -42,11 +42,11 @@ const GuidTextBox = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 130px;
+  margin-top: 100px;
 `;
 
 const GuidText = styled.span`
-  font-size: 40px;
+  font-size: 50px;
   font-weight: 700;
   color: ${colors.app_white};
   text-align: center;

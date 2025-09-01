@@ -1,6 +1,6 @@
 import { appInstance } from "..";
 
-// passtype에 따른 티켓 구매
+// 티켓 구매
 export const purchaseTicket = async (data: any) => {
   return await appInstance.post(`/purchase/ticket`, data);
 };

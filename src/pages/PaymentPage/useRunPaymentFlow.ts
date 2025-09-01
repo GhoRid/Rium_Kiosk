@@ -183,11 +183,11 @@ export const useRunPaymentFlow = (args: RunnerArgs) => {
       // 2-4) 구매 처리 성공 시에만 출력/네비
       try {
         if (printReceipt) await receiptMutation.mutateAsync(payment);
-        if (printPass)
-          await qrMutation.mutateAsync({
-            token: purchaseRes?.data,
-            size: 10,
-          });
+        if (printPass) qrMutation.reset();
+        await qrMutation.mutateAsync({
+          token: purchaseRes?.data,
+          size: 10,
+        });
       } catch (err: any) {
         setError(err?.message || "영수증 또는 QR 코드 출력에 실패했습니다.");
         // 출력 실패해도 결제/저장은 완료 상태. 필요하면 return; 으로 네비 중단 가능

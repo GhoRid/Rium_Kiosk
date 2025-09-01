@@ -29,6 +29,7 @@ const SelectSeatPage = () => {
 
   const userId = useUserId();
 
+  // 실시간 좌석 정보 가져오기
   const {
     data: response,
     isLoading,
@@ -38,6 +39,7 @@ const SelectSeatPage = () => {
     queryFn: () => getInformationSeat(),
   });
 
+  // 이용권 쿠폰 사용시 처리 함수
   const sendUseTicketCouponMutatuion = useMutation({
     mutationFn: () =>
       sendUseTicketCoupon({
@@ -50,6 +52,7 @@ const SelectSeatPage = () => {
     },
   });
 
+  // qr 출력 함수
   const { qrMutation } = useAppPaymentMutations();
 
   const {
@@ -57,7 +60,7 @@ const SelectSeatPage = () => {
     data: sendUseTicketCouponData,
   } = sendUseTicketCouponMutatuion;
 
-  console.log(sendUseTicketCouponData);
+  console.log("sendUseTicketCouponData", sendUseTicketCouponData);
 
   useEffect(() => {
     if (sendUseTicketCouponIsSuccess) {

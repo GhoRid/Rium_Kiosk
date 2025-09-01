@@ -19,6 +19,7 @@ export const useNVCatPayment = () => {
 };
 
 export function useAppPaymentMutations() {
+  // 백엔드
   const receiptMutation = useMutation({
     mutationKey: ["receipt"],
     mutationFn: (body: ReceiptData) => postreceipt(body),

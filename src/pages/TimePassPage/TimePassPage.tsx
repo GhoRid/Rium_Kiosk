@@ -37,6 +37,7 @@ const TimePassPage = () => {
         label: toLabel(ticket.ticketName),
         time: ticket.time,
         price: ticket.price,
+        ticketId: ticket.ticketId,
       })) || []
     );
   }, [data]);
@@ -55,6 +56,7 @@ const TimePassPage = () => {
       return;
     }
 
+    // navigate("/select-seat", {
     navigate("/payment", {
       state: {
         passType: "시간권",

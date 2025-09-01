@@ -91,22 +91,22 @@ const UseCouponPage = () => {
   }, [validTicketCouponIsError, validTicketCouponIsSuccess]);
 
   const handleSubmit = () => {
-    if (from == "/payment") {
+    if (from === "/payment") {
       getCouponValidMutation.mutate();
-    } else if (from == "/selectpass") {
+    } else if (from === "/selectpass") {
       validTicketCouponMutation.mutate();
     }
   };
 
   const handleModalAction = () => {
-    if (from == "/payment") {
+    if (from === "/payment") {
       if (isSuccess) {
         setIsModalOpen(false);
         navigate(-1);
       } else if (isError) {
         setIsModalOpen(false);
       }
-    } else if (from == "/selectpass") {
+    } else if (from === "/selectpass") {
       if (validTicketCouponIsSuccess) {
         setIsModalOpen(false);
         navigate("/select-seat", {
