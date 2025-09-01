@@ -83,7 +83,7 @@ const PaymentPage = () => {
 
   const form = {
     money: String(finalPrice),
-    tax: String(Math.floor(finalPrice * 0.1)),
+    tax: String(Math.round(Number(finalPrice) / 11)),
     bongsa: "",
     halbu: String(selectedInstallmentOption),
     catid: "2723444001",

@@ -149,11 +149,9 @@ export const useRunPaymentFlow = (args: RunnerArgs) => {
       catId: recvData?.["CATID"] ?? recvData?.["승인CATID"] ?? "",
       cardNum: recvData?.["카드BIN"] ?? "",
       date: recvData?.["승인일시"] ?? "",
-      transactionAmount: toNum(
-        recvData?.["승인금액"] ?? recvData?.["거래금액"]
-      ),
+      transactionAmount: Math.round((toNum(recvData?.["거래금액"]) * 10) / 11),
       vat: toNum(recvData?.["부가세"]),
-      total: toNum(recvData?.["실승인금액"]),
+      total: toNum(recvData?.["거래금액"]),
       approvalNumber: recvData?.["승인번호"] ?? "",
       merchantNumber: recvData?.["가맹점번호"] ?? "",
       acquier: recvData?.["발급사명"] ?? "",

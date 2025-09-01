@@ -106,6 +106,23 @@ const SelectSeatPage = () => {
     },
   });
 
+  // const { isSuccess: selectSeatIsSuccess } = selectSeatMutatuion;
+
+  // useEffect(() => {
+  //   if (selectSeatIsSuccess) {
+  //     const qrCode = selectSeatMutatuion.data?.data;
+  //     qrMutation.mutate({
+  //       token: qrCode,
+  //       size: 10,
+  //     });
+  //     navigate("/completecheckin", {
+  //       state: {
+  //         selectedSeat: selectedSeat,
+  //       },
+  //     });
+  //   }
+  // }, [selectSeatIsSuccess]);
+
   const handleNext = () => {
     if (selectedSeat) {
       if (from === "/selectpass") {

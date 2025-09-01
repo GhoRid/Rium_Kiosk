@@ -19,15 +19,17 @@ import CompleteCheckInPage from "./pages/CompleteCheckInPage/CompleteCheckInPage
 import PaymentFormComponent from "./PaymentFormComponent";
 import RegisterCouponPage from "./pages/RegisterCouponPage/RegisterCouponPage";
 import UseCouponPage from "./pages/UseCouponPage/UseCouponPage";
+import IdleWatcher from "./utils/IdleWatcher";
 
 function App() {
   return (
     <HashRouter>
+      <IdleWatcher />
       <Routes>
         <Route element={<MainLayout />}>
           <Route path="/" element={<KioskLoginPage />} />
-          <Route path="/home" element={<HomePage />} />
           {/* <Route path="/home" element={<PaymentFormComponent />} /> */}
+          <Route path="/home" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignUpPage />} />
           <Route path="/reset-password" element={<ResetPasswordPage />} />
