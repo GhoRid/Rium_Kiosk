@@ -83,7 +83,7 @@ const HomePage = () => {
       }),
     onSuccess: () => {
       setModalContent({
-        content: `${seatNumber}번 좌석\n퇴실 처리가 완료되었습니다.`,
+        content: `${name}님\n\n${seatNumber}번 좌석\n퇴실 처리가 완료되었습니다.`,
         submitText: "확인",
         submitAction: () => {
           clearUserId();
