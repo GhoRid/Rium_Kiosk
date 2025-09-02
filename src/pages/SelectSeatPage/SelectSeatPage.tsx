@@ -29,6 +29,9 @@ const SelectSeatPage = () => {
 
   const userId = useUserId();
 
+  // qr 출력 함수
+  const { qrMutation } = useAppPaymentMutations();
+
   // 실시간 좌석 정보 가져오기
   const {
     data: response,
@@ -52,15 +55,10 @@ const SelectSeatPage = () => {
     },
   });
 
-  // qr 출력 함수
-  const { qrMutation } = useAppPaymentMutations();
-
   const {
     isSuccess: sendUseTicketCouponIsSuccess,
     data: sendUseTicketCouponData,
   } = sendUseTicketCouponMutatuion;
-
-  console.log("sendUseTicketCouponData", sendUseTicketCouponData);
 
   useEffect(() => {
     if (sendUseTicketCouponIsSuccess) {
@@ -77,14 +75,6 @@ const SelectSeatPage = () => {
     }
   }, [sendUseTicketCouponIsSuccess]);
 
-  // const { data: myTicketResponse } = useQuery({
-  //   queryKey: ["myTicket"],
-  //   queryFn: () => getInformationTicket({ mobileNumber: userId! }),
-  //   enabled: !!userId,
-  // });
-  // const { isReservedTicket } = myTicketResponse?.data || {};
-  // const isReserved = passInformation?.seatType === "고정석";
-
   const seatsState = response?.data || [];
 
   // 자리 선택 후 활성화 ( 입실 )
@@ -94,34 +84,29 @@ const SelectSeatPage = () => {
         mobileNumber: userId!,
         seatId: selectedSeat!,
       }),
-    onSuccess: () => {
-      navigate("/completecheckin", {
-        state: {
-          selectedSeat: selectedSeat,
-        },
-      });
-    },
     onError: (error) => {
       setError("좌석 선택에 실패했습니다. 다시 시도해주세요.");
     },
   });
 
-  // const { isSuccess: selectSeatIsSuccess } = selectSeatMutatuion;
+  const { isSuccess: selectSeatIsSuccess, data: selectSeatData } =
+    selectSeatMutatuion;
 
-  // useEffect(() => {
-  //   if (selectSeatIsSuccess) {
-  //     const qrCode = selectSeatMutatuion.data?.data;
-  //     qrMutation.mutate({
-  //       token: qrCode,
-  //       size: 10,
-  //     });
-  //     navigate("/completecheckin", {
-  //       state: {
-  //         selectedSeat: selectedSeat,
-  //       },
-  //     });
-  //   }
-  // }, [selectSeatIsSuccess]);
+  useEffect(() => {
+    if (selectSeatIsSuccess) {
+      const qrCode = selectSeatData.data;
+      console.log("qrCode", qrCode);
+      qrMutation.mutate({
+        token: qrCode,
+        size: 10,
+      });
+      navigate("/completecheckin", {
+        state: {
+          selectedSeat: selectedSeat,
+        },
+      });
+    }
+  }, [selectSeatIsSuccess]);
 
   const handleNext = () => {
     if (selectedSeat) {
