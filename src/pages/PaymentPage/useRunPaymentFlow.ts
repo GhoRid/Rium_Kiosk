@@ -51,8 +51,6 @@ export const useRunPaymentFlow = (args: RunnerArgs) => {
     setError,
   } = args;
 
-  console.log("printPass", printPass);
-
   const paymentMutation = useNVCatPayment();
   const {
     receiptMutation,
@@ -106,6 +104,7 @@ export const useRunPaymentFlow = (args: RunnerArgs) => {
     if (!parsedPacket) return;
 
     const { recvCode, recvData } = parsedPacket;
+    console.log("recvData", recvData);
     const respCode = recvData?.["응답코드"] ?? "";
 
     // 2-1) NV-CAT 에러 처리: 유틸이 throw 하면 catch로 빠지고, 아래 로직은 실행되지 않음
