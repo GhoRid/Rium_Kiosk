@@ -95,7 +95,7 @@ const SelectSeatPage = () => {
   useEffect(() => {
     if (selectSeatIsSuccess) {
       const qrCode = selectSeatData.data;
-      console.log("qrCode", qrCode);
+      qrMutation.reset();
       qrMutation.mutate({
         token: qrCode,
         size: 10,
