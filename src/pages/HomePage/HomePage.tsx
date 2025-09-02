@@ -16,6 +16,7 @@ import { useNavigate } from "react-router";
 import { reissueTicket } from "../../apis/api/pass";
 import { postQR } from "../../apis/api/receipt";
 import { useTicketStore } from "../../stores/useTicketStore";
+import { useAppPaymentMutations } from "../../hooks/usePayment";
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -65,15 +66,17 @@ const HomePage = () => {
   const reissueTicketMutation = useMutation({
     mutationKey: ["reissueTicket", userId],
     mutationFn: () => reissueTicket({ mobileNumber: userId }),
+    onSuccess: (data) => {
+      // 성공 시 QR 생성 바로 실행
+      qrMutation.mutate({
+        token: data?.data,
+        size: 10,
+      });
+    },
     // 499 -> 티켓 없음
   });
 
-  const qrMutation = useMutation({
-    mutationKey: ["qrCode", userId],
-    mutationFn: () => postQR({ token: ticketToken, size: 10 }),
-  });
-
-  const ticketToken = reissueTicketMutation?.data?.data || "";
+  const { qrMutation } = useAppPaymentMutations();
 
   const disableTicketMutation = useMutation({
     mutationKey: ["disableTicket", userId],
@@ -249,11 +252,7 @@ const HomePage = () => {
       navigate("/login");
       return;
     } else {
-      reissueTicketMutation.mutate();
-
-      if (!!ticketToken) {
-        qrMutation.mutate();
-      } else if (!isUsing) {
+      if (!isUsing) {
         setModalContent({
           content: "좌석을 이용중이 아닙니다.",
           submitText: "확인",
@@ -264,6 +263,8 @@ const HomePage = () => {
         });
         setIsModalOpen(true);
         return;
+      } else {
+        reissueTicketMutation.mutate();
       }
     }
   };
