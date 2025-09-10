@@ -1,11 +1,13 @@
 // logger.js (ESM 기준)
+import fs from "fs";
 import path from "path";
 import log from "electron-log";
 
 // 렌더러 브리지를 켬 (프로덕션에서도 파일로 흘러오게)
 log.initialize(); // :contentReference[oaicite:4]{index=4}
 
-const baseDir = "/Users/Shared/RiumLogs"; // 원하는 경로
+const baseDir = "/Users/Shared/RiumLogs"; // 로그 파일 저장 경로
+fs.mkdirSync(baseDir, { recursive: true }); // 폴더가 없을 경우, 만들어서 보장
 
 // 1) "매일 새로운 파일" 경로 지정
 // ex) ~/Library/Logs/{App}/2025-09-10.log
