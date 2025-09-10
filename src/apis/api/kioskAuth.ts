@@ -5,7 +5,6 @@ export const registerKiosk = async (data: any) => {
 };
 
 export const loginKiosk = async (data: any) => {
-  console.log("api 데이터", data);
   return await appInstance.post("/auth/login", data);
 };
 
