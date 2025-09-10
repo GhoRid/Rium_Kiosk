@@ -116,8 +116,7 @@ const labelOf = (inst: AxiosInstance) =>
       log.error(
         `${labelOf(inst)} ${method} ${status} ${url} -> ${code} message=${
           err.message
-        }  
-          `
+        }`
       );
       return Promise.reject(err);
     }

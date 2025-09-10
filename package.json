@@ -45,6 +45,13 @@
     "deploy": "electron-builder build --win --publish always"
   },
   "build": {
+    "files": [
+      "build/**",
+      "public/electron.js",
+      "logger.js",
+      "node_modules/**",
+      "package.json"
+    ],
     "mac": {
       "target": [
         "dmg",
