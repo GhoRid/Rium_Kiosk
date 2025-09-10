@@ -142,7 +142,7 @@ export const useRunPaymentFlow = (args: RunnerArgs) => {
       company: "리움스터디카페",
       ceo: "황상훈",
       company_num: "250-28-01874",
-      tel: "010-1234-5678",
+      tel: "010-5391-2895",
       address: "광주 북구 서하로 379, 402호",
       cardCompany: recvData?.["매입사명"] ?? "",
       catId: recvData?.["CATID"] ?? recvData?.["승인CATID"] ?? "",
