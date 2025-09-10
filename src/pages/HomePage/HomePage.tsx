@@ -33,6 +33,7 @@ const HomePage = () => {
     isCloseIconVisible: true,
   });
 
+  console.log(process.platform);
   const userId = useUserId();
 
   const { data: placeInfoData } = useQuery({
