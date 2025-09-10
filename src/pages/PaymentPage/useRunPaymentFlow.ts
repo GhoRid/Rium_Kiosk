@@ -139,11 +139,11 @@ export const useRunPaymentFlow = (args: RunnerArgs) => {
     const toNum = (v?: string) => (v && v.trim() !== "" ? Number(v) : 0);
 
     const payment = {
-      company: "리움",
+      company: "리움스터디카페",
       ceo: "황상훈",
-      company_num: "010-5391-2895",
+      company_num: "250-28-01874",
       tel: "010-1234-5678",
-      address: "광주 북구 서하로 379 402",
+      address: "광주 북구 서하로 379, 402호",
       cardCompany: recvData?.["매입사명"] ?? "",
       catId: recvData?.["CATID"] ?? recvData?.["승인CATID"] ?? "",
       cardNum: recvData?.["카드BIN"] ?? "",

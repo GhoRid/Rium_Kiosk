@@ -3,17 +3,19 @@ import { colors } from "../../colors";
 import GoToHomeButton from "../../components/GoToHomeButton";
 import Header from "../../components/Header";
 import MenuGrid from "./components/MenuGrid";
-import { useTicketStore } from "../../stores/useTicketStore";
 import { useEffect } from "react";
+import { useLocation, useNavigate } from "react-router";
 
 const SelectPassPage = () => {
-  const userHasTicket = useTicketStore((state) => state.hasTicket);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const isTicketPresent = location.state?.isTicketPresent || false;
 
   useEffect(() => {
-    if (userHasTicket) {
-      window.location.href = "/";
+    if (isTicketPresent) {
+      navigate("/", { replace: true });
     }
-  }, [userHasTicket]);
+  }, [isTicketPresent, navigate]);
 
   return (
     <Container>

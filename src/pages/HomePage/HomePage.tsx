@@ -15,7 +15,6 @@ import { clearUserId } from "../../utils/tokens";
 import { useNavigate } from "react-router";
 import { reissueTicket } from "../../apis/api/pass";
 import { postQR } from "../../apis/api/receipt";
-import { useTicketStore } from "../../stores/useTicketStore";
 import { useAppPaymentMutations } from "../../hooks/usePayment";
 
 const HomePage = () => {
@@ -35,7 +34,6 @@ const HomePage = () => {
   });
 
   const userId = useUserId();
-  const setUserHasTicket = useTicketStore((state) => state.setHasTicket);
 
   const { data: placeInfoData } = useQuery({
     queryKey: ["placeInformation"],
@@ -56,12 +54,6 @@ const HomePage = () => {
     seatNumber,
     ticket: isTicketPresent,
   } = userData?.data || {};
-
-  useEffect(() => {
-    if (getUserDataIsSuccess) {
-      setUserHasTicket(!!isTicketPresent);
-    }
-  }, [getUserDataIsSuccess]);
 
   const reissueTicketMutation = useMutation({
     mutationKey: ["reissueTicket", userId],
@@ -118,7 +110,9 @@ const HomePage = () => {
       setIsModalOpen(true);
       return;
     } else {
-      navigate("/select-pass");
+      navigate("/select-pass", {
+        state: { isTicketPresent: isTicketPresent },
+      });
       return;
     }
   };

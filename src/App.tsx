@@ -16,7 +16,6 @@ import CompletePaymentPage from "./pages/CompletePaymentPage/CompletePaymentPage
 import KioskLoginPage from "./pages/KioskLoginPage/KioskLoginPage";
 import UserLoginLayout from "./components/layouts/UserLoginLayout";
 import CompleteCheckInPage from "./pages/CompleteCheckInPage/CompleteCheckInPage";
-import PaymentFormComponent from "./PaymentFormComponent";
 import RegisterCouponPage from "./pages/RegisterCouponPage/RegisterCouponPage";
 import UseCouponPage from "./pages/UseCouponPage/UseCouponPage";
 import IdleWatcher from "./utils/IdleWatcher";

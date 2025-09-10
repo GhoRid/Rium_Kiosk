@@ -1,11 +1,13 @@
 import { create } from "zustand";
 
-type TicektState = {
+type TicketState = {
   hasTicket: boolean;
-  setHasTicket: (price: boolean) => void;
+  setHasTicket: (ticket: boolean) => void;
+  reset: () => void;
 };
 
-export const useTicketStore = create<TicektState>((set) => ({
+export const useTicketStore = create<TicketState>((set) => ({
   hasTicket: false,
   setHasTicket: (ticket) => set({ hasTicket: ticket }),
+  reset: () => set({ hasTicket: false }),
 }));
