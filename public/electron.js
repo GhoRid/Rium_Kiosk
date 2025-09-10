@@ -2,6 +2,7 @@ import { app, BrowserWindow } from "electron";
 import path from "path";
 import { fileURLToPath, pathToFileURL } from "url";
 import isDev from "electron-is-dev";
+import log from "../src/logger.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -24,6 +25,9 @@ function createWindow() {
       icon: path.join(__dirname, "favicon.ico"),
     },
   });
+
+  log.info("Main window created");
+  // console.log("Log path:", log.transports.file.getFile().path); 로그 파일 경로 확인용
 
   // HTML 파일 로드.
   mainWindow.loadURL(
