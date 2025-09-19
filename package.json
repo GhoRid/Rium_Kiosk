@@ -6,6 +6,7 @@
   "homepage": "./",
   "type": "module",
   "dependencies": {
+    "@sentry/electron": "^7.1.0",
     "@tanstack/react-query": "^5.85.2",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.6.4",

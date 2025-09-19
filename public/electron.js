@@ -3,11 +3,20 @@ import path from "path";
 import { fileURLToPath, pathToFileURL } from "url";
 import isDev from "electron-is-dev";
 import log from "../logger.js";
+import * as Sentry from "@sentry/electron";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 let mainWindow;
+
+Sentry.init({
+  dsn: "https://4623372eff071dfd95c86c78dd396ff6@o4510046685167616.ingest.us.sentry.io/4510046687330304",
+  environment: isDev ? "development" : "production",
+  release: process.env.npm_package_version,
+  debug: true, // 초기 디버깅용: 콘솔에 전송/실패 사유 보임
+  tracesSampleRate: 1.0, // 성능 트레이스가 필요 없으면 제거 가능
+});
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -56,6 +65,10 @@ app.on("activate", () => {
 });
 
 // 모든 창이 닫히면 애플리케이션 종료 (macOS 제외)
-app.on("window-all-closed", () => {
-  if (process.platform !== "darwin") app.quit();
+app.on("window-all-closed", async () => {
+  try {
+    await SentryMain.flush(2000);
+  } finally {
+    if (process.platform !== "darwin") app.quit();
+  }
 });
