@@ -13,6 +13,7 @@ const REQUIRED_TAPS = 3;
 const HeaderInfoBox = ({ userName }: HeaderInfoBoxProps) => {
   const [dateTime, setDateTime] = useState({ date: "", time: "" });
   const isLoggedIn = Boolean(userName);
+  // console.log(isLoggedIn, userName);
 
   const tapMeta = useRef<{
     count: number;

@@ -32,9 +32,9 @@ const PayAnimationModal = ({
   return (
     <ModalOverlay>
       <ModalContent>
-        <CLoseIconBox onClick={() => setIsModalOpen(false)}>
+        {/* <CLoseIconBox onClick={() => setIsModalOpen(false)}>
           <CloseIcon />
-        </CLoseIconBox>
+        </CLoseIconBox> */}
 
         <ContentBox>
           <ContentText>{ment}</ContentText>

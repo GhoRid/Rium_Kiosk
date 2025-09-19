@@ -35,6 +35,8 @@ const CheckExtendPassPage = () => {
     ticketType,
   } = response?.data || {};
 
+  console.log(response?.data);
+
   return (
     <Container>
       <GoToHomeButton />

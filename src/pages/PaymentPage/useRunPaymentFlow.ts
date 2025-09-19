@@ -59,7 +59,7 @@ export const useRunPaymentFlow = (args: RunnerArgs) => {
     sendUseCouponMutation,
   } = useAppPaymentMutations();
 
-  const isCompensatingRef = useRef(false);
+  // const isCompensatingRef = useRef(false);
 
   const start = () => {
     setIsModalOpen(true);
@@ -98,13 +98,13 @@ export const useRunPaymentFlow = (args: RunnerArgs) => {
   // 2) 단말 응답 수신 후 전체 플로우
   useEffect(() => {
     if (!isSuccess) return;
-    if (isCompensatingRef.current) return;
+    // if (isCompensatingRef.current) return;
 
     const parsedPacket = parseFullResponsePacket(payData);
     if (!parsedPacket) return;
 
     const { recvCode, recvData } = parsedPacket;
-    console.log("recvData", recvData);
+    // console.log("recvData", recvData);
     const respCode = recvData?.["응답코드"] ?? "";
 
     // 2-1) NV-CAT 에러 처리: 유틸이 throw 하면 catch로 빠지고, 아래 로직은 실행되지 않음
@@ -177,6 +177,7 @@ export const useRunPaymentFlow = (args: RunnerArgs) => {
         }
       } catch (e: any) {
         setError("서버에 문제가 생겼습니다. 관리자에게 문의하세요.");
+        return;
       }
 
       // 2-4) 구매 처리 성공 시에만 출력/네비

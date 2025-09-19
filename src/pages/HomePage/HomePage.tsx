@@ -35,6 +35,8 @@ const HomePage = () => {
 
   const userId = useUserId();
 
+  // console.log("userId", userId);
+
   const { data: placeInfoData } = useQuery({
     queryKey: ["placeInformation"],
     queryFn: () => getPlaceInformation(),

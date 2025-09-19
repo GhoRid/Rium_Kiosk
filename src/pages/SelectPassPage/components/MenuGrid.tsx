@@ -32,7 +32,7 @@ const MenuGrid = () => {
           </IconBox>
         </TwoButton>
       </TwoButtonRow>
-      <CouponButton
+      {/* <CouponButton
         onClick={() =>
           navigate("/usecoupon", {
             state: {
@@ -46,7 +46,7 @@ const MenuGrid = () => {
         <IconBox>
           <CouponIcon />
         </IconBox>
-      </CouponButton>
+      </CouponButton> */}
     </Container>
   );
 };

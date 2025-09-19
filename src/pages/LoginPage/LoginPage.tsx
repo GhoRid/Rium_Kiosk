@@ -39,6 +39,7 @@ const LoginPage = () => {
       });
     },
     onSuccess: (data) => {
+      console.log("data", data.data);
       if (data.data == true) {
         saveUserId(phone);
         navigate(redirectTo, { replace: true });

@@ -107,7 +107,6 @@ const labelOf = (inst: AxiosInstance) =>
     (res) => res,
 
     (err) => {
-      console.log("API ERROR", err);
       const cfg = err?.config || {};
       const url = (cfg.baseURL || "") + (cfg.url || "");
       const method = (cfg.method || "GET").toUpperCase();
