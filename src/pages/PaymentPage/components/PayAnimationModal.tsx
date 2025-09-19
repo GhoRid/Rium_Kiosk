@@ -10,13 +10,14 @@ type PayAnimationModalProps = {
   isModalOpen: boolean;
   setIsModalOpen: (isModalOpen: boolean) => void;
   price: number;
+  onCancel: () => void;
 };
 
 const PayAnimationModal = ({
   paymentMethod,
   isModalOpen,
-  setIsModalOpen,
   price,
+  onCancel,
 }: PayAnimationModalProps) => {
   if (!isModalOpen) return null;
   let ment = "";
@@ -32,9 +33,9 @@ const PayAnimationModal = ({
   return (
     <ModalOverlay>
       <ModalContent>
-        {/* <CLoseIconBox onClick={() => setIsModalOpen(false)}>
+        <CLoseIconBox onClick={onCancel}>
           <CloseIcon />
-        </CLoseIconBox> */}
+        </CLoseIconBox>
 
         <ContentBox>
           <ContentText>{ment}</ContentText>

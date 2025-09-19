@@ -13,6 +13,9 @@ import { useLocation, useNavigate } from "react-router";
 import { getUserId } from "../../utils/tokens";
 import { useRunPaymentFlow } from "./useRunPaymentFlow";
 import { usePriceStore } from "../../stores/usePriceStore";
+import { useNVCatPayment } from "../../hooks/usePayment";
+import { nvcatUtils } from "../../utils/paymentUtils/nvcatUtils";
+import { makeSendData } from "../../utils/paymentUtils/vcatUtils";
 
 type PaymentType =
   | "credit"
@@ -49,6 +52,8 @@ const PaymentPage = () => {
   const setTicketId = usePriceStore((state) => state.setTicketId);
   const setPrice = usePriceStore((state) => state.setPrice);
   const setUsingCouponCode = usePriceStore((state) => state.setUsingCouponCode);
+
+  const paymentMutation = useNVCatPayment();
 
   // 페이지 언마운트 시 할인 가격, 사용중인 쿠폰 코드 초기화
   useEffect(() => {
@@ -172,6 +177,12 @@ const PaymentPage = () => {
         isModalOpen={isModalOpen}
         setIsModalOpen={setIsModalOpen}
         price={finalPrice}
+        onCancel={async () => {
+          await paymentMutation.mutateAsync(
+            encodeURI(makeSendData(nvcatUtils("REQ_STOP")))
+          );
+          setIsModalOpen(false);
+        }}
       />
     </Container>
   );
