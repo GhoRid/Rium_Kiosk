@@ -36,23 +36,6 @@ export const appInstance = axios.create({
   },
 });
 
-appInstance.interceptors.request.use((config) => {
-  const token = getAccessToken();
-  if (token) {
-    config.headers["Authorization"] = `Bearer ${token}`;
-  }
-  return config;
-});
-
-appInstance.interceptors.response.use(
-  (response) => {
-    return response;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
-
 const reissueToken = async (base: AxiosInstance) => {
   const refreshToken = getRefreshToken();
   try {
@@ -71,13 +54,65 @@ const reissueToken = async (base: AxiosInstance) => {
   }
 };
 
+const shouldLog = (cfg: any) => {
+  const url = ((cfg?.baseURL || "") + (cfg?.url || "")).toString();
+  return url.includes("/purchase/ticket"); // 이 라인만으로 필터
+};
+
+const trim = (v: any) => {
+  const s = typeof v === "string" ? v : JSON.stringify(v);
+  return s.length > 1000 ? s.slice(0, 1000) + "…(truncated)" : s;
+};
+
+appInstance.interceptors.request.use((config) => {
+  const token = getAccessToken();
+  if (token) {
+    config.headers["Authorization"] = `Bearer ${token}`;
+  }
+
+  if (shouldLog(config)) {
+    const reqId = `${Date.now().toString(36)}-${Math.random()
+      .toString(36)
+      .slice(2, 8)}`;
+    // 요청-응답 상관관계 유지를 위해 메타 저장
+    (config as any).__reqMeta = { reqId, startedAt: Date.now() };
+
+    log.info(
+      `[purchaseTicket][REQ ${reqId}] ${String(config.method).toUpperCase()} ${
+        (config.baseURL || "") + (config.url || "")
+      } ` +
+        `headers=${JSON.stringify({
+          ...config.headers,
+          Authorization: "***masked***",
+        })} ` +
+        `body=${trim(config.data)}`
+    );
+  }
+
+  return config;
+});
+
 appInstance.interceptors.response.use(
-  (res) => res,
+  (response) => {
+    if (shouldLog(response.config)) {
+      const meta = (response.config as any).__reqMeta || {};
+      const dur = meta.startedAt ? Date.now() - meta.startedAt : -1;
+      log.info(
+        `[purchaseTicket][RES ${meta.reqId || "-"}] status=${
+          response.status
+        } duration=${dur}ms body=${JSON.stringify(response.data).slice(
+          0,
+          1000
+        )}`
+      );
+    }
+    return response;
+  },
   async (err) => {
     const errorStatus = err.response?.status;
     const originalRequest = err.config as any;
 
-    // ✅ 백엔드에서 "토큰 만료"를 419로 내려줌
+    // ✅ 백엔드에서 "토큰 만료" 에러를 419로 설정
     if (errorStatus === 419) {
       localStorage.removeItem("accessToken");
       try {
