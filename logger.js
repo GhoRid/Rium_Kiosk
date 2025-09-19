@@ -44,7 +44,7 @@ log.transports.file.resolvePathFn = (vars, message) => {
 
 // 2) 한 줄 포맷: [YYYY-MM-DD HH:mm:ss.mmm] [LEVEL] text
 log.transports.file.format =
-  "[{y}-{m}-{d} {h}:{i}:{s}.{ms}] [{level}] {text}\n";
+  "[{y}-{m}-{d} {h}:{i}:{s}.{ms}] [{level}] {text}\n\n";
 // (원하면 {processType} {scope} 등을 끼워 넣어도 됨) :contentReference[oaicite:6]{index=6}
 
 // 3) 에러 객체를 "메시지 + 스택"으로 바꿔 붙이는 훅

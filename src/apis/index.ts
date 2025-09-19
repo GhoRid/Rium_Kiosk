@@ -56,12 +56,23 @@ const reissueToken = async (base: AxiosInstance) => {
 
 const shouldLog = (cfg: any) => {
   const url = ((cfg?.baseURL || "") + (cfg?.url || "")).toString();
-  return url.includes("/purchase/ticket"); // 이 라인만으로 필터
+  return url.includes("/purchase/ticket");
 };
 
+const MAX = 1000;
+const safeStringify = (v: any) => {
+  try {
+    if (v === undefined || v === null) return "";
+    if (typeof v === "string") return v;
+    const j = JSON.stringify(v);
+    return typeof j === "string" ? j : String(v);
+  } catch {
+    return String(v);
+  }
+};
 const trim = (v: any) => {
-  const s = typeof v === "string" ? v : JSON.stringify(v);
-  return s.length > 1000 ? s.slice(0, 1000) + "…(truncated)" : s;
+  const s = safeStringify(v);
+  return s.length > MAX ? s.slice(0, MAX) + "…(truncated)" : s;
 };
 
 appInstance.interceptors.request.use((config) => {
