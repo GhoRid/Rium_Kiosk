@@ -1,6 +1,6 @@
 {
   "name": "rium_kiosk",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "private": true,
   "main": "public/electron.js",
   "homepage": "./",
@@ -31,6 +31,11 @@
     "web-vitals": "^2.1.4",
     "zustand": "^5.0.8"
   },
+  "repository": {
+    "type": "git",
+    "owner": "GhoRid",
+    "url": "https://github.com/GhoRid/Rium_Kiosk.git"
+  },
   "scripts": {
     "react-start": "react-scripts start",
     "react-build": "react-scripts build",
@@ -43,9 +48,24 @@
     "build:win64": "yarn react-build && electron-builder --win --x64",
     "build:mac": "yarn react-build && electron-builder --mac dmg zip",
     "dist:win": "electron-builder --win",
-    "deploy": "electron-builder build --win --publish always"
+    "deploy:mac": "node -e \"console.log('GH?', !!process.env.GH_TOKEN)\" && yarn react-build && electron-builder --mac --publish always",
+    "deploy:win": "node -e \"console.log('GH?', !!process.env.GH_TOKEN)\" && yarn react-build && electron-builder --win --publish always"
   },
   "build": {
+    "appId": "kr.tworivers.rium_kiosk",
+    "productName": "RiumKioskApp",
+    "executableName": "rium-kiosk-app",
+    "directories": {
+      "buildResources": "electron-builder",
+      "output": "dist"
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "GhoRid",
+        "repo": "Rium_Kiosk"
+      }
+    ],
     "files": [
       "build/**",
       "public/electron.js",
@@ -72,8 +92,9 @@
     },
     "nsis": {
       "oneClick": true,
-      "perMachine": true,
-      "allowToChangeInstallationDirectory": false
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": false,
+      "include": "electron-builder/installer.nsh"
     }
   },
   "eslintConfig": {
@@ -100,9 +121,5 @@
     "electron": "^37.2.4",
     "electron-builder": "^26.0.12",
     "wait-on": "^8.0.4"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/GhoRid/Rium_Kiosk.git"
   }
 }
