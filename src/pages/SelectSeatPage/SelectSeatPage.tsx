@@ -21,10 +21,12 @@ const SelectSeatPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // from : "/selectpass(좌석 선택)" | "/home(입실하기)" | "/usecoupon(쿠폰 사용)"
   const { passInformation, couponData, from } = location.state || {};
 
-  const [selectedSeat, setSelectedSeat] = useState<number | null>(null);
+  const [selectedSeatId, setselectedSeatId] = useState<number | null>(null);
+  const [selectedSeatNumber, setSelectedSeatNumber] = useState<number | null>(
+    null
+  );
   const [error, setError] = useState<string | null>(null);
 
   const userId = useUserId();
@@ -47,7 +49,7 @@ const SelectSeatPage = () => {
     mutationFn: () =>
       sendUseTicketCoupon({
         mobileNumber: userId!,
-        seatId: selectedSeat!,
+        seatId: selectedSeatId!,
         token: couponData!,
       }),
     onError: (error) => {
@@ -69,7 +71,7 @@ const SelectSeatPage = () => {
       });
       navigate("/completecheckin", {
         state: {
-          selectedSeat: selectedSeat,
+          selectedSeatNumber: selectedSeatNumber,
         },
       });
     }
@@ -82,7 +84,7 @@ const SelectSeatPage = () => {
     mutationFn: () =>
       enableTicket({
         mobileNumber: userId!,
-        seatId: selectedSeat!,
+        seatId: selectedSeatId!,
       }),
     onError: (error) => {
       setError("좌석 선택에 실패했습니다. 다시 시도해주세요.");
@@ -102,14 +104,14 @@ const SelectSeatPage = () => {
       });
       navigate("/completecheckin", {
         state: {
-          selectedSeat: selectedSeat,
+          selectedSeatNumber: selectedSeatNumber,
         },
       });
     }
   }, [selectSeatIsSuccess]);
 
   const handleNext = () => {
-    if (selectedSeat) {
+    if (selectedSeatId) {
       if (from === "/selectpass") {
         navigate("/payment", {
           state: {
@@ -117,7 +119,7 @@ const SelectSeatPage = () => {
             label: passInformation.label,
             time: passInformation.time,
             price: passInformation.price,
-            seatNumber: selectedSeat,
+            seatNumber: selectedSeatId,
             seatType: passInformation.seatType,
             ticketId: passInformation.ticketId,
           },
@@ -133,10 +135,23 @@ const SelectSeatPage = () => {
   };
 
   useEffect(() => {
-    if (selectedSeat) {
+    if (selectedSeatId) {
       setError(null);
     }
-  }, [selectedSeat]);
+  }, [selectedSeatId]);
+
+  const onSelect = ({
+    seatId,
+    seatNumber,
+  }: {
+    seatId: number;
+    seatNumber: number;
+  }) => {
+    setselectedSeatId(selectedSeatId === seatId ? null : seatId);
+    setSelectedSeatNumber(
+      selectedSeatNumber === seatNumber ? null : seatNumber
+    );
+  };
 
   return (
     <Container>
@@ -150,8 +165,9 @@ const SelectSeatPage = () => {
 
         {!isLoading && !fetchError && (
           <SeatMap
-            selectedSeat={selectedSeat}
-            onSelect={setSelectedSeat}
+            selectedSeatNumber={selectedSeatNumber}
+            selectedSeatId={selectedSeatId}
+            onSelect={onSelect}
             seatsState={seatsState}
           />
         )}

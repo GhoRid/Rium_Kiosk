@@ -2,7 +2,7 @@ import { useEffect, useRef, useCallback } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { getUserId, clearUserId } from "../utils/tokens";
 
-const IDLE_MS = 30000;
+const IDLE_MS = 300000;
 const activityEvents = [
   "mousemove",
   "mousedown",

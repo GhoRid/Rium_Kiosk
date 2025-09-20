@@ -68,7 +68,7 @@ const reissueToken = async (base: AxiosInstance) => {
  *  ----------------------------- */
 const shouldLog = (cfg: any) => {
   const url = ((cfg?.baseURL || "") + (cfg?.url || "")).toString();
-  return url.includes("/get/information/ticket");
+  return url.includes("/purchase/ticket");
 };
 
 const MAX = 1000;
