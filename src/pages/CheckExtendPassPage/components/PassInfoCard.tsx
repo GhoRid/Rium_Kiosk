@@ -7,9 +7,8 @@ type PassInfoCardProps = {
   remainTime: string; // 예: "2시간 30분"
   seatNumber: string; // 예: "12"
   ticketName: string; // 예: "4주 자유석" (없으면 빈 상태로 간주)
-  ticketType: string; // 예: "기간권"
   isUsing: boolean;
-  setIsModalOpen: (isOpen: boolean) => void;
+  onExtendClick: () => void;
 };
 
 const PassInfoCard = ({
@@ -17,9 +16,8 @@ const PassInfoCard = ({
   remainTime,
   seatNumber,
   ticketName,
-  ticketType,
   isUsing,
-  setIsModalOpen,
+  onExtendClick,
 }: PassInfoCardProps) => {
   const hasTicket = ticketName !== "이용권 없음";
 
@@ -45,15 +43,7 @@ const PassInfoCard = ({
               <PassContent>{remainTime} 남음</PassContent>
             </PassTextBox>
 
-            {isUsing && (
-              <Button
-                onClick={() => {
-                  setIsModalOpen(true);
-                }}
-              >
-                연장하기
-              </Button>
-            )}
+            {isUsing && <Button onClick={onExtendClick}>연장하기</Button>}
           </>
         ) : (
           <BoxCenter>

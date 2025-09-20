@@ -59,6 +59,10 @@ export const getInformationTicket = async (params: any) => {
   return await appInstance.get("/get/information/ticket", { params });
 };
 
+export const getInformationTicketType = async (params: any) => {
+  return await appInstance.get("/get/ticket/type", { params });
+};
+
 // 좌석 정보 조회
 export const getInformationSeat = async () => {
   return await appInstance.get("/get/information/seat");

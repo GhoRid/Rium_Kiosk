@@ -6,7 +6,7 @@ import { useEffect, useMemo, useState } from "react";
 import ErrorMsg from "../../components/ErrorMsg";
 import OptionCard from "./components/OptionCard";
 import BottomButtons from "../../components/BottomButtons";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import { getTicketList } from "../../apis/api/pass";
 
@@ -34,9 +34,13 @@ type TicketRow = {
 
 const PeriodPassPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { extendingTicketType } = location.state || {};
 
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const wantFixed = extendingTicketType == null || extendingTicketType === 2;
+  const wantFree = extendingTicketType == null || extendingTicketType === 4;
 
   const { data: fixedSeatData, isLoading: fixedSeatIsLodaing } = useQuery({
     queryKey: ["passList", "고정석"],
@@ -44,6 +48,7 @@ const PeriodPassPage = () => {
       getTicketList({
         ticketType: 2,
       }),
+    enabled: wantFixed,
   });
 
   const { data: freeSeatData, isLoading: freeSeatIsLodaing } = useQuery({
@@ -52,6 +57,7 @@ const PeriodPassPage = () => {
       getTicketList({
         ticketType: 4,
       }),
+    enabled: wantFree,
   });
 
   const toLabel = (name: string) => name.replace(/^기간권\s*/g, "").trim();
