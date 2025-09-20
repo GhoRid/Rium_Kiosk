@@ -1,18 +1,17 @@
 import styled from "styled-components";
 import { colors } from "../../../colors";
 import React, { ReactNode } from "react";
-
-type FieldName = "name" | "phone" | "birth" | "code" | "newPassword";
+import { FieldName } from "../ResetPasswordPage";
 
 type Props = {
   activeField: FieldName;
   setActiveField: (f: FieldName) => void;
-
   name: FieldName;
   placeholder: string;
   rightSlot?: ReactNode;
   value: string; // 표시용 값 (phone은 포맷된 값)
   setValue: (value: string) => void; // 상태 갱신 (phone은 숫자만)
+  error?: string | null;
 };
 
 const InputFiled = ({
@@ -23,6 +22,7 @@ const InputFiled = ({
   rightSlot,
   value,
   setValue,
+  error,
 }: Props) => {
   const isNumeric = name !== "name";
 
@@ -46,6 +46,8 @@ const InputFiled = ({
                 ? "text"
                 : name === "newPassword"
                 ? "password"
+                : name === "checkNewPasswordd"
+                ? "password"
                 : "text"
             }
             inputMode={isNumeric ? "numeric" : undefined}
@@ -54,6 +56,11 @@ const InputFiled = ({
         </Field>
         {rightSlot && <>{rightSlot}</>}
       </FiledBox>
+      {!!error && (
+        <ErrorMsgBox>
+          <ErrorMsg>{error}</ErrorMsg>
+        </ErrorMsgBox>
+      )}
     </Container>
   );
 };
@@ -100,4 +107,15 @@ const PlainInput = styled.input`
     color: ${colors.app_white};
     opacity: 1;
   }
+`;
+
+const ErrorMsgBox = styled.div`
+  position: absolute;
+  margin-top: 105px;
+  margin-left: 20px;
+`;
+
+const ErrorMsg = styled.p`
+  color: ${colors.red};
+  font-size: 24px;
 `;

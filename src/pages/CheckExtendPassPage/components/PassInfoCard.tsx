@@ -1,24 +1,24 @@
 import styled from "styled-components";
-import { colors } from "../../colors";
-import { formatIsoToTwoLinesRaw } from "../../utils/formatDate";
+import { colors } from "../../../colors";
+import { formatIsoToTwoLinesRaw } from "../../../utils/formatDate";
 
-type PassInfoProps = {
+type PassInfoCardProps = {
   expirationDate?: string;
   remainTime: string; // 예: "2시간 30분"
   seatNumber: string; // 예: "12"
   ticketName: string; // 예: "4주 자유석" (없으면 빈 상태로 간주)
-  ticketType: string; // 예: "기간권"
   isUsing: boolean;
+  onExtendClick: () => void;
 };
 
-const PassInfo = ({
+const PassInfoCard = ({
   expirationDate,
   remainTime,
   seatNumber,
   ticketName,
-  ticketType,
   isUsing,
-}: PassInfoProps) => {
+  onExtendClick,
+}: PassInfoCardProps) => {
   const hasTicket = ticketName !== "이용권 없음";
 
   return (
@@ -43,15 +43,7 @@ const PassInfo = ({
               <PassContent>{remainTime} 남음</PassContent>
             </PassTextBox>
 
-            {isUsing && (
-              <Button
-                onClick={() => {
-                  console.log("이용권 연장하기 클릭");
-                }}
-              >
-                연장하기
-              </Button>
-            )}
+            {isUsing && <Button onClick={onExtendClick}>연장하기</Button>}
           </>
         ) : (
           <BoxCenter>
@@ -63,7 +55,7 @@ const PassInfo = ({
   );
 };
 
-export default PassInfo;
+export default PassInfoCard;
 
 const Wrapper = styled.div`
   display: flex;

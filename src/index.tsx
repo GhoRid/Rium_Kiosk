@@ -5,32 +5,33 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { StyleSheetManager } from "styled-components";
+import ErrorBoundary from "./components/layouts/ErrorBoundary";
+import * as Sentry from "@sentry/electron/renderer";
 
-export const queryClient = new QueryClient({
-  // defaultOptions: {
-  //   queries: {
-  //     staleTime: 0,
-  //   },
-  //   mutations: {
-  //     retry: 0,
-  //   },
-  // },
-});
+export const queryClient = new QueryClient({});
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
+
+Sentry.init({
+  dsn: "https://4623372eff071dfd95c86c78dd396ff6@o4510046685167616.ingest.us.sentry.io/4510046687330304",
+  sendDefaultPii: true,
+  integrations: [],
+  debug: true, // 초기엔 true 권장
+  tracesSampleRate: 1.0, // 필요 없으면 제거
+});
+
 root.render(
   <StyleSheetManager target={document.head}>
-    <React.StrictMode>
-      <QueryClientProvider client={queryClient}>
+    {/* <React.StrictMode> */}
+    <QueryClientProvider client={queryClient}>
+      <ErrorBoundary>
         <App />
-      </QueryClientProvider>
-    </React.StrictMode>
+      </ErrorBoundary>
+    </QueryClientProvider>
+    {/* </React.StrictMode> */}
   </StyleSheetManager>
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();

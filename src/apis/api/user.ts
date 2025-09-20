@@ -5,6 +5,7 @@ export const registerUser = async (data: any) => {
   return await appInstance.post("/register", data);
 };
 
+// 비밀번호 재설정
 export const resetPassword = async (data: any) => {
   return await appInstance.post("/reset/password", data);
 };
@@ -17,6 +18,10 @@ export const validUser = async (params: any) => {
 // 토큰 유효성 확인
 export const validToken = async (params: any) => {
   return await appInstance.get("/valid/token", { params });
+};
+
+export const getUserData = async (params: any) => {
+  return await appInstance.get("/get/userdata", { params });
 };
 
 // SMS 인증 코드 검증
@@ -34,6 +39,16 @@ export const isPresentUser = async (params: any) => {
   return await appInstance.get("/ispresent/user", { params });
 };
 
+// 쿠폰 유효성 확인 및 금액 계산
+export const getCouponValid = async (params: any) => {
+  return await appInstance.get("/valid/coupon", { params });
+};
+
+// 쿠폰 사용
+export const sendUseCoupon = async (data: any) => {
+  return await appInstance.post("/use/coupon", data);
+};
+
 // 잔여 좌석 조회
 export const getRemainSeat = async (params: any) => {
   return await appInstance.get("/get/remain/seat", { params });
@@ -42,6 +57,10 @@ export const getRemainSeat = async (params: any) => {
 // 이용권 정보 조회
 export const getInformationTicket = async (params: any) => {
   return await appInstance.get("/get/information/ticket", { params });
+};
+
+export const getInformationTicketType = async (params: any) => {
+  return await appInstance.get("/get/ticket/type", { params });
 };
 
 // 좌석 정보 조회
@@ -57,15 +76,6 @@ export const enableTicket = async (data: any) => {
 // 이용권 비활성화
 export const disableTicket = async (data: any) => {
   return await appInstance.post("/disable/ticket", data);
-};
-
-// 이용권 사용 중인지 확인
-export const checkUsing = async (params: any) => {
-  return await appInstance.get("/check/using", { params });
-};
-
-export const checkPresentTicket = async (params: any) => {
-  return await appInstance.get("/check/present/ticket", { params });
 };
 
 export const getInformationMyseat = async (params: any) => {

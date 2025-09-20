@@ -2,24 +2,24 @@ import styled from "styled-components";
 import HomeMenu from "./components/HomeMenu";
 import { colors } from "../../colors";
 import SeatInfo from "./components/SeatInfo";
-import DateInfo from "./components/DateInfo";
+import HeaderInfoBox from "./components/HeaderInfoBox";
 import HomeHeader from "./components/HomeHeader";
 import FooterCarousel from "./components/FooterCarousel";
 import CustomModal from "../../components/CustomModal";
-import { useState } from "react";
-import LogoutButton from "./components/LogoutButton";
+import { useEffect, useState } from "react";
 import { useUserId } from "../../hooks/useUserId";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { getPlaceInformation } from "../../apis/api/kioskAuth";
 import {
-  checkPresentTicket,
-  checkUsing,
   disableTicket,
+  getInformationSeat,
+  getUserData,
 } from "../../apis/api/user";
 import { clearUserId } from "../../utils/tokens";
 import { useNavigate } from "react-router";
 import { reissueTicket } from "../../apis/api/pass";
 import { postQR } from "../../apis/api/receipt";
+import { useAppPaymentMutations } from "../../hooks/usePayment";
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -44,32 +44,46 @@ const HomePage = () => {
     queryFn: () => getPlaceInformation(),
   });
 
-  const { data: checkUsingData } = useQuery({
-    queryKey: ["checkUsing", userId],
-    queryFn: () => checkUsing({ mobileNumber: userId }),
+  const {
+    data: response,
+    isLoading,
+    error: fetchError,
+  } = useQuery({
+    queryKey: ["seats"],
+    queryFn: () => getInformationSeat(),
+  });
+
+  // console.log(placeInfoData);
+
+  const { data: userData, isSuccess: getUserDataIsSuccess } = useQuery({
+    queryKey: ["userInfo", userId],
+    queryFn: () => getUserData({ mobileNumber: userId }),
     enabled: !!userId,
   });
+
+  const {
+    canExit,
+    ticketName,
+    name,
+    using: isUsing,
+    seatNumber,
+    ticket: isTicketPresent,
+  } = userData?.data || {};
 
   const reissueTicketMutation = useMutation({
     mutationKey: ["reissueTicket", userId],
     mutationFn: () => reissueTicket({ mobileNumber: userId }),
+    onSuccess: (data) => {
+      // 성공 시 QR 생성 바로 실행
+      qrMutation.mutate({
+        token: data?.data,
+        size: 10,
+      });
+    },
+    // 499 -> 티켓 없음
   });
 
-  const { data: checkPresentTicketData } = useQuery({
-    queryKey: ["checkPresentTicket", userId],
-    queryFn: () => checkPresentTicket({ mobileNumber: userId }),
-    enabled: !!userId,
-  });
-
-  const { isUsing, seatNumber } = checkUsingData?.data || {};
-  const isPresent = checkPresentTicketData?.data || {};
-
-  const ticketToken = reissueTicketMutation?.data?.data || "";
-
-  const qrMutation = useMutation({
-    mutationKey: ["qrCode", userId],
-    mutationFn: () => postQR({ token: ticketToken, size: 10 }),
-  });
+  const { qrMutation } = useAppPaymentMutations();
 
   const disableTicketMutation = useMutation({
     mutationKey: ["disableTicket", userId],
@@ -79,7 +93,7 @@ const HomePage = () => {
       }),
     onSuccess: () => {
       setModalContent({
-        content: `${seatNumber}번 좌석\n퇴실 처리가 완료되었습니다.`,
+        content: `${name}님\n\n${seatNumber}번 좌석\n퇴실 처리가 완료되었습니다.`,
         submitText: "확인",
         submitAction: () => {
           clearUserId();
@@ -99,7 +113,7 @@ const HomePage = () => {
       return;
     }
 
-    if (!isPresent) {
+    if (isTicketPresent) {
       setModalContent({
         content: "이미 이용권이 있습니다.",
         submitText: "확인",
@@ -111,23 +125,89 @@ const HomePage = () => {
       setIsModalOpen(true);
       return;
     } else {
-      navigate("/select-pass");
+      navigate("/select-pass", {
+        state: { isTicketPresent: isTicketPresent },
+      });
+      return;
+    }
+  };
+
+  const handlecheckextendpass = () => {
+    navigate("/checkextendpass");
+    return;
+  };
+
+  const handleChangeSeat = () => {
+    if (!userId) {
+      navigate("/login");
+      return;
+    }
+
+    if (!isTicketPresent) {
+      setModalContent({
+        content: "이용권이 없습니다.",
+        submitText: "확인",
+        submitAction: () => {
+          setIsModalOpen(false);
+        },
+        isCloseIconVisible: true,
+      });
+      setIsModalOpen(true);
+      return;
+    } else if (isUsing) {
+      navigate("/changeseat");
+      return;
+    } else {
+      setModalContent({
+        content: "좌석을 이용중이 아닙니다.",
+        submitText: "확인",
+        submitAction: () => {
+          setIsModalOpen(false);
+        },
+        isCloseIconVisible: true,
+      });
+      setIsModalOpen(true);
+      return;
     }
   };
 
   const handleLogout = () => {
     if (!userId) {
       navigate("/login");
+      return;
     }
 
-    if (isUsing) {
+    if (!isTicketPresent) {
       setModalContent({
-        content: `${seatNumber}번 좌석\n퇴실하시겠습니까?`,
+        content: `이용권이 없습니다.`,
+        submitText: "확인",
+        submitAction: () => {
+          setIsModalOpen(false);
+        },
+        isCloseIconVisible: true,
+      });
+      setIsModalOpen(true);
+      return;
+    } else if (!canExit) {
+      setModalContent({
+        content: `${ticketName}은 퇴실할 수 없습니다.`,
+        submitText: "확인",
+        submitAction: () => {
+          setIsModalOpen(false);
+        },
+        isCloseIconVisible: true,
+      });
+      setIsModalOpen(true);
+      return;
+    } else if (isUsing) {
+      setModalContent({
+        content: `${name}님\n\n${seatNumber}번 좌석\n퇴실하시겠습니까?`,
         submitText: "퇴실하기",
         submitAction: () => disableTicketMutation.mutate(),
         isCloseIconVisible: true,
       });
       setIsModalOpen(true);
+      return;
     } else {
       setModalContent({
         content: "좌석 이용중이 아닙니다.",
@@ -138,6 +218,7 @@ const HomePage = () => {
         isCloseIconVisible: true,
       });
       setIsModalOpen(true);
+      return;
     }
   };
 
@@ -147,7 +228,7 @@ const HomePage = () => {
       return;
     }
 
-    if (!isPresent) {
+    if (!isTicketPresent) {
       setModalContent({
         content: "이용권이 없습니다.",
         submitText: "확인",
@@ -157,6 +238,7 @@ const HomePage = () => {
         isCloseIconVisible: true,
       });
       setIsModalOpen(true);
+      return;
     } else if (isUsing) {
       setModalContent({
         content: "좌석을 이용중입니다.",
@@ -167,29 +249,10 @@ const HomePage = () => {
         isCloseIconVisible: true,
       });
       setIsModalOpen(true);
-    } else if (!isUsing) {
-      navigate("/select-seat");
-    }
-  };
-
-  const handleChangeSeat = () => {
-    if (!userId) {
-      navigate("/login");
       return;
-    }
-
-    if (isUsing) {
-      navigate("/changeseat");
-    } else {
-      setModalContent({
-        content: "좌석을 이용중이 아닙니다.",
-        submitText: "확인",
-        submitAction: () => {
-          setIsModalOpen(false);
-        },
-        isCloseIconVisible: true,
-      });
-      setIsModalOpen(true);
+    } else if (!isUsing) {
+      navigate("/select-seat", { state: { from: "/home" } });
+      return;
     }
   };
 
@@ -197,21 +260,21 @@ const HomePage = () => {
     if (!userId) {
       navigate("/login");
       return;
-    }
-    reissueTicketMutation.mutate();
-
-    if (!!ticketToken) {
-      qrMutation.mutate();
-    } else if (!isUsing) {
-      setModalContent({
-        content: "좌석을 이용중이 아닙니다.",
-        submitText: "확인",
-        submitAction: () => {
-          setIsModalOpen(false);
-        },
-        isCloseIconVisible: true,
-      });
-      setIsModalOpen(true);
+    } else {
+      if (!isUsing) {
+        setModalContent({
+          content: "좌석을 이용중이 아닙니다.",
+          submitText: "확인",
+          submitAction: () => {
+            setIsModalOpen(false);
+          },
+          isCloseIconVisible: true,
+        });
+        setIsModalOpen(true);
+        return;
+      } else {
+        reissueTicketMutation.mutate();
+      }
     }
   };
 
@@ -226,8 +289,7 @@ const HomePage = () => {
   return (
     <>
       <Container>
-        <DateInfo />
-        {userId && <LogoutButton />}
+        <HeaderInfoBox userName={name} />
         <ContentContainer>
           {/* 지점명/전화번호/로고 */}
           <HomeHeader
@@ -245,9 +307,10 @@ const HomePage = () => {
           {/* 메뉴 버튼 */}
           <HomeMenu
             handleBuyTicket={handleBuyTicket}
+            handlecheckextendpass={handlecheckextendpass}
+            handleChangeSeat={handleChangeSeat}
             handleLogout={handleLogout}
             handleCheckIn={handleCheckIn}
-            handleChangeSeat={handleChangeSeat}
             handleReissueTicket={handleReissueTicket}
           />
         </ContentContainer>
@@ -274,11 +337,13 @@ const Container = styled.div`
   color: ${colors.app_white};
   display: flex;
   flex-direction: column;
+  align-items: center;
   height: 1920px;
+  width: 100%;
   position: relative;
 `;
 
 const ContentContainer = styled.div`
   padding: 0 130px;
-  margin-top: 120px;
+  margin-top: 100px;
 `;

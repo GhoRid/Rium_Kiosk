@@ -20,10 +20,16 @@ type SeatState = {
 
 type SeatMapProps = {
   myseat?: {};
-  selectedSeat: number | null;
-  onSelect: (selected: number | null) => void;
+  selectedSeatId: number | null;
+  selectedSeatNumber: number | null;
+  onSelect: ({
+    seatId,
+    seatNumber,
+  }: {
+    seatId: number;
+    seatNumber: number;
+  }) => void;
   seatsState: SeatState[]; // ✅ 타입 명시
-  isReservedTicket: boolean; // 고정석 여부
   usingSeatNumber?: number;
 };
 
@@ -71,59 +77,52 @@ const seats: Seat[] = [
 ];
 
 const SeatMap: React.FC<SeatMapProps> = ({
-  selectedSeat,
+  selectedSeatId,
+  selectedSeatNumber,
   onSelect,
   seatsState,
-  isReservedTicket,
   usingSeatNumber,
 }) => {
-  const toggle = (id: number, disabled: boolean) => {
-    if (disabled) return;
-    onSelect(selectedSeat === id ? null : id);
-  };
-
-  const seatsStateList = React.useMemo<SeatState[]>(() => {
-    if (Array.isArray(seatsState)) return seatsState;
-    if (seatsState && typeof seatsState === "object") {
-      return Object.values(seatsState);
-    }
-    return [];
-  }, [seatsState]);
+  console.log(seatsState);
 
   return (
     <Wrap>
       <Legend />
       <Canvas $bg={SeatMapImage}>
-        {seats.map((s) => {
-          const live = seatsStateList?.find(
-            (v) => v.seatId === s.id || v.seatNumber === s.label
-          );
+        {seatsState.map((s) => {
+          const seatPosition = seats.find((seat) => seat.id === s.seatNumber);
+          const live = !s.isUsing;
 
-          const isUsingMySeat = usingSeatNumber == s.id;
+          const isUsingMySeat = usingSeatNumber == s.seatNumber;
 
-          const isDisabled =
-            !!live?.isUsing ||
-            isReservedTicket == !live?.isReservedSeat ||
-            isUsingMySeat;
-
-          const reservedIsAvailable = !!live?.isReservedSeat && !live?.isUsing;
+          const isDisabled = !live;
 
           return (
             <SeatBtn
-              key={s.id}
-              style={{ left: `${s.x}%`, top: `${s.y}%` }}
+              key={s.seatId}
+              style={
+                seatPosition
+                  ? { left: `${seatPosition.x}%`, top: `${seatPosition.y}%` }
+                  : undefined
+              }
               $isUsingSeat={isUsingMySeat}
-              $reservedIsAvailable={reservedIsAvailable}
-              $selected={selectedSeat === s.id}
+              $selected={selectedSeatNumber === s.seatNumber}
               $disabled={isDisabled}
-              disabled={isDisabled} // 네이티브 disabled도 설정
+              disabled={isDisabled}
               type="button"
-              onClick={() => toggle(s.id, isDisabled)}
-              aria-checked={selectedSeat === s.id}
-              aria-label={`Seat ${s.label}`}
-              title={String(s.label)}
+              onClick={() => {
+                onSelect({
+                  seatId: s.seatId,
+                  seatNumber: s.seatNumber,
+                });
+              }}
+              aria-checked={selectedSeatId === s.seatNumber}
+              aria-label={`Seat ${s.seatNumber}`}
+              title={String(s.seatNumber)}
             >
-              <SeatLabel $selected={selectedSeat === s.id}>{s.label}</SeatLabel>
+              <SeatLabel $selected={selectedSeatId === s.seatId}>
+                {s.seatNumber}
+              </SeatLabel>
             </SeatBtn>
           );
         })}
@@ -149,7 +148,6 @@ const Canvas = styled.div<{ $bg?: string }>`
 
 const SeatBtn = styled.button<{
   $isUsingSeat: boolean;
-  $reservedIsAvailable: boolean;
   $selected: boolean;
   $disabled: boolean;
 }>`
@@ -159,20 +157,13 @@ const SeatBtn = styled.button<{
   display: grid;
   place-items: center;
 
-  background: ${({
-    $isUsingSeat,
-    $disabled,
-    $reservedIsAvailable,
-    $selected,
-  }) =>
+  background: ${({ $isUsingSeat, $disabled, $selected }) =>
     $isUsingSeat
       ? "#A90003"
-      : $selected
-      ? colors.app_white
       : $disabled
       ? "#333"
-      : $reservedIsAvailable
-      ? colors.app_main_color
+      : $selected
+      ? colors.app_white
       : "transparent"};
 
   color: ${({ $selected }) => ($selected ? colors.app_black : "#e9edf3")};

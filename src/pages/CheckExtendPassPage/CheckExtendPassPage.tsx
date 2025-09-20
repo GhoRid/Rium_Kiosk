@@ -3,13 +3,21 @@ import { colors } from "../../colors";
 import GoToHomeButton from "../../components/GoToHomeButton";
 import Header from "../../components/Header";
 import UserInfo from "../../components/Pass/UserInfo";
-import PassInfo from "../../components/Pass/PassInfo";
+import PassInfoCard from "./components/PassInfoCard";
 import { getUserId } from "../../utils/tokens";
 import { useQuery } from "@tanstack/react-query";
-import { getInformationTicket } from "../../apis/api/user";
+import {
+  getInformationTicket,
+  getInformationTicketType,
+} from "../../apis/api/user";
+import { useState } from "react";
+import CustomModal from "../../components/CustomModal";
+import { useNavigate } from "react-router";
 
 const CheckExtendPassPage = () => {
+  const navitate = useNavigate();
   const userId = getUserId();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const {
     data: response,
@@ -22,14 +30,39 @@ const CheckExtendPassPage = () => {
   });
 
   const {
-    name,
-    isUsing,
-    expirationDate,
-    remainTime,
-    seatNumber,
-    ticketName,
-    ticketType,
-  } = response?.data || {};
+    data: getInformationTicketTypeData,
+    isLoading: getInformationTicketTypeLoading,
+    error: getInformationTicketTypeError,
+  } = useQuery({
+    queryKey: ["userPasgetInformationTicketTypesInfo", userId],
+    queryFn: () => getInformationTicketType({ mobileNumber: userId! }),
+    enabled: !!userId,
+  });
+
+  const ticketType = getInformationTicketTypeData?.data;
+
+  const onExtendClick = () => {
+    switch (ticketType) {
+      case 1:
+        navitate("/timepass");
+        break;
+      case 2:
+        navitate("/periodpass", { state: { extendingTicketType: 2 } });
+        break;
+      case 3:
+        navitate("/singlepass");
+        break;
+      case 4:
+      default:
+        setIsModalOpen(true);
+        break;
+    }
+  };
+
+  const { name, isUsing, expirationDate, remainTime, seatNumber, ticketName } =
+    response?.data || {};
+
+  console.log(getInformationTicketTypeData?.data);
 
   return (
     <Container>
@@ -39,15 +72,23 @@ const CheckExtendPassPage = () => {
       <Content>
         <UserInfo name={name} isUsing={isUsing} />
 
-        <PassInfo
+        <PassInfoCard
           expirationDate={expirationDate}
           remainTime={remainTime}
           seatNumber={seatNumber}
           ticketName={ticketName}
-          ticketType={ticketType}
           isUsing={isUsing}
+          onExtendClick={() => setIsModalOpen(true) /*onExtendClick()*/}
         />
       </Content>
+      <CustomModal
+        isModalOpen={isModalOpen}
+        setIsModalOpen={setIsModalOpen}
+        submitText="확인"
+        submitAction={() => setIsModalOpen(false)}
+        isCloseIconVisible={false}
+        modalContent="현재 이용권을 연장할 수 없습니다."
+      />
     </Container>
   );
 };

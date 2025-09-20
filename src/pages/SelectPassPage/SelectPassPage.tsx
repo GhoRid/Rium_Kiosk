@@ -3,8 +3,20 @@ import { colors } from "../../colors";
 import GoToHomeButton from "../../components/GoToHomeButton";
 import Header from "../../components/Header";
 import MenuGrid from "./components/MenuGrid";
+import { useEffect } from "react";
+import { useLocation, useNavigate } from "react-router";
 
 const SelectPassPage = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const isTicketPresent = location.state?.isTicketPresent || false;
+
+  useEffect(() => {
+    if (isTicketPresent) {
+      navigate("/", { replace: true });
+    }
+  }, [isTicketPresent, navigate]);
+
   return (
     <Container>
       <GoToHomeButton />

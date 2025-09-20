@@ -12,6 +12,7 @@ import { useLocation, useNavigate } from "react-router";
 import { useMutation } from "@tanstack/react-query";
 import { validUser } from "../../apis/api/user";
 import { saveUserId } from "../../utils/tokens";
+import CustomModal from "../../components/CustomModal";
 
 type FieldName = "phone" | "password";
 const digitsOnly = (s: string) => s.replace(/\D/g, "");
@@ -19,8 +20,8 @@ const digitsOnly = (s: string) => s.replace(/\D/g, "");
 const LoginPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
-  // 리다이렉트 목적지 계산
   const searchParams = new URLSearchParams(location.search);
   const redirectFromState = (location.state as any)?.from as string | undefined;
   const redirectFromQuery = searchParams.get("redirect") || undefined;
@@ -38,8 +39,14 @@ const LoginPage = () => {
       });
     },
     onSuccess: (data) => {
-      saveUserId(phone);
-      navigate(redirectTo, { replace: true });
+      console.log("data", data.data);
+      if (data.data == true) {
+        saveUserId(phone);
+        navigate(redirectTo, { replace: true });
+        return;
+      } else {
+        setIsModalOpen(true);
+      }
     },
     onError: (error) => {
       if ((error as any)?.response?.status) {
@@ -47,6 +54,7 @@ const LoginPage = () => {
       } else {
         console.error("로그인 실패:", error);
       }
+      setIsModalOpen(true);
     },
   });
 
@@ -94,31 +102,42 @@ const LoginPage = () => {
   };
 
   return (
-    <Container>
-      <GoToHomeButton />
+    <>
+      <Container>
+        <GoToHomeButton />
 
-      <Content>
-        {InputFiledList.map((field) => (
-          <InputFiled
-            key={field.name}
-            activeField={activeField}
-            setActiveField={setActiveField}
-            name={field.name}
-            icon={field.icon}
-            placeholder={field.placeholder}
-            value={field.value}
-            setValue={field.setValue}
-          />
-        ))}
+        <Content>
+          {InputFiledList.map((field) => (
+            <InputFiled
+              key={field.name}
+              activeField={activeField}
+              setActiveField={setActiveField}
+              name={field.name}
+              icon={field.icon}
+              placeholder={field.placeholder}
+              value={field.value}
+              setValue={field.setValue}
+            />
+          ))}
 
-        <LoginButton disabled={!canLogin} onClick={onSubmit}>
-          <LoginText>로그인</LoginText>
-        </LoginButton>
+          <LoginButton disabled={!canLogin} onClick={onSubmit}>
+            <LoginText>로그인</LoginText>
+          </LoginButton>
 
-        <AuthLinks />
-        <NumberKeypad onPress={handleKeypad} />
-      </Content>
-    </Container>
+          <AuthLinks />
+          <NumberKeypad onPress={handleKeypad} />
+        </Content>
+      </Container>
+
+      <CustomModal
+        isModalOpen={isModalOpen}
+        setIsModalOpen={setIsModalOpen}
+        isCloseIconVisible={false}
+        modalContent={"로그인에 실패하였습니다.\n정보를 확인해주세요."}
+        submitText={"확인"}
+        submitAction={() => setIsModalOpen(false)}
+      />
+    </>
   );
 };
 

@@ -19,7 +19,10 @@ import { useUserId } from "../../hooks/useUserId";
 
 const ChangeSeatPage = () => {
   const navigate = useNavigate();
-  const [selectedSeat, setSelectedSeat] = useState<number | null>(null);
+  const [selectedSeatId, setselectedSeatId] = useState<number | null>(null);
+  const [selectedSeatNumber, setSelectedSeatNumber] = useState<number | null>(
+    null
+  );
   const [error, setError] = useState<string | null>(null);
 
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -31,7 +34,8 @@ const ChangeSeatPage = () => {
     queryFn: () => getInformationTicket({ mobileNumber: userId! }),
   });
 
-  const { isReservedTicket, seatNumber } = myTicketResponse?.data || {};
+  const { isReservedTicket, seatNumber: mySeatNumber } =
+    myTicketResponse?.data || {};
 
   const { data: response, error: fetchError } = useQuery({
     queryKey: ["infoSeats"],
@@ -41,7 +45,7 @@ const ChangeSeatPage = () => {
   const seatsState = response?.data || [];
 
   const handleNext = () => {
-    if (selectedSeat) {
+    if (selectedSeatId) {
       changeSeatMutation.mutate();
     } else {
       setError("좌석을 선택해주세요.");
@@ -53,7 +57,7 @@ const ChangeSeatPage = () => {
     mutationFn: () =>
       changeSeat({
         mobileNumber: userId!,
-        seatId: selectedSeat!,
+        seatId: selectedSeatId!,
       }),
     onSuccess: () => {
       setIsModalOpen(true);
@@ -62,6 +66,19 @@ const ChangeSeatPage = () => {
       setError("자리 이동에 실패했습니다.");
     },
   });
+
+  const onSelect = ({
+    seatId,
+    seatNumber,
+  }: {
+    seatId: number;
+    seatNumber: number;
+  }) => {
+    setselectedSeatId(selectedSeatId === seatId ? null : seatId);
+    setSelectedSeatNumber(
+      selectedSeatNumber === seatNumber ? null : seatNumber
+    );
+  };
 
   return (
     <>
@@ -75,11 +92,11 @@ const ChangeSeatPage = () => {
           </MessageBox>
 
           <SeatMap
-            selectedSeat={selectedSeat}
-            onSelect={setSelectedSeat}
+            selectedSeatId={selectedSeatId}
+            selectedSeatNumber={selectedSeatNumber}
+            onSelect={onSelect}
             seatsState={seatsState}
-            usingSeatNumber={seatNumber}
-            isReservedTicket={isReservedTicket}
+            usingSeatNumber={mySeatNumber}
           />
         </Content>
 
@@ -95,7 +112,7 @@ const ChangeSeatPage = () => {
       <CustomModal
         isModalOpen={isModalOpen}
         setIsModalOpen={setIsModalOpen}
-        modalContent={"12번 좌석으로\n자리 이동이 완료되었습니다."}
+        modalContent={`${selectedSeatId}번 좌석으로\n자리 이동이 완료되었습니다.`}
         submitText="홈으로"
         submitAction={() => navigate("/home")}
       />

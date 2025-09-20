@@ -1,15 +1,13 @@
 import styled from "styled-components";
 import BannerImage1 from "../../../assets/bannerImage/banner1.png";
+import BannerImage2 from "../../../assets/bannerImage/banner2.png";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { colors } from "../../../colors";
 
 const FooterCarousel = () => {
   const slides = [
     { id: 1, image: BannerImage1 },
-    // { id: 2, image: BannerImage1 },
-    // { id: 3, image: BannerImage1 },
-    // { id: 4, image: BannerImage1 },
-    // { id: 5, image: BannerImage1 },
+    { id: 2, image: BannerImage2 },
   ];
 
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -36,7 +34,6 @@ const FooterCarousel = () => {
     scrollToSlide(index);
   }, [scrollToSlide]);
 
-  /** 오토스크롤: 현재 위치 기준으로 다음 슬라이드로만 이동 (state 갱신 X) */
   const startAuto = useCallback(() => {
     if (timerRef.current) clearInterval(timerRef.current);
     timerRef.current = setInterval(() => {
@@ -47,7 +44,7 @@ const FooterCarousel = () => {
       const current = Math.round(el.scrollLeft / w);
       const next = (current + 1) % slides.length;
       scrollToSlide(next);
-    }, 4000);
+    }, 10000);
   }, [slides.length, scrollToSlide]);
 
   const stopAuto = useCallback(() => {

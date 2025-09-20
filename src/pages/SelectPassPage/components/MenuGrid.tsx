@@ -3,6 +3,7 @@ import { colors } from "../../../colors";
 import { ReactComponent as ClockIcon } from "../../../assets/svgs/clock.svg";
 import { ReactComponent as CalendarIcon } from "../../../assets/svgs/calendar.svg";
 import { ReactComponent as TimerIcon } from "../../../assets/svgs/timer.svg";
+import { ReactComponent as CouponIcon } from "../../../assets/svgs/coupon.svg";
 import { useNavigate } from "react-router";
 
 const MenuGrid = () => {
@@ -31,6 +32,21 @@ const MenuGrid = () => {
           </IconBox>
         </TwoButton>
       </TwoButtonRow>
+      {/* <CouponButton
+        onClick={() =>
+          navigate("/usecoupon", {
+            state: {
+              from: "/selectpass",
+            },
+          })
+        }
+      >
+        <Label>쿠폰 이용하기</Label>
+        <Label>9월 모의고사 수험생 전용</Label>
+        <IconBox>
+          <CouponIcon />
+        </IconBox>
+      </CouponButton> */}
     </Container>
   );
 };
@@ -39,10 +55,13 @@ export default MenuGrid;
 
 const Container = styled.div`
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 `;
 
 const Label = styled.span`
-  font-size: 50px;
+  font-size: 40px;
   font-weight: 500;
   line-height: 1.2;
   white-space: pre-line;
@@ -89,13 +108,23 @@ const OneButton = styled(BaseButton)`
 const TwoButtonRow = styled.div`
   display: flex;
   gap: 20px;
-  margin-top: 20px;
+  /* margin-top: 20px; */
 `;
 
 const TwoButton = styled(BaseButton)`
   width: 350px;
   height: 330px;
   padding: 50px 0 0 40px;
+  background: linear-gradient(180deg, #1c2e4a 0%, #112037 100%),
+    ${colors.app_main_color};
+`;
+
+const CouponButton = styled(BaseButton)`
+  width: 730px;
+  height: 160px;
+  display: flex;
+  justify-content: center;
+  padding: 0 40px;
   background: linear-gradient(180deg, #1c2e4a 0%, #112037 100%),
     ${colors.app_main_color};
 `;

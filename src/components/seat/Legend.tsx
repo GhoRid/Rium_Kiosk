@@ -4,7 +4,7 @@ import { colors } from "../../colors";
 const Legend = () => {
   return (
     <Wrap>
-      <LegendItem>
+      {/* <LegendItem>
         <Swatch
           style={{
             background: `${colors.app_main_color}`,
@@ -12,7 +12,7 @@ const Legend = () => {
           }}
         />
         <Text>이용 가능 고정석</Text>
-      </LegendItem>
+      </LegendItem> */}
 
       <LegendItem>
         <Swatch style={{ background: "#A90003" }} />

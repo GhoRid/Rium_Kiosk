@@ -3,7 +3,8 @@ import { colors } from "../../../colors";
 import { ReactComponent as CardIcon } from "../../../assets/svgs/card.svg";
 import { ReactComponent as SamsungPayIcon } from "../../../assets/svgs/samsungpay.svg";
 import { ReactComponent as KakaoPayIcon } from "../../../assets/svgs/kakaopay.svg";
-import { ReactComponent as PaycoIcon } from "../../../assets/svgs/payco.svg";
+import { ReactComponent as CouponIcon } from "../../../assets/svgs/coupon.svg";
+import { useNavigate } from "react-router";
 
 type PaymentMethodProps = {
   paymentMethod: string | null;
@@ -14,6 +15,8 @@ const PaymentMethod = ({
   paymentMethod,
   setPaymentMethod,
 }: PaymentMethodProps) => {
+  const navigate = useNavigate();
+
   const MethodList = [
     {
       name: "카드",
@@ -28,7 +31,6 @@ const PaymentMethod = ({
       icon: (
         <IconBox>
           <KakaoPayIcon />
-          <PaycoIcon />
         </IconBox>
       ),
     },
@@ -50,6 +52,12 @@ const PaymentMethod = ({
           </Element>
         ))}
       </MethodRow>
+      <UseCouponBox
+        onClick={() => navigate("/usecoupon", { state: { from: "/payment" } })}
+      >
+        <Label>쿠폰 사용</Label>
+        <CouponIcon width={65} />
+      </UseCouponBox>
     </Wrapper>
   );
 };
@@ -59,7 +67,7 @@ export default PaymentMethod;
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 40px;
+  gap: 20px;
   margin-top: 40px;
   width: 100%;
 `;
@@ -73,6 +81,7 @@ const MethodRow = styled.div`
   display: flex;
   align-items: center;
   gap: 20px;
+  margin-top: 20px;
 `;
 
 const Element = styled.button<{ $isSelected: boolean }>`
@@ -101,4 +110,17 @@ const IconBox = styled.div`
   align-items: center;
   justify-content: center;
   gap: 10px;
+`;
+
+const UseCouponBox = styled.button`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  width: 240px;
+  height: 200px;
+  border-radius: 30px;
+  background-color: #2b2d30;
+  color: ${colors.app_white};
+  padding: 35px;
 `;

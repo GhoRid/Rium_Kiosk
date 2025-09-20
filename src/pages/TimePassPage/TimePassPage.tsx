@@ -3,23 +3,44 @@ import { colors } from "../../colors";
 import Header from "../../components/Header";
 import GoToHomeButton from "../../components/GoToHomeButton";
 import OptionCard from "./components/OptionCard";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import ErrorMsg from "../../components/ErrorMsg";
 import BottomButtons from "../../components/BottomButtons";
 import { useNavigate } from "react-router";
+import { useQuery } from "@tanstack/react-query";
+import { getTicketList } from "../../apis/api/pass";
+
+type seatOption = {
+  label: string;
+  time: number;
+  price: number;
+};
 
 const TimePassPage = () => {
   const navigate = useNavigate();
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const seatList = [
-    { label: "10시간", time: 10, price: 25000 },
-    { label: "30시간", time: 30, price: 50000 },
-    { label: "50시간", time: 50, price: 100000 },
-    { label: "100시간", time: 100, price: 160000 },
-    { label: "200시간", time: 200, price: 280000 },
-  ];
+  const { data, isLoading } = useQuery({
+    queryKey: ["passList", "timePass"],
+    queryFn: () =>
+      getTicketList({
+        ticketType: 1,
+      }),
+  });
+
+  const toLabel = (name: string) => name.replace(/^시간권\s*/g, "").trim();
+
+  const seatList = useMemo(() => {
+    return (
+      data?.data.map((ticket: any) => ({
+        label: toLabel(ticket.ticketName),
+        time: ticket.time,
+        price: ticket.price,
+        ticketId: ticket.ticketId,
+      })) || []
+    );
+  }, [data]);
 
   const handleNext = () => {
     if (!selectedOption) {
@@ -27,18 +48,22 @@ const TimePassPage = () => {
       return;
     }
 
-    const selected = seatList.find((s) => s.label === selectedOption);
-    if (!selected) {
+    const selectedPass = seatList.find(
+      (s: seatOption) => s.label === selectedOption
+    );
+    if (!selectedPass) {
       setError("선택한 이용권 정보를 찾을 수 없습니다.");
       return;
     }
 
+    // navigate("/select-seat", {
     navigate("/payment", {
       state: {
         passType: "시간권",
-        label: selected.label,
-        price: selected.price,
-        time: selected.time,
+        label: selectedPass.label,
+        price: selectedPass.price,
+        time: selectedPass.time,
+        ticketId: selectedPass.ticketId,
       },
     });
   };
@@ -57,7 +82,7 @@ const TimePassPage = () => {
           <Message>시간권</Message>
         </MessageBox>
         <CardList>
-          {seatList.map((seat, index) => (
+          {seatList.map((seat: seatOption, index: number) => (
             <OptionCard
               key={index}
               label={seat.label}

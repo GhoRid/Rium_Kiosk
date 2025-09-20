@@ -5,25 +5,24 @@ import { ReactComponent as ChangeSeat } from "../../../assets/svgs/change_seat.s
 import { ReactComponent as Enter } from "../../../assets/svgs/enter.svg";
 import { ReactComponent as Exit } from "../../../assets/svgs/exit.svg";
 import { colors } from "../../../colors";
-import { useNavigate } from "react-router";
 
 type HomeMenuProps = {
   handleBuyTicket: () => void;
+  handlecheckextendpass: () => void;
+  handleChangeSeat: () => void;
   handleLogout: () => void;
   handleCheckIn: () => void;
-  handleChangeSeat: () => void;
   handleReissueTicket: () => void;
 };
 
 const HomeMenu = ({
   handleBuyTicket,
+  handlecheckextendpass,
+  handleChangeSeat,
   handleLogout,
   handleCheckIn,
-  handleChangeSeat,
   handleReissueTicket,
 }: HomeMenuProps) => {
-  const navigate = useNavigate();
-
   const FeatureList = [
     {
       name: "이용권 구매",
@@ -33,7 +32,7 @@ const HomeMenu = ({
     {
       name: "이용권\n확인/연장",
       icon: <CheckExtendPass />,
-      action: () => navigate("/checkextendpass"),
+      action: () => handlecheckextendpass(),
     },
     {
       name: "자리 이동",

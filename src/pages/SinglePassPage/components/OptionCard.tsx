@@ -6,8 +6,9 @@ type OptionCardProps = {
   price: number;
   width: number;
   height: number;
-  selectedOption: string | null;
-  selectOption: (option: string | null) => void;
+  ticketId: number;
+  selectedOption: number | null;
+  selectOption: (option: number | null) => void;
 };
 
 const OptionCard = ({
@@ -16,18 +17,19 @@ const OptionCard = ({
   width: WIDTH,
   height: HEIGHT,
   selectedOption,
+  ticketId,
   selectOption,
 }: OptionCardProps) => {
   return (
     <Card
-      $isSelected={selectedOption === label}
+      $isSelected={selectedOption === ticketId}
       $width={WIDTH}
       $height={HEIGHT}
       onClick={() => {
-        if (selectedOption === label) {
+        if (selectedOption === ticketId) {
           selectOption(null);
         } else {
-          selectOption(label);
+          selectOption(ticketId);
         }
       }}
     >

@@ -7,16 +7,30 @@ import { useEffect, useState } from "react";
 import BottomButtons from "../../components/BottomButtons";
 import ErrorMsg from "../../components/ErrorMsg";
 import { useNavigate } from "react-router";
+import { useQuery } from "@tanstack/react-query";
+import { getTicketList } from "../../apis/api/pass";
 
 const SinglePassPage = () => {
   const navigate = useNavigate();
-  const [selectedOption, setSelectedOption] = useState<string | null>(null);
+  const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["passList", "singlePass"],
+    queryFn: () =>
+      getTicketList({
+        ticketType: 3,
+      }),
+  });
+
+  const ticketData = data?.data || {};
+
+  // console.log(ticketData);
 
   const handleNext = () => {
     if (selectedOption) {
-      const selectedPass = passList.find(
-        (pass) => pass.label === selectedOption
+      const selectedPass = ticketData.find(
+        (ticket: any) => ticket.ticketId === selectedOption
       );
 
       if (!selectedPass) {
@@ -26,12 +40,13 @@ const SinglePassPage = () => {
 
       navigate("/select-seat", {
         state: {
-          toPurchase: true,
+          from: "/selectpass",
           passInformation: {
             passType: "1회 이용권",
-            label: selectedPass.label,
+            label: `${selectedPass.time}시간`,
             time: selectedPass.time,
             price: selectedPass.price,
+            ticketId: selectedPass.ticketId,
           },
         },
       });
@@ -44,48 +59,9 @@ const SinglePassPage = () => {
     setError(null);
   }, [selectedOption]);
 
-  const passList = [
-    {
-      label: "2시간",
-      time: 2,
-      price: 4000,
-    },
-    {
-      label: "3시간",
-      time: 3,
-      price: 5000,
-    },
-    {
-      label: "4시간",
-      time: 4,
-      price: 6000,
-    },
-    {
-      label: "5시간",
-      time: 5,
-      price: 7000,
-    },
-    {
-      label: "6시간",
-      time: 6,
-      price: 8000,
-    },
-    {
-      label: "8시간",
-      time: 8,
-      price: 10000,
-    },
-    {
-      label: "10시간",
-      time: 10,
-      price: 12000,
-    },
-    {
-      label: "12시간",
-      time: 12,
-      price: 14000,
-    },
-  ];
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <Container>
@@ -95,19 +71,22 @@ const SinglePassPage = () => {
         <MessageBox>
           <Message>이용 시간을 선택해주세요.</Message>
         </MessageBox>
-        <CardList>
-          {passList.map((pass, index) => (
-            <OptionCard
-              selectOption={setSelectedOption}
-              selectedOption={selectedOption}
-              key={index}
-              label={pass.label}
-              price={pass.price}
-              width={175}
-              height={175}
-            />
-          ))}
-        </CardList>
+        {!isLoading && (
+          <CardList>
+            {ticketData.map((ticket: any, index: any) => (
+              <OptionCard
+                selectOption={setSelectedOption}
+                selectedOption={selectedOption}
+                key={index}
+                ticketId={ticket.ticketId}
+                label={`${ticket.time}시간`}
+                price={ticket.price}
+                width={175}
+                height={175}
+              />
+            ))}
+          </CardList>
+        )}
       </Content>
       {!!error && <ErrorMsg>{error}</ErrorMsg>}
 

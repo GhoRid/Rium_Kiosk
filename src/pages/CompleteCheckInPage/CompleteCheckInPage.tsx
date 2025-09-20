@@ -16,7 +16,7 @@ const CompleteCheckInPage = () => {
   )}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
 
   const location = useLocation();
-  const { selectedSeat } = location.state || {};
+  const { selectedSeatNumber } = location.state || {};
 
   const handleOkay = () => {
     navigate("/home");
@@ -31,7 +31,10 @@ const CompleteCheckInPage = () => {
           <Message>입실 처리가 완료되었습니다.</Message>
         </MessageBox>
 
-        <CompleteCheckInForm date={formattedDate} selectedSeat={selectedSeat} />
+        <CompleteCheckInForm
+          date={formattedDate}
+          selectedSeat={selectedSeatNumber}
+        />
       </Content>
       <BottomButton submitName="확인" submit={() => handleOkay()} />
     </Container>

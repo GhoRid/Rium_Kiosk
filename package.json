@@ -1,11 +1,12 @@
 {
   "name": "rium_kiosk",
-  "version": "0.1.0",
+  "version": "0.1.3",
   "private": true,
   "main": "public/electron.js",
   "homepage": "./",
   "type": "module",
   "dependencies": {
+    "@sentry/electron": "^7.1.0",
     "@tanstack/react-query": "^5.85.2",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.6.4",
@@ -17,13 +18,23 @@
     "@types/react-dom": "^19.1.7",
     "axios": "^1.11.0",
     "electron-is-dev": "^3.0.1",
+    "electron-log": "^5.4.3",
+    "electron-updater": "^6.6.2",
+    "hangul-js": "^0.2.6",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-router": "^7.7.1",
     "react-scripts": "5.0.1",
+    "react-simple-keyboard": "^3.8.115",
     "styled-components": "^6.1.19",
     "typescript": "^4.9.5",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "zustand": "^5.0.8"
+  },
+  "repository": {
+    "type": "git",
+    "owner": "GhoRid",
+    "url": "https://github.com/GhoRid/Rium_Kiosk.git"
   },
   "scripts": {
     "react-start": "react-scripts start",
@@ -36,9 +47,32 @@
     "build:win32": "yarn react-build && electron-builder --win --ia32",
     "build:win64": "yarn react-build && electron-builder --win --x64",
     "build:mac": "yarn react-build && electron-builder --mac dmg zip",
-    "dist:win": "electron-builder --win"
+    "dist:win": "electron-builder --win",
+    "deploy:mac": "node -e \"console.log('GH?', !!process.env.GH_TOKEN)\" && yarn react-build && electron-builder --mac --publish always",
+    "deploy:win": "node -e \"console.log('GH?', !!process.env.GH_TOKEN)\" && yarn react-build && electron-builder --win --publish always"
   },
   "build": {
+    "appId": "kr.tworivers.rium_kiosk",
+    "productName": "RiumKioskApp",
+    "executableName": "rium-kiosk-app",
+    "directories": {
+      "buildResources": "electron-builder",
+      "output": "dist"
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "GhoRid",
+        "repo": "Rium_Kiosk"
+      }
+    ],
+    "files": [
+      "build/**",
+      "public/electron.js",
+      "logger.js",
+      "node_modules/**",
+      "package.json"
+    ],
     "mac": {
       "target": [
         "dmg",
@@ -51,12 +85,6 @@
         {
           "target": "nsis",
           "arch": [
-            "ia32"
-          ]
-        },
-        {
-          "target": "nsis",
-          "arch": [
             "x64"
           ]
         }
@@ -64,8 +92,9 @@
     },
     "nsis": {
       "oneClick": true,
-      "perMachine": true,
-      "allowToChangeInstallationDirectory": false
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": false,
+      "include": "electron-builder/installer.nsh"
     }
   },
   "eslintConfig": {

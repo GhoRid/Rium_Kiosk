@@ -6,22 +6,20 @@ import Input from "./components/Input";
 import { useMemo, useState } from "react";
 import { saveTokens } from "../../utils/tokens";
 import { useNavigate } from "react-router";
+import CustomKeyboard from "../../components/CustomKeyboard";
 
 type ActiveField = "id" | "password";
 
 const KioskLoginPage = () => {
   const navigate = useNavigate();
+  const [keyboardVisible, setKeyboardVisible] = useState<boolean>(false);
   const [activeField, setActiveField] = useState<ActiveField>("id");
   const [id, setId] = useState("");
   const [password, setPassword] = useState("");
 
   const { mutate, isPending } = useMutation({
-    mutationFn: async (vars: { loginId: string; password: string }) => {
-      return await loginKiosk({
-        loginId: vars.loginId,
-        password: vars.password,
-      });
-    },
+    mutationFn: async (vars: { loginId: string; password: string }) =>
+      loginKiosk({ loginId: vars.loginId, password: vars.password }),
     onSuccess: (res) => {
       const jwt = res?.data?.jwt ?? res?.data?.data?.jwt;
       const refreshToken =
@@ -57,6 +55,17 @@ const KioskLoginPage = () => {
     mutate({ loginId: id.trim(), password });
   };
 
+  const handleActivateField = (name: ActiveField) => {
+    setActiveField(name);
+    if (!keyboardVisible) setKeyboardVisible(true);
+  };
+
+  const activeValue = activeField === "id" ? id : password;
+  const setActiveValue = (next: string) => {
+    if (activeField === "id") setId(next.replace(/\s/g, ""));
+    else setPassword(next.replace(/\s/g, ""));
+  };
+
   return (
     <Container>
       <Content as="form" onSubmit={handleSubmit}>
@@ -68,7 +77,7 @@ const KioskLoginPage = () => {
           <Input
             key={field.name}
             activeField={activeField}
-            setActiveField={setActiveField}
+            setActiveField={handleActivateField}
             name={field.name as ActiveField}
             placeholder={field.placeholder}
             value={field.value}
@@ -76,7 +85,6 @@ const KioskLoginPage = () => {
           />
         ))}
 
-        {/* ✅ onClick에서 mutate를 '호출'하거나 type="submit" 사용 */}
         <LoginButton
           type="submit"
           disabled={isPending || !id || !password}
@@ -85,6 +93,15 @@ const KioskLoginPage = () => {
           <LoginText>{isPending ? "로그인 중..." : "로그인"}</LoginText>
         </LoginButton>
       </Content>
+
+      {keyboardVisible && (
+        <CustomKeyboard
+          text={activeValue}
+          setText={setActiveValue}
+          setKeyboardVisible={setKeyboardVisible}
+          allowedModes={["en", "num"]}
+        />
+      )}
     </Container>
   );
 };
