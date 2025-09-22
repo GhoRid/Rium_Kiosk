@@ -76,13 +76,20 @@ const seats: Seat[] = [
   { id: 36, label: 36, x: 51.3, y: 90.5 },
 ];
 
-const SeatMap: React.FC<SeatMapProps> = ({
+const DESIGN_W = 880;
+const DESIGN_H = 950;
+// 원본에서 좌석 버튼 가로(px)
+const SEAT_PX = 70;
+// 캔버스 대비 버튼 너비(%)
+const SEAT_W_PCT = (SEAT_PX / DESIGN_W) * 100; // ≈ 7.95%
+
+const SeatMap = ({
   selectedSeatId,
   selectedSeatNumber,
   onSelect,
   seatsState,
   usingSeatNumber,
-}) => {
+}: SeatMapProps) => {
   console.log(seatsState);
 
   return (
@@ -108,6 +115,7 @@ const SeatMap: React.FC<SeatMapProps> = ({
               $isUsingSeat={isUsingMySeat}
               $selected={selectedSeatNumber === s.seatNumber}
               $disabled={isDisabled}
+              $SEAT_W_PCT={SEAT_W_PCT}
               disabled={isDisabled}
               type="button"
               onClick={() => {
@@ -140,26 +148,28 @@ const Wrap = styled.div`
 
 const Canvas = styled.div<{ $bg?: string }>`
   position: relative;
-  width: 880px;
-  height: 950px;
+  width: 100%;
+  min-width: 300px;
+  aspect-ratio: ${DESIGN_W} / ${DESIGN_H};
   background: ${({ $bg }) =>
-    $bg ? `url(${$bg}) center / contain no-repeat` : "transparent"};
+    $bg ? `url(${$bg}) center / 100% 100% no-repeat` : "transparent"};
 `;
 
 const SeatBtn = styled.button<{
   $isUsingSeat: boolean;
   $selected: boolean;
   $disabled: boolean;
+  $SEAT_W_PCT: number; // 버튼 너비 백분율 (%
 }>`
   position: absolute;
-  width: 70px;
+  width: ${({ $SEAT_W_PCT }) => `${$SEAT_W_PCT}%`};
   aspect-ratio: 1;
   display: grid;
   place-items: center;
 
   background: ${({ $isUsingSeat, $disabled, $selected }) =>
     $isUsingSeat
-      ? "#A90003"
+      ? colors.red
       : $disabled
       ? "#333"
       : $selected
@@ -176,6 +186,8 @@ const SeatBtn = styled.button<{
   cursor: ${({ $disabled }) => ($disabled ? "not-allowed" : "pointer")};
   pointer-events: ${({ $disabled }) => ($disabled ? "none" : "auto")};
   user-select: none;
+
+  border-width: clamp(1px, 0.25vw, 2px);
 `;
 
 const SeatLabel = styled.span<{ $selected: boolean }>`
