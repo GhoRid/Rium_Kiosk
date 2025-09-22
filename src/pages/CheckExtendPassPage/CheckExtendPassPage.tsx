@@ -47,12 +47,12 @@ const CheckExtendPassPage = () => {
         navitate("/timepass");
         break;
       case 2:
+      case 4:
         navitate("/periodpass", { state: { extendingTicketType: 2 } });
         break;
       case 3:
         navitate("/singlepass");
         break;
-      case 4:
       default:
         setIsModalOpen(true);
         break;

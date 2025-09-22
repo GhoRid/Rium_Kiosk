@@ -6,19 +6,14 @@ import HeaderInfoBox from "./components/HeaderInfoBox";
 import HomeHeader from "./components/HomeHeader";
 import FooterCarousel from "./components/FooterCarousel";
 import CustomModal from "../../components/CustomModal";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useUserId } from "../../hooks/useUserId";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { getPlaceInformation } from "../../apis/api/kioskAuth";
-import {
-  disableTicket,
-  getInformationSeat,
-  getUserData,
-} from "../../apis/api/user";
+import { disableTicket, getUserData } from "../../apis/api/user";
 import { clearUserId } from "../../utils/tokens";
 import { useNavigate } from "react-router";
 import { reissueTicket } from "../../apis/api/pass";
-import { postQR } from "../../apis/api/receipt";
 import { useAppPaymentMutations } from "../../hooks/usePayment";
 
 const HomePage = () => {
@@ -43,17 +38,6 @@ const HomePage = () => {
     queryKey: ["placeInformation"],
     queryFn: () => getPlaceInformation(),
   });
-
-  const {
-    data: response,
-    isLoading,
-    error: fetchError,
-  } = useQuery({
-    queryKey: ["seats"],
-    queryFn: () => getInformationSeat(),
-  });
-
-  // console.log(placeInfoData);
 
   const { data: userData, isSuccess: getUserDataIsSuccess } = useQuery({
     queryKey: ["userInfo", userId],

@@ -7,11 +7,7 @@ import ErrorMsg from "../../components/ErrorMsg";
 import BottomButtons from "../../components/BottomButtons";
 import SeatMap from "../../components/seat/SeatMap";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import {
-  enableTicket,
-  getInformationSeat,
-  getInformationTicket,
-} from "../../apis/api/user";
+import { enableTicket, getInformationSeat } from "../../apis/api/user";
 import { useUserId } from "../../hooks/useUserId";
 import { useLocation, useNavigate } from "react-router";
 import { sendUseTicketCoupon } from "../../apis/api/pass";
