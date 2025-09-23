@@ -6,13 +6,8 @@ export const purchaseTicket = async (data: any) => {
 };
 
 // 시간권 연장
-export const extendTicketTime = async (data: any) => {
-  return await appInstance.post("/extend/ticket/time", data);
-};
-
-// 기간권 연장
-export const extendTicketPeriod = async (data: any) => {
-  return await appInstance.post("/extend/ticket/period", data);
+export const extendTicket = async (data: any) => {
+  return await appInstance.post("/extend/ticket", data);
 };
 
 // 티켓 정보 기져오기

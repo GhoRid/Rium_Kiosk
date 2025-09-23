@@ -2,7 +2,7 @@ import { nvcatApi } from "../apis/api/nvcatApi";
 import { useMutation, UseMutationResult } from "@tanstack/react-query";
 import { PurchaseTicketData, QRData, ReceiptData } from "../types/payment";
 import { postQR, postreceipt } from "../apis/api/receipt";
-import { purchaseTicket } from "../apis/api/pass";
+import { extendTicket, purchaseTicket } from "../apis/api/pass";
 import { sendUseCoupon } from "../apis/api/user";
 
 export const useNVCatPayment = () => {
@@ -32,6 +32,12 @@ export function useAppPaymentMutations() {
     retry: 1,
   });
 
+  const extendTicketMutation = useMutation({
+    mutationKey: ["extendTicket"],
+    mutationFn: (requestBody: PurchaseTicketData) => extendTicket(requestBody),
+    retry: 1,
+  });
+
   const purchaseTicketMutation = useMutation({
     mutationKey: ["purchaseTicket"],
     mutationFn: (requestBody: PurchaseTicketData) =>
@@ -58,6 +64,7 @@ export function useAppPaymentMutations() {
   return {
     receiptMutation,
     qrMutation,
+    extendTicketMutation,
     purchaseTicketMutation,
     sendUseCouponMutation,
   };

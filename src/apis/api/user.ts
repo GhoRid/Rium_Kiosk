@@ -1,4 +1,4 @@
-import { appInstance } from "..";
+import { appInstance, riumQAppInstance } from "..";
 
 // 회원 등록
 export const registerUser = async (data: any) => {
@@ -32,6 +32,9 @@ export const verifySmsCode = async (params: any) => {
 // SMS 인증 코드 발송
 export const sendSmsCode = async (params: any) => {
   return await appInstance.get("/sms/send/code", { params });
+};
+export const riumQAppCode = async (data: any) => {
+  return await riumQAppInstance.post("/auth/sms/verification-requests", data);
 };
 
 // 사용자 존재 여부 확인

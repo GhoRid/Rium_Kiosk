@@ -8,7 +8,13 @@ import { StyleSheetManager } from "styled-components";
 import ErrorBoundary from "./components/layouts/ErrorBoundary";
 import * as Sentry from "@sentry/electron/renderer";
 
-export const queryClient = new QueryClient({});
+export const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+    },
+  },
+});
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement

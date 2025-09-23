@@ -35,7 +35,7 @@ type TicketRow = {
 const PeriodPassPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { extendingTicketType } = location.state || {};
+  const { extendingTicketType, isExtend } = location.state || {};
 
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -120,6 +120,21 @@ const PeriodPassPage = () => {
 
     if (!seatType || !label || time == null || price == null) {
       setError("선택한 이용권 정보를 찾을 수 없습니다.");
+      return;
+    }
+
+    if (isExtend) {
+      navigate("/payment", {
+        state: {
+          passType: "기간권",
+          seatType,
+          label,
+          time,
+          price,
+          ticketId,
+          isExtend: true,
+        },
+      });
       return;
     }
 

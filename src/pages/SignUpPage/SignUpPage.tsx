@@ -9,7 +9,13 @@ import { formatDateHyphen } from "../../utils/formatDate";
 import GoToHomeButton from "../../components/GoToHomeButton";
 import BottomButtons from "../../components/BottomButtons";
 import { useMutation } from "@tanstack/react-query";
-import { registerUser, sendSmsCode, verifySmsCode } from "../../apis/api/user";
+import {
+  registerUser,
+  riumQAppCode,
+  sendSmsCode,
+  verifySmsCode,
+} from "../../apis/api/user";
+
 import SignUpSuccessModal from "./components/SignUpSuccessModal";
 import { useNavigate } from "react-router";
 import CustomKeyboard from "../../components/CustomKeyboard";
@@ -178,6 +184,13 @@ const SignUpPage = () => {
       setFieldError("phone", e?.message || "인증 요청에 실패했습니다."),
   });
 
+  // const sendCodeMutation = useMutation({
+  //   mutationFn: async () => riumQAppCode({ mobileNumber: digitsOnly(phone) }),
+  //   onSuccess: () => {},
+  //   onError: (e: any) =>
+  //     setFieldError("phone", e?.message || "인증 요청에 실패했습니다."),
+  // });
+
   const verifyCodeMutation = useMutation({
     mutationFn: async () =>
       verifySmsCode({
@@ -278,8 +291,6 @@ const SignUpPage = () => {
     activeField === "name" ? (["kr", "en"] as const) : (["num"] as const);
   const err = <K extends keyof Errors>(k: K) =>
     submitted ? errors[k] : undefined;
-
-  console.log(modalContent);
 
   return (
     <>

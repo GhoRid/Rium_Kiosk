@@ -42,6 +42,14 @@ export const appInstance = axios.create({
   },
 });
 
+export const riumQAppInstance = axios.create({
+  baseURL: "https://onerivers.kr/api/riumq",
+  timeout: 3000,
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+
 /** -----------------------------
  *  토큰 재발급
  *  ----------------------------- */

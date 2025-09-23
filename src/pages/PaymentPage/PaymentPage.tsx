@@ -27,10 +27,17 @@ const PaymentPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const { price, passType, label, seatType, seatNumber, ticketId } =
-    location.state || {};
+  const {
+    price,
+    passType,
+    label,
+    seatType,
+    seatNumber,
+    ticketId,
+    isExtend = false,
+  } = location.state || {};
 
-  const passTicketVisible = !!seatNumber;
+  const passTicketVisible = !!seatNumber && !isExtend;
 
   const userId = useMemo(() => getUserId(), []);
 
@@ -99,6 +106,7 @@ const PaymentPage = () => {
   };
 
   const { start } = useRunPaymentFlow({
+    isExtend,
     form,
     usingCouponCode,
     paymentType,
@@ -138,7 +146,7 @@ const PaymentPage = () => {
   return (
     <Container>
       <GoToHomeButton />
-      <Header title="결제하기" />
+      <Header title={isExtend ? "연장하기" : "결제하기"} />
 
       <Content>
         <PaymentInfo passType={passType} label={labelName} price={finalPrice} />

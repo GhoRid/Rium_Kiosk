@@ -44,14 +44,16 @@ const CheckExtendPassPage = () => {
   const onExtendClick = () => {
     switch (ticketType) {
       case 1:
-        navitate("/timepass");
+        navitate("/timepass", { state: { isExtend: true } });
         break;
       case 2:
       case 4:
-        navitate("/periodpass", { state: { extendingTicketType: 2 } });
+        navitate("/periodpass", {
+          state: { extendingTicketType: 2, isExtend: true },
+        });
         break;
       case 3:
-        navitate("/singlepass");
+        navitate("/singlepass", { state: { isExtend: true } });
         break;
       default:
         setIsModalOpen(true);
@@ -78,7 +80,7 @@ const CheckExtendPassPage = () => {
           seatNumber={seatNumber}
           ticketName={ticketName}
           isUsing={isUsing}
-          onExtendClick={() => setIsModalOpen(true) /*onExtendClick()*/}
+          onExtendClick={onExtendClick}
         />
       </Content>
       <CustomModal

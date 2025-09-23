@@ -6,7 +6,7 @@ import OptionCard from "./components/OptionCard";
 import { useEffect, useMemo, useState } from "react";
 import ErrorMsg from "../../components/ErrorMsg";
 import BottomButtons from "../../components/BottomButtons";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import { getTicketList } from "../../apis/api/pass";
 
@@ -20,6 +20,8 @@ const TimePassPage = () => {
   const navigate = useNavigate();
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const location = useLocation();
+  const { isExtend } = location.state || {};
 
   const { data, isLoading } = useQuery({
     queryKey: ["passList", "timePass"],
@@ -56,7 +58,20 @@ const TimePassPage = () => {
       return;
     }
 
-    // navigate("/select-seat", {
+    if (isExtend) {
+      navigate("/payment", {
+        state: {
+          passType: "시간권",
+          label: `${selectedPass.time}시간`,
+          price: selectedPass.price,
+          time: selectedPass.time,
+          ticketId: selectedPass.ticketId,
+          isExtend: true,
+        },
+      });
+      return;
+    }
+
     navigate("/payment", {
       state: {
         passType: "시간권",

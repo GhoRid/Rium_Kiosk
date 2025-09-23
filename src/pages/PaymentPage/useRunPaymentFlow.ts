@@ -17,6 +17,7 @@ type PaymentType =
   | "kakao_money";
 
 type RunnerArgs = {
+  isExtend: boolean;
   form: any;
   usingCouponCode: string | null;
   paymentType: PaymentType;
@@ -35,6 +36,7 @@ type RunnerArgs = {
 
 export const useRunPaymentFlow = (args: RunnerArgs) => {
   const {
+    isExtend,
     form,
     usingCouponCode,
     paymentType,
@@ -56,15 +58,15 @@ export const useRunPaymentFlow = (args: RunnerArgs) => {
     receiptMutation,
     qrMutation,
     purchaseTicketMutation,
+    extendTicketMutation,
     sendUseCouponMutation,
   } = useAppPaymentMutations();
-
-  // const isCompensatingRef = useRef(false);
 
   const start = () => {
     setIsModalOpen(true);
     const paymentData = createPaymentBuffer(paymentType, form);
     const vcatPacket = makeSendData(paymentData);
+
     paymentMutation.mutate(encodeURI(vcatPacket));
   };
 
@@ -168,7 +170,11 @@ export const useRunPaymentFlow = (args: RunnerArgs) => {
       // 2-3) 서버 저장(구매 처리)만 별도 try/catch
       let purchaseRes: any;
       try {
-        purchaseRes = await purchaseTicketMutation.mutateAsync(requestBody);
+        if (isExtend) {
+          purchaseRes = await extendTicketMutation.mutateAsync(requestBody);
+        } else {
+          purchaseRes = await purchaseTicketMutation.mutateAsync(requestBody);
+        }
         if (usingCouponCode !== null) {
           sendUseCouponMutation.mutate({
             token: usingCouponCode!,
@@ -198,7 +204,9 @@ export const useRunPaymentFlow = (args: RunnerArgs) => {
       // 완료 페이지 이동
       const approvedAt = formatIsoToTwoLinesRaw(new Date().toISOString());
       let statusForm: Record<string, unknown> = {};
-      if (passType === "1회 이용권") {
+      if (isExtend) {
+        statusForm = { resultType: "연장하기", passType, label };
+      } else if (passType === "1회 이용권") {
         statusForm = { resultType: passType, seatNumber, approvedAt };
       } else if (passType === "기간권" && seatType === "고정석") {
         statusForm = { resultType: "고정석", seatNumber, passType, label };

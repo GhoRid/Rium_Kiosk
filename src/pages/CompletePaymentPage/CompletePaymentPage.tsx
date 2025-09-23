@@ -7,11 +7,12 @@ import { useLocation, useNavigate } from "react-router";
 import FreeSeatForm from "../../components/completeForm/FreeSeatForm";
 import FixedSeatForm from "../../components/completeForm/FixedSeatForm";
 import SinglePassForm from "../../components/completeForm/SinglePassForm";
+import ExtendForm from "../../components/completeForm/ExtendForm";
 
 const CompletePaymentPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { resultType, seatNumber, approvedAt, passType, label } =
+  const { resultType, seatNumber, approvedAt, passType, label, isExtend } =
     location.state || {};
 
   return (
@@ -23,6 +24,9 @@ const CompletePaymentPage = () => {
           <Message>결제가 완료되었습니다.</Message>
         </MessageBox>
 
+        {resultType === "연장하기" && (
+          <ExtendForm passType={passType} label={label} />
+        )}
         {resultType === "1회 이용권" && (
           <SinglePassForm seatNumber={seatNumber} approvedAt={approvedAt} />
         )}

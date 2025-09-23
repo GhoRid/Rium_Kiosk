@@ -6,7 +6,7 @@ import OptionCard from "./components/OptionCard";
 import { useEffect, useState } from "react";
 import BottomButtons from "../../components/BottomButtons";
 import ErrorMsg from "../../components/ErrorMsg";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import { getTicketList } from "../../apis/api/pass";
 
@@ -14,6 +14,10 @@ const SinglePassPage = () => {
   const navigate = useNavigate();
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const location = useLocation();
+  const { isExtend } = location.state || {};
+
+  console.log(isExtend);
 
   const { data, isLoading } = useQuery({
     queryKey: ["passList", "singlePass"],
@@ -25,8 +29,6 @@ const SinglePassPage = () => {
 
   const ticketData = data?.data || {};
 
-  // console.log(ticketData);
-
   const handleNext = () => {
     if (selectedOption) {
       const selectedPass = ticketData.find(
@@ -35,6 +37,20 @@ const SinglePassPage = () => {
 
       if (!selectedPass) {
         setError("선택한 이용권 정보를 찾을 수 없습니다.");
+        return;
+      }
+
+      if (isExtend) {
+        navigate("/payment", {
+          state: {
+            passType: "1회 이용권",
+            label: `${selectedPass.time}시간`,
+            time: selectedPass.time,
+            price: selectedPass.price,
+            ticketId: selectedPass.ticketId,
+            isExtend: true,
+          },
+        });
         return;
       }
 
