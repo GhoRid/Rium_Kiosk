@@ -23,7 +23,7 @@ const ExtendForm = ({ passType, label }: ExtendFormProps) => {
       <DeskAnimation />
 
       <GuidTextBox>
-        <GuidText>입실하기 → 좌석선택 후 입장해주세요.</GuidText>
+        <GuidText>이용권이 연장되었습니다.</GuidText>
       </GuidTextBox>
     </Wrapper>
   );

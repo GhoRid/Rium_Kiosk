@@ -39,8 +39,9 @@ const PeriodPassPage = () => {
 
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const wantFixed = extendingTicketType == null || extendingTicketType === 2;
-  const wantFree = extendingTicketType == null || extendingTicketType === 4;
+  const wantFixed = extendingTicketType === 2;
+  const wantFree = extendingTicketType === 4;
+  console.log({ wantFixed, wantFree });
 
   const { data: fixedSeatData, isLoading: fixedSeatIsLodaing } = useQuery({
     queryKey: ["passList", "고정석"],
